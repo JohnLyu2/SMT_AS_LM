@@ -1,6 +1,5 @@
 import numpy as np
 from pathlib import Path
-from functools import partial
 import joblib
 import argparse
 import logging
@@ -11,29 +10,26 @@ from sklearn.dummy import DummyClassifier
 from sklearn.utils.validation import check_X_y
 from sklearn.preprocessing import StandardScaler
 
-from .preprocess import parse_from_tsv
-from .bokw import get_bokw, create_bokws_from_perf_dict
-from .evaluate import get_par_n
+from .parser import parse_performance_csv
 
 PERF_DIFF_THRESHOLD = 1e-10  # Threshold for considering performance differences
 
 
-def generate_training_samples_for_solver_pair(
-    training_perf_dict, solver_pair, res2target_func, feature_dict
-):
-    solver0, solver1 = solver_pair
+def placehold_feature_extract(instance_path):
+    return np.random.rand(10)
+
+
+# now the target func is par2
+def create_pairwise_samples(perf_data, solver0_id, solver1_id):
     inputs = []
     labels = []
     costs = []
-    for instance_path, perf_lst in training_perf_dict.items():
-        feature = feature_dict[instance_path]
-        result_tuple0 = perf_lst[solver0]
-        result_tuple1 = perf_lst[solver1]
-        target0 = res2target_func(result_tuple0)
-        target1 = res2target_func(result_tuple1)
-        # here assume always the less target the better
-        label = 1 if target0 < target1 else 0  # label 1 represents solver0 is better
-        cost = abs(target0 - target1)
+    for instance_path in perf_data.keys():
+        feature = placehold_feature_extract(instance_path)
+        par2_0 = perf_data.get_par2(instance_path, solver0_id)
+        par2_1 = perf_data.get_par2(instance_path, solver1_id)
+        label = 1 if par2_0 < par2_1 else 0  # label 1 represents solver0 is better
+        cost = abs(par2_0 - par2_1)
         if cost > PERF_DIFF_THRESHOLD:  # if the performance difference is 0, ignore
             inputs.append(feature)
             labels.append(label)
@@ -74,12 +70,11 @@ class PairwiseSVM(SVC):
         return super().decision_function(x)
 
 
-class PwcBokwModel:
-    def __init__(self, model_matrix, xg_flag, tool_dict):
+class PwcModel:
+    def __init__(self, model_matrix, xg_flag):
         self.model_type = "XG" if xg_flag else "SVM"
         self.model_matrix = model_matrix
-        self.tool_size = model_matrix.shape[0]
-        self.tool_dict = tool_dict
+        self.solver_size = model_matrix.shape[0]
 
     def save(self, save_dir):
         Path(save_dir).mkdir(parents=True, exist_ok=True)
@@ -93,16 +88,16 @@ class PwcBokwModel:
 
     def _get_rank_lst(self, bokw, random_seed=42):
         btor2kw_array = np.array(bokw).reshape(1, -1)
-        votes = np.zeros(self.tool_size, dtype=int)
-        for i in range(self.tool_size):
-            for j in range(i + 1, self.tool_size):
+        votes = np.zeros(self.solver_size, dtype=int)
+        for i in range(self.solver_size):
+            for j in range(i + 1, self.solver_size):
                 prediction = self.model_matrix[i, j].predict(btor2kw_array)
                 if prediction[0]:
                     votes[i] += 1
                 else:
                     votes[j] += 1
         rng = np.random.default_rng(random_seed)
-        random_tiebreaker = rng.random(self.tool_size)
+        random_tiebreaker = rng.random(self.solver_size)
         structured_votes = np.rec.fromarrays(
             [votes, random_tiebreaker], names="votes, random_tiebreaker"
         )
@@ -111,47 +106,29 @@ class PwcBokwModel:
         )[::-1]
         return sorted_indices
 
-    def algorithm_select(self, instance_path, top_k=1, random_seed=42):
+    def algorithm_select(self, instance_path, random_seed=42):
         """
         input instance path, output list of tool-config ids; for cross validation
         """
-        assert top_k > 0, f"invalid top_k value {top_k}"
-        assert top_k <= self.tool_size, f"invalid top_k value {top_k}"
-        bokw = get_bokw(instance_path)
-        selected_ids = self._get_rank_lst(bokw, random_seed)[:top_k]
-        return selected_ids
-
-    def algorithm_select_name(self, instance_path, top_k=1, random_seed=42):
-        """
-        input instance path, output list of (tool, config) tuples
-        Now only use bokw as the feature
-        """
-        selected_ids = self.algorithm_select(instance_path, top_k, random_seed)
-        tool_configs = []
-        for selected_id in selected_ids:
-            tool, config, _ = self.tool_dict[selected_id][1].split(".")
-            tool_configs.append((tool, config))
-        return tool_configs
+        feature = placehold_feature_extract(instance_path)
+        selected_id = self._get_rank_lst(feature, random_seed)[0]
+        return selected_id
 
 
-def train_pwc_bokw(perf_dict, tool_dict, target_func, save_dir, xg_flag=False):
+def train_pwc(perf_data, save_dir, xg_flag=False):
     Path(save_dir).mkdir(parents=True, exist_ok=True)
-    tool_size = len(tool_dict)
-    bokw_dict = create_bokws_from_perf_dict(perf_dict)
-    logging.info("BoKW features extracted")
+    solver_size = perf_data.num_solvers()
 
-    model_matrix = np.empty((tool_size, tool_size), dtype=object)
+    model_matrix = np.empty((solver_size, solver_size), dtype=object)
     model_matrix[:] = None
 
-    for i in range(tool_size):
-        for j in range(i + 1, tool_size):
+    for i in range(solver_size):
+        for j in range(i + 1, solver_size):
             (
                 inputs_array,
                 labels_array,
                 costs_array,
-            ) = generate_training_samples_for_solver_pair(
-                perf_dict, (i, j), target_func, bokw_dict
-            )
+            ) = create_pairwise_samples(perf_data, i, j)
             unique_labels = np.unique(labels_array)
             if len(unique_labels) == 1:
                 model = DummyClassifier(strategy="constant", constant=unique_labels[0])
@@ -162,7 +139,7 @@ def train_pwc_bokw(perf_dict, tool_dict, target_func, save_dir, xg_flag=False):
                     model = PairwiseXGBoost()
                 model.fit(inputs_array, labels_array, costs_array)
             model_matrix[i, j] = model
-    pwc_model = PwcBokwModel(model_matrix, xg_flag, tool_dict)
+    pwc_model = PwcModel(model_matrix, xg_flag)
     pwc_model.save(save_dir)
 
 
@@ -178,6 +155,12 @@ def main():
     parser.add_argument(
         "--perf-csv", type=str, help="The training performance csv path"
     )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=1200.0,
+        help="Timeout value in seconds (default: 1200.0)",
+    )
 
     args = parser.parse_args()
     logging.basicConfig(
@@ -186,14 +169,14 @@ def main():
 
     xg_flag = args.xg
     save_dir = args.save_dir
-    train_perf_dict, tool_dict = parse_from_tsv(args.perf_csv)
+    timeout = args.timeout
+    train_dataset = parse_performance_csv(args.perf_csv, timeout)
+
     logging.info(
-        f"Training performance parse: {len(train_perf_dict)} benchmarks and {len(tool_dict)} tools from {args.perf_csv}"
+        f"Training performance parse: {len(train_dataset)} benchmarks and {train_dataset.num_solvers()} solvers from {args.perf_csv}"
     )
 
-    par2_func = partial(get_par_n, n=2, timeout=900.0)
-
-    train_pwc_bokw(train_perf_dict, tool_dict, par2_func, save_dir, xg_flag)
+    train_pwc(train_dataset, save_dir, xg_flag)
 
 
 if __name__ == "__main__":
