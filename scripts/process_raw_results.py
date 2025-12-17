@@ -115,12 +115,51 @@ def process_logic(
     return results
 
 
-def write_results_csv(output_path: Path, logic_results: Dict[str, Dict[str, int]]):
-    """Write results to a CSV file with logic as rows and selectors as columns."""
+def compute_gap_closed(
+    as_solved: int, sbs_solved: int, vbs_solved: int
+) -> Optional[float]:
+    """
+    Compute the percentage of gap closed by an algorithm selector.
+
+    Formula: (as_solved - sbs_solved) / (vbs_solved - sbs_solved)
+
+    Args:
+        as_solved: Number of instances solved by algorithm selector
+        sbs_solved: Number of instances solved by SBS
+        vbs_solved: Number of instances solved by VBS
+
+    Returns:
+        Gap closed percentage (0-100), or None if gap is zero (vbs == sbs)
+    """
+    gap = vbs_solved - sbs_solved
+    if gap == 0:
+        return None  # No gap to close
+    return ((as_solved - sbs_solved) / gap) * 100
+
+
+def write_results_csv(
+    output_path: Path,
+    logic_results: Dict[str, Dict[str, int]],
+    gap_cls: bool = False,
+):
+    """
+    Write results to a CSV file with logic as rows and selectors as columns.
+
+    Args:
+        output_path: Path to output CSV file
+        logic_results: Dictionary mapping logic names to their results
+        gap_cls: If True, output gap-closed percentages instead of solved counts for selectors
+    """
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Column order: logic, machsmt, syn, des, des_exp, des_syn, sbs, vbs
-    columns = ["logic", "machsmt", "syn", "des", "des_exp", "des_syn", "sbs", "vbs"]
+    # When gap_cls is True, exclude sbs and vbs columns
+    if gap_cls:
+        columns = ["logic", "machsmt", "syn", "des", "des_exp", "des_syn"]
+    else:
+        columns = ["logic", "machsmt", "syn", "des", "des_exp", "des_syn", "sbs", "vbs"]
+    # Algorithm selector columns (exclude sbs and vbs)
+    selector_columns = ["machsmt", "syn", "des", "des_exp", "des_syn"]
 
     with open(output_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -128,9 +167,26 @@ def write_results_csv(output_path: Path, logic_results: Dict[str, Dict[str, int]
 
         for logic in sorted(logic_results.keys()):
             row = [logic]
+            results = logic_results[logic]
+            sbs = results.get("sbs", "")
+            vbs = results.get("vbs", "")
+
             for col in columns[1:]:  # Skip 'logic' column
-                value = logic_results[logic].get(col, "")
-                row.append(value if value != "" else "")
+                if gap_cls and col in selector_columns:
+                    # Compute gap-closed percentage for algorithm selectors
+                    as_value = results.get(col, "")
+                    if as_value == "" or sbs == "" or vbs == "":
+                        row.append("")
+                    else:
+                        gap_pct = compute_gap_closed(as_value, sbs, vbs)
+                        if gap_pct is None:
+                            row.append("")  # No gap to close
+                        else:
+                            row.append(f"{gap_pct:.1f}")
+                else:
+                    # Output raw values for sbs, vbs, or when gap_cls is False
+                    value = results.get(col, "")
+                    row.append(value if value != "" else "")
             writer.writerow(row)
 
     print(f"\nResults saved to: {output_path}", file=sys.stderr)
@@ -145,8 +201,13 @@ def main():
         "--output",
         "-o",
         type=str,
-        default=None,
-        help="Output CSV file path for storing results (default: no file output)",
+        required=True,
+        help="Output CSV file path for storing results",
+    )
+    parser.add_argument(
+        "--gap-cls",
+        action="store_true",
+        help="Output gap-closed percentages instead of solved counts for algorithm selectors",
     )
 
     args = parser.parse_args()
@@ -202,31 +263,69 @@ def main():
         sys.exit(1)
 
     # Print results table
-    print("=" * 110)
-    print(
-        f"{'Logic':12s} | {'machsmt':>8s} | {'syn':>8s} | {'des':>8s} | {'des_exp':>8s} | {'des_syn':>8s} | {'sbs':>8s} | {'vbs':>8s}"
-    )
-    print("=" * 110)
+    if args.gap_cls:
+        print("=" * 80)
+        print(
+            f"{'Logic':12s} | {'machsmt':>8s} | {'syn':>8s} | {'des':>8s} | {'des_exp':>8s} | {'des_syn':>8s}"
+        )
+        print("  (gap-closed %)" + " " * 65)
+        print("=" * 80)
+    else:
+        print("=" * 110)
+        print(
+            f"{'Logic':12s} | {'machsmt':>8s} | {'syn':>8s} | {'des':>8s} | {'des_exp':>8s} | {'des_syn':>8s} | {'sbs':>8s} | {'vbs':>8s}"
+        )
+        print("=" * 110)
 
     for logic in sorted(logic_results.keys()):
         results = logic_results[logic]
-        machsmt = results.get("machsmt", "")
-        syn = results.get("syn", "")
-        des = results.get("des", "")
-        des_exp = results.get("des_exp", "")
-        des_syn = results.get("des_syn", "")
         sbs = results.get("sbs", "")
         vbs = results.get("vbs", "")
-        print(
-            f"{logic:12s} | {machsmt:>8} | {syn:>8} | {des:>8} | {des_exp:>8} | {des_syn:>8} | {sbs:>8} | {vbs:>8}"
-        )
 
-    print("=" * 110)
+        if args.gap_cls:
+            # Compute gap-closed percentages for selectors
+            machsmt_val = results.get("machsmt", "")
+            syn_val = results.get("syn", "")
+            des_val = results.get("des", "")
+            des_exp_val = results.get("des_exp", "")
+            des_syn_val = results.get("des_syn", "")
 
-    # Write results to CSV if output path is specified
-    if args.output:
-        output_path = Path(args.output)
-        write_results_csv(output_path, logic_results)
+            def format_gap(val):
+                if val == "" or sbs == "" or vbs == "":
+                    return ""
+                gap_pct = compute_gap_closed(val, sbs, vbs)
+                if gap_pct is None:
+                    return ""
+                return f"{gap_pct:.1f}%"
+
+            machsmt = format_gap(machsmt_val)
+            syn = format_gap(syn_val)
+            des = format_gap(des_val)
+            des_exp = format_gap(des_exp_val)
+            des_syn = format_gap(des_syn_val)
+
+            print(
+                f"{logic:12s} | {machsmt:>8} | {syn:>8} | {des:>8} | {des_exp:>8} | {des_syn:>8}"
+            )
+        else:
+            machsmt = results.get("machsmt", "")
+            syn = results.get("syn", "")
+            des = results.get("des", "")
+            des_exp = results.get("des_exp", "")
+            des_syn = results.get("des_syn", "")
+
+            print(
+                f"{logic:12s} | {machsmt:>8} | {syn:>8} | {des:>8} | {des_exp:>8} | {des_syn:>8} | {sbs:>8} | {vbs:>8}"
+            )
+
+    if args.gap_cls:
+        print("=" * 80)
+    else:
+        print("=" * 110)
+
+    # Write results to CSV
+    output_path = Path(args.output)
+    write_results_csv(output_path, logic_results, gap_cls=args.gap_cls)
 
 
 if __name__ == "__main__":
