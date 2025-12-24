@@ -18,7 +18,7 @@ Usage:
 
 import sqlite3
 import argparse
-import csv
+import json
 import sys
 from typing import List, Dict, Optional
 
@@ -74,7 +74,17 @@ def find_benchmarks(
             ev.date AS evaluation_date,
             f.id AS family_id,
             f.name AS family_name,
-            f.folderName AS family_folderName
+            f.folderName AS family_folderName,
+            q.assertsCount,
+            q.declareFunCount,
+            q.declareConstCount,
+            q.declareSortCount,
+            q.defineFunCount,
+            q.defineFunRecCount,
+            q.constantFunCount,
+            q.defineSortCount,
+            q.declareDatatypeCount,
+            q.maxTermDepth
         FROM Benchmarks b
         INNER JOIN Queries q ON b.id = q.benchmark
         INNER JOIN Ratings r ON q.id = r.query
@@ -101,6 +111,17 @@ def find_benchmarks(
         if folder_name and row["benchmark_name"]:
             smtlib_path = f"{row['logic']}/{folder_name}/{row['benchmark_name']}"
 
+        # Get symbol counts for this query
+        query_id = row["query_id"]
+        symbol_query = """
+            SELECT s.name, sc.count
+            FROM SymbolCounts sc
+            JOIN Symbols s ON sc.symbol = s.id
+            WHERE sc.query = ?
+        """
+        cursor.execute(symbol_query, (query_id,))
+        symbol_counts = {name: count for name, count in cursor.fetchall()}
+
         benchmarks.append(
             {
                 "benchmark_id": row["benchmark_id"],
@@ -108,16 +129,20 @@ def find_benchmarks(
                 "logic": row["logic"],
                 "category": row["category"],
                 "size": row["size"],
-                "query_count": row["queryCount"],
-                "query_id": row["query_id"],
-                "query_index": row["query_index"],
-                "evaluation_id": row["evaluation_id"],
-                "evaluation_name": row["evaluation_name"],
-                "evaluation_date": row["evaluation_date"],
-                "family_id": row["family_id"],
-                "family_name": row["family_name"],
-                "family_folderName": folder_name,
+                "evaluation": row["evaluation_name"],
+                "family": row["family_name"],
                 "smtlib_path": smtlib_path,
+                "asserts_count": row["assertsCount"] or 0,
+                "declare_fun_count": row["declareFunCount"] or 0,
+                "declare_const_count": row["declareConstCount"] or 0,
+                "declare_sort_count": row["declareSortCount"] or 0,
+                "define_fun_count": row["defineFunCount"] or 0,
+                "define_fun_rec_count": row["defineFunRecCount"] or 0,
+                "constant_fun_count": row["constantFunCount"] or 0,
+                "define_sort_count": row["defineSortCount"] or 0,
+                "declare_datatype_count": row["declareDatatypeCount"] or 0,
+                "max_term_depth": row["maxTermDepth"] or 0,
+                "symbol_counts": symbol_counts,
             }
         )
 
@@ -195,33 +220,21 @@ def print_results(
             print(f"  ... and {len(unique_benchmarks) - 5} more benchmarks")
 
 
-def write_csv(benchmarks: List[Dict], output_file: str):
-    """Write results to CSV file."""
+def write_json(benchmarks: List[Dict], output_file: str):
+    """Write results to JSON file."""
     if not benchmarks:
         print("No benchmarks to write.")
         return
 
-    with open(output_file, "w", newline="", encoding="utf-8") as f:
-        fieldnames = [
-            "benchmark_id",
-            "benchmark_name",
-            "logic",
-            "category",
-            "size",
-            "evaluation_name",
-            "family",
-            "smtlib_path",
-        ]
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        writer.writeheader()
-        # Map family_name to family for CSV output
-        csv_rows = []
-        for benchmark in benchmarks:
-            row = dict(benchmark)
-            if "family_name" in row:
-                row["family"] = row.pop("family_name", None)
-            csv_rows.append(row)
-        writer.writerows(csv_rows)
+    # Prepare JSON data - keep all fields
+    json_data = []
+    for benchmark in benchmarks:
+        json_benchmark = dict(benchmark)
+        # Keep family_name as is for JSON (more descriptive)
+        json_data.append(json_benchmark)
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(json_data, f, indent=2, ensure_ascii=False)
 
     print(f"\nResults written to {output_file}")
 
@@ -296,7 +309,7 @@ def main():
         action="store_true",
         help="Explicitly use the most recent evaluation (this is the default behavior if --evaluation is not specified)",
     )
-    parser.add_argument("--output", "-o", help="Optional: Output CSV file path")
+    parser.add_argument("--output", "-o", help="Optional: Output JSON file path")
     parser.add_argument(
         "--list-logics",
         action="store_true",
@@ -382,7 +395,7 @@ def main():
         print_results(benchmarks, args.db, args.logic, evaluation_id)
 
         if args.output:
-            write_csv(benchmarks, args.output)
+            write_json(benchmarks, args.output)
 
     except sqlite3.Error as e:
         print(f"Database error: {e}", file=sys.stderr)
