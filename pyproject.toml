@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "smt-as-llm"
 version = "0.1.0"
 description = "SMT Algorithm Selection using LLM"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "numpy>=1.21.0",
     "scikit-learn>=1.0.0",
