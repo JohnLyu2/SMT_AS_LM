@@ -2,20 +2,26 @@
 """
 Run cross-validation experiments for all logics.
 
-For each logic in data/perf_data/folds:
-1. Finds the corresponding feature CSV in data/features/syntactic/catalog_all
+For each logic found in the folds directory:
+1. Finds the corresponding feature CSV in the features directory
 2. Runs cross-validation using scripts/cross_validate.py
-3. Saves results to data/cv_results/{LOGIC}
+3. Saves results to the results directory under {LOGIC}
+
+Command-line arguments:
+    --folds-dir: Base directory containing fold CSV files (default: data/perf_data/folds)
+    --features-dir: Directory containing feature CSV files (default: data/features/syntactic/catalog_all)
+    --results-dir: Base directory to save results (default: data/cv_results)
 """
 
+import argparse
 import subprocess
 import sys
 from pathlib import Path
 
-# Base directories
-FOLDS_BASE_DIR = Path("data/perf_data/folds")
-FEATURES_DIR = Path("data/features/syntactic/catalog_all")
-RESULTS_BASE_DIR = Path("data/cv_results")
+# Default directories
+DEFAULT_FOLDS_BASE_DIR = Path("data/perf_data/folds")
+DEFAULT_FEATURES_DIR = Path("data/features/syntactic/catalog_all")
+DEFAULT_RESULTS_BASE_DIR = Path("data/cv_results")
 SCRIPT_PATH = Path("scripts/cross_validate.py")
 
 
@@ -113,13 +119,42 @@ def run_cv_for_logic(
 
 def main():
     """Run cross-validation for all logics."""
+    parser = argparse.ArgumentParser(
+        description="Run cross-validation experiments for all logics"
+    )
+    parser.add_argument(
+        "--folds-dir",
+        type=str,
+        default=str(DEFAULT_FOLDS_BASE_DIR),
+        help=f"Base directory containing fold CSV files (default: {DEFAULT_FOLDS_BASE_DIR})",
+    )
+    parser.add_argument(
+        "--features-dir",
+        type=str,
+        default=str(DEFAULT_FEATURES_DIR),
+        help=f"Directory containing feature CSV files (default: {DEFAULT_FEATURES_DIR})",
+    )
+    parser.add_argument(
+        "--results-dir",
+        type=str,
+        default=str(DEFAULT_RESULTS_BASE_DIR),
+        help=f"Base directory to save results (default: {DEFAULT_RESULTS_BASE_DIR})",
+    )
+
+    args = parser.parse_args()
+
+    # Convert to Path objects
+    folds_base_dir = Path(args.folds_dir)
+    features_dir = Path(args.features_dir)
+    results_base_dir = Path(args.results_dir)
+
     # Check base directories exist
-    if not FOLDS_BASE_DIR.exists():
-        print(f"Error: Folds base directory does not exist: {FOLDS_BASE_DIR}")
+    if not folds_base_dir.exists():
+        print(f"Error: Folds base directory does not exist: {folds_base_dir}")
         sys.exit(1)
 
-    if not FEATURES_DIR.exists():
-        print(f"Error: Features directory does not exist: {FEATURES_DIR}")
+    if not features_dir.exists():
+        print(f"Error: Features directory does not exist: {features_dir}")
         sys.exit(1)
 
     if not SCRIPT_PATH.exists():
@@ -127,7 +162,7 @@ def main():
         sys.exit(1)
 
     # Discover logics
-    logics = discover_logics(FOLDS_BASE_DIR)
+    logics = discover_logics(folds_base_dir)
 
     if not logics:
         print("No logics found with fold files. Exiting.")
@@ -135,9 +170,12 @@ def main():
 
     print(f"Found {len(logics)} logics: {', '.join(logics)}")
     print("\nStarting cross-validation experiments...")
+    print(f"Folds directory:  {folds_base_dir}")
+    print(f"Features directory: {features_dir}")
+    print(f"Results directory: {results_base_dir}")
 
     # Create results base directory
-    RESULTS_BASE_DIR.mkdir(parents=True, exist_ok=True)
+    results_base_dir.mkdir(parents=True, exist_ok=True)
 
     # Run CV for each logic
     successful = 0
@@ -146,9 +184,9 @@ def main():
     for logic in logics:
         success = run_cv_for_logic(
             logic,
-            FOLDS_BASE_DIR,
-            FEATURES_DIR,
-            RESULTS_BASE_DIR,
+            folds_base_dir,
+            features_dir,
+            results_base_dir,
         )
         if success:
             successful += 1
@@ -162,7 +200,7 @@ def main():
     print(f"Total logics:     {len(logics)}")
     print(f"Successful:       {successful}")
     print(f"Failed:           {failed}")
-    print(f"Results saved to: {RESULTS_BASE_DIR}")
+    print(f"Results saved to: {results_base_dir}")
     print(f"{'=' * 60}")
 
     if failed > 0:
