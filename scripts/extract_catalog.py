@@ -4,16 +4,16 @@ Find non-incremental benchmarks for a specific logic in a specific evaluation.
 
 Usage:
     # List available evaluations
-    python find_benchmarks_by_rating.py --list-evaluations
+    python extract_catalog.py --list-evaluations
 
     # Find benchmarks for a logic - uses latest evaluation by default
-    python find_benchmarks_by_rating.py --logic QF_BV
+    python extract_catalog.py --logic QF_BV
 
     # Use a specific evaluation ID
-    python find_benchmarks_by_rating.py --logic QF_BV --evaluation 20
+    python extract_catalog.py --logic QF_BV --evaluation 20
 
-    # Export to CSV
-    python find_benchmarks_by_rating.py --logic QF_BV --output results.csv
+    # Export to JSON
+    python extract_catalog.py --logic QF_BV --output results.json
 """
 
 import sqlite3
