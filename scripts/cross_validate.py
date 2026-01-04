@@ -20,6 +20,7 @@ from src.performance import MultiSolverDataset
 from src.parser import parse_performance_csv
 from src.pwc import train_pwc, PwcModel
 from src.evaluate import as_evaluate
+from src.feature import validate_feature_coverage
 
 
 def create_subset_dataset(
@@ -163,7 +164,7 @@ def load_all_instances_from_folds(
 
 def cross_validate(
     folds_dir: Path,
-    feature_csv_path: str,
+    feature_csv_path: str | list[str],
     xg_flag: bool = False,
     save_models: bool = False,
     output_dir: Path = None,
@@ -173,7 +174,7 @@ def cross_validate(
     Perform k-fold cross-validation on algorithm selection model using pre-split fold files.
 
     Args:
-        feature_csv_path: Path to features CSV file
+        feature_csv_path: Path to features CSV file, or list of paths to multiple CSV files
         folds_dir: Directory containing fold CSV files (e.g., data/perf_data/folds/ABV)
         xg_flag: Whether to use XGBoost (default: False, uses SVM)
         save_models: Whether to save models for each fold
@@ -193,6 +194,53 @@ def cross_validate(
     all_instance_paths = set(multi_perf_data.keys())
     n_instances = len(all_instance_paths)
 
+    # Log feature CSV path(s)
+    if isinstance(feature_csv_path, list):
+        logging.info(
+            f"Using {len(feature_csv_path)} feature CSV file(s): {feature_csv_path}"
+        )
+    else:
+        logging.info(f"Using feature CSV file: {feature_csv_path}")
+
+    # Validate that all instances have features
+    logging.info("Validating feature coverage for all instances...")
+    missing_instances, instance_missing_in_csvs = validate_feature_coverage(
+        all_instance_paths, feature_csv_path
+    )
+
+    if missing_instances:
+        error_msg = f"ERROR: {len(missing_instances)} instance(s) are missing features in ALL feature CSV(s).\n"
+        if isinstance(feature_csv_path, list):
+            error_msg += f"  Feature CSVs: {feature_csv_path}\n"
+        else:
+            error_msg += f"  Feature CSV: {feature_csv_path}\n"
+        error_msg += "  Missing instances (showing first 10):\n"
+        for instance in missing_instances[:10]:
+            error_msg += f"    - {instance}\n"
+        if len(missing_instances) > 10:
+            error_msg += f"    ... and {len(missing_instances) - 10} more\n"
+        logging.error(error_msg)
+        raise ValueError(error_msg)
+
+    # Check for instances missing in some (but not all) CSVs when using multiple CSVs
+    if isinstance(feature_csv_path, list) and instance_missing_in_csvs:
+        error_msg = (
+            f"ERROR: {len(instance_missing_in_csvs)} instance(s) are missing in some feature CSV(s).\n"
+            f"  All instances must be present in ALL {len(feature_csv_path)} feature CSV(s).\n"
+            f"  Instances with missing features (showing first 10):\n"
+        )
+        for instance, missing_csvs in list(instance_missing_in_csvs.items())[:10]:
+            error_msg += f"    - {instance}\n"
+            error_msg += f"      Missing in: {missing_csvs}\n"
+        if len(instance_missing_in_csvs) > 10:
+            error_msg += f"    ... and {len(instance_missing_in_csvs) - 10} more\n"
+        logging.error(error_msg)
+        raise ValueError(error_msg)
+
+    logging.info(
+        f"Feature coverage validated: all {n_instances} instances have features"
+    )
+
     # Find all fold files (e.g., 0.csv, 1.csv, 2.csv, ...)
     fold_files = sorted(folds_dir.glob("*.csv"), key=lambda x: int(x.stem))
     n_splits = len(fold_files)
@@ -203,7 +251,7 @@ def cross_validate(
     logging.info(
         f"Starting {n_splits}-fold cross-validation on {n_instances} instances"
     )
-    logging.info(f"Loading folds from {folds_dir}")
+    logging.info("Loading folds from %s", folds_dir)
 
     # Storage for per-fold results
     fold_results = []
@@ -410,6 +458,7 @@ def cross_validate(
         "n_instances": n_instances,
         "model_type": "XGBoost" if xg_flag else "SVM",
         "folds_dir": str(folds_dir),
+        "feature_csv_path": feature_csv_path,
         "folds": fold_results,
         "aggregated": aggregated,
     }
@@ -461,7 +510,8 @@ def main():
         "--feature-csv",
         type=str,
         required=True,
-        help="Path to the features CSV file",
+        nargs="+",
+        help="Path(s) to the features CSV file(s). Can specify multiple files to concatenate features.",
     )
     parser.add_argument(
         "--timeout",

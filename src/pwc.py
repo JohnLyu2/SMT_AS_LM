@@ -11,7 +11,7 @@ from sklearn.utils.validation import check_X_y
 from sklearn.preprocessing import StandardScaler
 
 from .parser import parse_performance_csv
-from .feature import extract_feature_from_csv
+from .feature import extract_feature_from_csv, extract_feature_from_csvs_concat
 
 PERF_DIFF_THRESHOLD = 1e-1  # Threshold for considering performance differences
 
@@ -22,7 +22,11 @@ def create_pairwise_samples(multi_perf_data, solver0_id, solver1_id, feature_csv
     labels = []
     costs = []
     for instance_path in multi_perf_data.keys():
-        feature = extract_feature_from_csv(instance_path, feature_csv_path)
+        # Handle both single CSV path (str) and multiple CSV paths (list)
+        if isinstance(feature_csv_path, list):
+            feature = extract_feature_from_csvs_concat(instance_path, feature_csv_path)
+        else:
+            feature = extract_feature_from_csv(instance_path, feature_csv_path)
         par2_0 = multi_perf_data.get_par2(instance_path, solver0_id)
         par2_1 = multi_perf_data.get_par2(instance_path, solver1_id)
         label = 1 if par2_0 < par2_1 else 0  # label 1 represents solver0 is better
@@ -114,7 +118,11 @@ class PwcModel:
                 "feature_csv_path not set in PwcModel. "
                 "It must be provided during model creation or loading."
             )
-        feature = extract_feature_from_csv(instance_path, feature_csv_path)
+        # Handle both single CSV path (str) and multiple CSV paths (list)
+        if isinstance(feature_csv_path, list):
+            feature = extract_feature_from_csvs_concat(instance_path, feature_csv_path)
+        else:
+            feature = extract_feature_from_csv(instance_path, feature_csv_path)
         selected_id = self._get_rank_lst(feature, random_seed)[0]
         return selected_id
 

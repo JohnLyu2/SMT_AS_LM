@@ -50,7 +50,7 @@ def discover_logics(folds_dir: Path) -> list[str]:
 
 
 def run_cv_for_logic(
-    logic: str, folds_dir: Path, features_dir: Path, results_dir: Path
+    logic: str, folds_dir: Path, features_dirs: list[Path], results_dir: Path
 ):
     """
     Run cross-validation for a single logic.
@@ -58,17 +58,49 @@ def run_cv_for_logic(
     Args:
         logic: Logic name (e.g., "ABV", "QF_LIA")
         folds_dir: Directory containing fold CSV files for this logic
-        features_dir: Directory containing feature CSV files
+        features_dirs: List of directories containing feature CSV files
         results_dir: Directory to save results
     """
     # Construct paths
     logic_folds_dir = folds_dir / logic
-    feature_csv = features_dir / f"{logic}.CSV"
 
-    # Check if feature CSV exists
-    if not feature_csv.exists():
-        print(f"WARNING: Missing feature CSV for {logic}: {feature_csv} -> skipping")
-        return False
+    # Find feature CSV files in all feature directories
+    feature_csvs = []
+    missing_dirs = []
+    for features_dir in features_dirs:
+        # Try both .CSV and .csv extensions
+        feature_csv_upper = features_dir / f"{logic}.CSV"
+        feature_csv_lower = features_dir / f"{logic}.csv"
+
+        if feature_csv_upper.exists():
+            feature_csvs.append(feature_csv_upper)
+        elif feature_csv_lower.exists():
+            feature_csvs.append(feature_csv_lower)
+        else:
+            missing_dirs.append(features_dir)
+
+    # If multiple feature directories are provided, ALL must contain the feature CSV
+    if len(features_dirs) > 1:
+        if missing_dirs:
+            error_msg = f"ERROR: When multiple feature directories are provided, ALL must contain feature CSV for {logic}.\n"
+            error_msg += f"  Missing in {len(missing_dirs)} directory(ies):\n"
+            for features_dir in missing_dirs:
+                error_msg += (
+                    f"    - {features_dir} (expected: {logic}.CSV or {logic}.csv)\n"
+                )
+            error_msg += f"  Found in {len(feature_csvs)} directory(ies):\n"
+            for csv_path in feature_csvs:
+                error_msg += f"    - {csv_path.parent}\n"
+            print(error_msg)
+            raise FileNotFoundError(error_msg)
+
+    # Check if we found at least one feature CSV (for single directory case)
+    if not feature_csvs:
+        error_msg = f"ERROR: No feature CSV found for {logic} in feature directory.\n"
+        error_msg += f"  Searched in: {features_dirs[0]}\n"
+        error_msg += f"  Expected: {logic}.CSV or {logic}.csv\n"
+        print(error_msg)
+        raise FileNotFoundError(error_msg)
 
     # Check if folds directory exists and has CSV files
     if not logic_folds_dir.exists():
@@ -90,15 +122,29 @@ def run_cv_for_logic(
     print(f"Running CV for logic: {logic}")
     print(f"{'=' * 60}")
     print(f"  Folds dir:    {logic_folds_dir}")
-    print(f"  Feature CSV:  {feature_csv}")
+    if len(feature_csvs) == 1:
+        print(f"  Feature CSV:  {feature_csvs[0]}")
+    else:
+        print(f"  Feature CSVs ({len(feature_csvs)}):")
+        for csv_path in feature_csvs:
+            print(f"    - {csv_path}")
     print(f"  Results dir:  {logic_results_dir}")
     print(f"  Folds found:  {len(csv_files)}")
 
     try:
+        # Convert Path objects to strings for cross_validate
+        feature_csv_paths = [str(csv_path) for csv_path in feature_csvs]
+
         # Run cross-validation
+        # If only one CSV, pass as string for backward compatibility
+        # If multiple, pass as list
+        feature_csv_arg = (
+            feature_csv_paths[0] if len(feature_csv_paths) == 1 else feature_csv_paths
+        )
+
         _ = cross_validate(
             folds_dir=logic_folds_dir,
-            feature_csv_path=str(feature_csv),
+            feature_csv_path=feature_csv_arg,
             xg_flag=False,
             save_models=False,
             output_dir=logic_results_dir,
@@ -106,7 +152,13 @@ def run_cv_for_logic(
         )
         print(f"Completed CV for {logic}")
         return True
+    except (FileNotFoundError, ValueError) as e:
+        # These are validation errors that should stop execution
+        print(f"ERROR: Validation failed for {logic}: {e}")
+        logging.exception("Validation failed")
+        raise  # Re-raise to stop execution
     except Exception as e:
+        # Other errors (e.g., training failures) can be logged but allow continuation
         print(f"ERROR: Failed running CV for {logic}: {e}")
         logging.exception("Cross-validation failed")
         return False
@@ -127,7 +179,8 @@ def main():
         "--features-dir",
         type=str,
         required=True,
-        help="Directory containing feature CSV files",
+        nargs="+",
+        help="Directory(ies) containing feature CSV files. Can specify multiple directories to concatenate features.",
     )
     parser.add_argument(
         "--results-dir",
@@ -140,7 +193,7 @@ def main():
 
     # Convert to Path objects
     folds_base_dir = Path(args.folds_dir)
-    features_dir = Path(args.features_dir)
+    features_dirs = [Path(d) for d in args.features_dir]
     results_base_dir = Path(args.results_dir)
 
     # Check base directories exist
@@ -148,9 +201,11 @@ def main():
         print(f"Error: Folds base directory does not exist: {folds_base_dir}")
         sys.exit(1)
 
-    if not features_dir.exists():
-        print(f"Error: Features directory does not exist: {features_dir}")
-        sys.exit(1)
+    # Check all feature directories exist
+    for features_dir in features_dirs:
+        if not features_dir.exists():
+            print(f"Error: Features directory does not exist: {features_dir}")
+            sys.exit(1)
 
     # Setup logging
     logging.basicConfig(
@@ -168,7 +223,12 @@ def main():
     print(f"Found {len(logics)} logics: {', '.join(logics)}")
     print("\nStarting cross-validation experiments...")
     print(f"Folds directory:  {folds_base_dir}")
-    print(f"Features directory: {features_dir}")
+    if len(features_dirs) == 1:
+        print(f"Features directory: {features_dirs[0]}")
+    else:
+        print(f"Features directories ({len(features_dirs)}):")
+        for features_dir in features_dirs:
+            print(f"  - {features_dir}")
     print(f"Results directory: {results_base_dir}")
 
     # Create results base directory
@@ -182,7 +242,7 @@ def main():
         success = run_cv_for_logic(
             logic,
             folds_base_dir,
-            features_dir,
+            features_dirs,
             results_base_dir,
         )
         if success:
