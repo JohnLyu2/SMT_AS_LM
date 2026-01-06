@@ -59,7 +59,7 @@ Since the native descriptions does not distinguish well between instances within
 
 Currently, we simply concatenate the syntactic and description features, which may not be the best way to leverage more information. Ideally, the approach should be robust to the inclusion of weakly informative features, so that performance does not degrade when such features are added.
 
-One thing we can try is to use alternative base classifiers, such as XGBoost, which is better suited to handling heterogeneous feature types than our current SVM. Another thing is we can try *late fusion*, in which separate models are trained on syntactic and description features, respectively, and their predictions are combined using a weighted sum, i.e., $\text{pred} = \alpha \cdot \text{synt_model} + (1-\alpha) \cdot \text{desc_model}$, where $\alpha$ can be calibrated via cross-validation. 
+One thing we can try is to use alternative base classifiers, such as XGBoost, which is better suited to handling heterogeneous feature types than our current SVM. Another thing is we can try *late fusion*, in which separate models are trained on syntactic and description features, respectively, and their predictions are combined using a weighted sum, i.e., $\text{pred} = \alpha \cdot \text{synt-model} + (1-\alpha) \cdot \text{desc-model}$, where $\alpha$ can be calibrated via cross-validation. 
 
 ### Alternative embedding models and fine-tuning
 
