@@ -29,7 +29,7 @@ In UFLIA and UFNIA, although there are a few families (12 and 9 respectively), e
 
 ### Analysis on high variability in performance
 
-The metrics used is PAR-2 VBS-SBS gap closed. This metric would be pretty sensitive to small performance variations when the VBS-SBS margin is small. The table below shows the dataset statistics. For example, for the full UFLIA dataset, the VBS solves 29 more instances than the SBS. Then, across test splits, the average VBS-SBS margin is ~6 instances, with larger margins for some splits and smaller for others. Consequently, solving 1 more or less instance can result in relatively large performance variations both within a single test split and across different splits.
+The metrics used is PAR-2 VBS-SBS gap closed. This metric would be pretty sensitive to small performance variations when the VBS-SBS margin is small. The table below shows the dataset statistics. For example, for the full UFLIA dataset, the VBS solves 29 more instances than the SBS. Then, for each test split, the average VBS-SBS margin is ~6 instances, with larger margins for some splits and smaller for others. Consequently, solving 1 more or less instance can result in relatively large performance variations both within a single test split and across different splits.
 
 | Logic | Size | #SBS Solved | #VBS Solved | VBS-SBS Solved Margin |
 |-------|------|-------------|-------------|----------------------|
