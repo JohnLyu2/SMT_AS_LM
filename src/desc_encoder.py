@@ -89,7 +89,8 @@ def encode_all_desc(
     normalize: bool = False,
     batch_size: int = 32,
     show_progress: bool = True,
-) -> str:
+    show_trunc_stats: bool = False,
+) -> str | None:
     """
     Encode all benchmark descriptions from a JSON file and write to CSV.
 
@@ -101,9 +102,10 @@ def encode_all_desc(
         normalize: Whether to normalize embeddings to unit length
         batch_size: Batch size for processing multiple texts
         show_progress: Whether to show progress bar when encoding
+        show_trunc_stats: Whether to show truncation statistics only (no encoding performed) (default: False)
 
     Returns:
-        Path to the output CSV file
+        Path to the output CSV file, or None if show_trunc_stats is True (only statistics shown, no encoding performed)
 
     Examples:
         >>> csv_path = encode_all_desc("data/raw_jsons/ABV.json")
@@ -144,6 +146,105 @@ def encode_all_desc(
 
     if not descriptions:
         raise ValueError(f"No valid descriptions found in JSON file: {json_path}")
+
+    # Check for truncation before encoding
+    model = get_embedding_model(model_name)
+    if model is None:
+        raise ValueError(f"Failed to load model: {model_name}")
+
+    # Get tokenizer from the model (standard way: first module's tokenizer)
+    # model[0] is typically the transformer/encoder module which contains the tokenizer
+    try:
+        # Try standard location first: model[0].tokenizer
+        if (
+            hasattr(model, "__len__")
+            and len(model) > 0
+            and hasattr(model[0], "tokenizer")
+        ):
+            tokenizer = model[0].tokenizer
+        # Fallback: try direct access
+        elif hasattr(model, "tokenizer"):
+            tokenizer = model.tokenizer
+        else:
+            raise AttributeError(
+                "Tokenizer not found in model. "
+                "Expected tokenizer at model[0].tokenizer or model.tokenizer"
+            )
+    except (AttributeError, KeyError, IndexError, TypeError) as e:
+        raise AttributeError(f"Failed to access tokenizer from model: {e}") from e
+
+    truncated_count = 0
+    total_tokens = 0
+    truncated_tokens = 0
+
+    # Verify tokenizer is callable
+    if not hasattr(tokenizer, "__call__"):
+        raise TypeError("Tokenizer is not callable")
+
+    # Use native batch tokenization (more efficient than looping)
+    # Tokenize all descriptions at once without truncation
+    tokenized = tokenizer(
+        descriptions,
+        add_special_tokens=True,
+        truncation=False,
+        padding=False,
+        return_tensors=None,  # Return Python lists, not tensors
+    )
+
+    # Verify tokenized output has expected structure
+    # BatchEncoding objects have input_ids as an attribute
+    if not hasattr(tokenized, "input_ids"):
+        actual_type = type(tokenized).__name__
+        raise ValueError(
+            f"Tokenizer output missing 'input_ids' attribute. Got type: {actual_type}"
+        )
+
+    input_ids = tokenized.input_ids
+
+    # Get max sequence length from tokenizer
+    if hasattr(tokenizer, "model_max_length"):
+        max_seq_length = tokenizer.model_max_length
+    else:
+        raise AttributeError("Tokenizer does not have 'model_max_length' attribute. ")
+
+    # Extract token lengths from input_ids (native tokenizer output)
+    token_lengths = [len(ids) for ids in input_ids]
+
+    # Calculate statistics
+    for token_count in token_lengths:
+        total_tokens += token_count
+        if token_count > max_seq_length:
+            truncated_count += 1
+            truncated_tokens += token_count - max_seq_length
+
+    # Calculate statistics
+    total_descriptions = len(descriptions)
+    truncation_percentage = (
+        (truncated_count / total_descriptions * 100) if total_descriptions > 0 else 0
+    )
+    avg_truncated_tokens = (
+        (truncated_tokens / truncated_count) if truncated_count > 0 else 0
+    )
+    avg_token_length = (
+        total_tokens / total_descriptions if total_descriptions > 0 else 0
+    )
+
+    # Print truncation statistics if requested
+    if show_trunc_stats:
+        print("  Truncation Statistics:")
+        print(f"    Model max sequence length: {max_seq_length} tokens")
+        print(f"    Total descriptions: {total_descriptions}")
+        print(
+            f"    Truncated descriptions: {truncated_count} ({truncation_percentage:.2f}%)"
+        )
+        print(f"    Average token length: {avg_token_length:.1f} tokens")
+        if truncated_count > 0:
+            print(
+                f"    Average tokens truncated: {avg_truncated_tokens:.1f} tokens per truncated text"
+            )
+            print(f"    Total tokens truncated: {truncated_tokens} tokens")
+        # Skip embedding when only showing truncation statistics
+        return None
 
     # Encode all descriptions in batch
     embeddings = encode_text(
@@ -226,6 +327,11 @@ Examples:
         action="store_true",
         help="Disable progress bar when encoding",
     )
+    parser.add_argument(
+        "--trunc-stats",
+        action="store_true",
+        help="Show truncation statistics and embedding is skipped",
+    )
 
     args = parser.parse_args()
 
@@ -238,6 +344,7 @@ Examples:
             normalize=args.normalize,
             batch_size=args.batch_size,
             show_progress=not args.no_progress,
+            show_trunc_stats=args.trunc_stats,
         )
         print(f"Success! Embeddings saved to: {csv_path}")
     except FileNotFoundError as e:
