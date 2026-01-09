@@ -14,7 +14,7 @@ def generate_description(
     Generate a description of an SMT instance using GPT-5-mini.
 
     Args:
-        smt_file_path: Path to the SMT file (.smt2 or .smt)
+        smt_file_path: Path to the SMT file (.smt2)
         api_key: OpenAI API key. If None, uses OPENAI_API_KEY environment variable
         model: Model name to use (default: "gpt-5-mini")
 
@@ -53,22 +53,17 @@ SMT-LIB instance:
 {smt_content}
 ```
 
-Description:"""
+"""
 
     try:
-        # Call OpenAI API
-        response = client.chat.completions.create(
+        # Call OpenAI Responses API
+        response = client.responses.create(
             model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are an expert in Satisfiability Modulo Theories (SMT).",
-                },
-                {"role": "user", "content": prompt},
-            ],
+            instructions="You are an expert in Satisfiability Modulo Theories (SMT), who helps generate descriptions of SMT instances to support understanding and algorithm selection, including insights into factors that may affect solving difficulty.",
+            input=prompt,
         )
 
-        description = response.choices[0].message.content.strip()
+        description = response.output_text
         return description
 
     except Exception as e:
@@ -88,14 +83,14 @@ Examples:
   # Specify API key explicitly
   python -m src.generate_desc path/to/instance.smt2 --api-key sk-...
 
-  # Use different model and adjust max tokens
-  python -m src.generate_desc path/to/instance.smt2 --model gpt-5-mini --max-tokens 1000
+  # Use different model
+  python -m src.generate_desc path/to/instance.smt2 --model gpt-5-mini
         """,
     )
     parser.add_argument(
         "smt_file_path",
         type=str,
-        help="Path to the SMT file (.smt2 or .smt)",
+        help="Path to the SMT file (.smt2)",
     )
     parser.add_argument(
         "--api-key",
@@ -108,12 +103,6 @@ Examples:
         type=str,
         default="gpt-5-mini",
         help="Model name to use (default: gpt-5-mini)",
-    )
-    parser.add_argument(
-        "--max-tokens",
-        type=int,
-        default=500,
-        help="Maximum tokens for the generated description (default: 500)",
     )
 
     args = parser.parse_args()
