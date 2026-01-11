@@ -22,6 +22,7 @@ Notes:
   - For pairwise training, we only create pairs for instances where BOTH solvers solved.
   - For single/regression, we require at least one solver solved (to form a label/target).
   - SentenceTransformer forward() returns a dict; logits are in output["sentence_embedding"].
+  - DO NOT use .encode() during training; use tokenize()+forward to keep gradients.
 """
 
 import argparse
@@ -262,25 +263,34 @@ def build_dataset_pairwise(
     solver_names: List[str],
     perf: Dict[str, List[Tuple[int, float]]],
 ) -> List[Example]:
-    """
-    Pairwise examples: text includes solver A and B; label in {0,1} where
-      1 = A faster than B
-      0 = otherwise (B faster or tie)
-    Only include instances where BOTH solved.
-    """
     data: List[Example] = []
+
     for path, d in desc.items():
         if path not in perf:
             continue
+
         results = perf[path]
+
+        # Skip instances where nobody solved
+        if not any(solved == 1 for solved, _ in results):
+            continue
+
         for i, j in permutations(range(len(solver_names)), 2):
-            si, ti = results[i]
-            sj, tj = results[j]
-            if si == 1 and sj == 1 and ti > 0 and tj > 0 and math.isfinite(ti) and math.isfinite(tj):
-                label = 1 if ti < tj else 0
-                text = f"SMT description: {d} Solver A: {solver_names[i]} Solver B: {solver_names[j]}"
+            si, _ = results[i]
+            sj, _ = results[j]
+
+            # Strong signal: exactly one solver solves
+            if si != sj:
+                label = 1 if si > sj else 0
+                text = (
+                    f"SMT description: {d} "
+                    f"Solver A: {solver_names[i]} "
+                    f"Solver B: {solver_names[j]}"
+                )
                 data.append(Example(text=text, y=torch.tensor(label, dtype=torch.long)))
+
     return data
+
 
 
 def build_dataset_single(
@@ -289,18 +299,39 @@ def build_dataset_single(
     perf: Dict[str, List[Tuple[int, float]]],
 ) -> List[Example]:
     """
-    Single-solver classification examples: text is description only; label is fastest solver index.
-    Only include instances where at least one solver solved.
+    Single-solver classification:
+    - keep instance if at least one solver solved
+    - label = fastest solver among those that solved
     """
     data: List[Example] = []
+
     for path, d in desc.items():
         if path not in perf:
             continue
-        best = best_solver_from_row(solver_names, perf[path])
-        if best is None:
-            continue
-        data.append(Example(text=d, y=torch.tensor(best, dtype=torch.long)))
+
+        results = perf[path]
+
+        # Collect solvers that solved
+        solved = [
+            (i, t) for i, (s, t) in enumerate(results)
+            if s == 1 and math.isfinite(t) and t > 0
+        ]
+
+        if not solved:
+            continue  # nobody solved → drop
+
+        # Pick fastest among solvers that solved
+        best_solver, _ = min(solved, key=lambda x: x[1])
+
+        data.append(
+            Example(
+                text=d,
+                y=torch.tensor(best_solver, dtype=torch.long),
+            )
+        )
+
     return data
+
 
 
 def build_dataset_regression(
@@ -308,19 +339,42 @@ def build_dataset_regression(
     solver_names: List[str],
     perf: Dict[str, List[Tuple[int, float]]],
     log1p: bool = True,
-    timeout_fill: float = 1e6,
 ) -> List[Example]:
     """
-    Runtime regression examples: text is description only; target is per-solver runtime vector.
-    Keep instances even if some solvers failed; unsolved filled with timeout_fill.
+    Runtime regression:
+    - keep instance if at least one solver solved
+    - target = runtime of fastest solver among solvers that solved
     """
     data: List[Example] = []
+
     for path, d in desc.items():
         if path not in perf:
             continue
-        y = runtimes_target(perf[path], log1p=log1p, timeout_fill=timeout_fill)
-        data.append(Example(text=d, y=y))
+
+        results = perf[path]
+
+        solved_times = [
+            t for (s, t) in results
+            if s == 1 and math.isfinite(t) and t > 0
+        ]
+
+        if not solved_times:
+            continue
+
+        y_val = min(solved_times)  # fastest solving runtime
+
+        if log1p:
+            y_val = math.log1p(y_val)
+
+        data.append(
+            Example(
+                text=d,
+                y=torch.tensor(y_val, dtype=torch.float),
+            )
+        )
+
     return data
+
 
 
 def collate_fn(batch: List[Example]):
