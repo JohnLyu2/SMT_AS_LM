@@ -15,6 +15,7 @@ def openai_gen_desc(
     api_key: str | None = None,
     model: str = "gpt-5-mini",
     reasoning_effort: str | None = None,
+    char_limit: int = 20000,
 ):
     """
     Generate a description of an SMT instance using GPT-5-mini.
@@ -26,6 +27,8 @@ def openai_gen_desc(
         reasoning_effort: Reasoning effort level.
                          Options may be model specific. For gpt-5-mini: "minimal", "low", "medium", "high".
                          If None, uses API default for the model.
+        char_limit: Maximum number of characters to include from SMT content (default: 20000).
+                   Content exceeding this limit will be truncated.
 
     Returns:
         Response object from OpenAI API
@@ -36,7 +39,8 @@ def openai_gen_desc(
         Exception: If API call fails
     """
     # Create prompt from SMT file
-    prompt = create_prompt_from_smt_file(smt_file_path)
+    prompt = create_prompt_from_smt_file(smt_file_path, char_limit=char_limit)
+    print(prompt)
 
     # Initialize OpenAI client
     client = OpenAI(api_key=api_key)
@@ -115,6 +119,13 @@ Examples:
         default=None,
         help="Optional path to save full response object as JSON file",
     )
+    parser.add_argument(
+        "--char-limit",
+        type=int,
+        default=20000,
+        help="Maximum number of characters to include from SMT content (default: 20000). "
+        "Content exceeding this limit will be truncated.",
+    )
 
     args = parser.parse_args()
 
@@ -124,6 +135,7 @@ Examples:
             api_key=args.api_key,
             model=args.model,
             reasoning_effort=args.reasoning_effort,
+            char_limit=args.char_limit,
         )
         print(response.output_text)
 
