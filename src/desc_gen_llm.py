@@ -14,6 +14,7 @@ def openai_gen_desc(
     smt_file_path: str | Path,
     api_key: str | None = None,
     model: str = "gpt-5-mini",
+    base_url: str | None = None,
     reasoning_effort: str | None = None,
     verbosity: str | None = None,
     char_limit: int = 20000,
@@ -26,6 +27,7 @@ def openai_gen_desc(
         smt_file_path: Path to the SMT file (.smt2)
         api_key: OpenAI API key. If None, uses OPENAI_API_KEY environment variable
         model: Model name to use (default: "gpt-5-mini")
+        base_url: Base URL for the API endpoint. If None, uses OpenAI's default endpoint.
         reasoning_effort: Reasoning effort level.
                          Options may be model specific. For gpt-5-mini: "minimal", "low", "medium", "high".
                          If None, uses API default for the model.
@@ -47,7 +49,10 @@ def openai_gen_desc(
         return prompt
 
     # Initialize OpenAI client
-    client = OpenAI(api_key=api_key)
+    client_kwargs = {"api_key": api_key}
+    if base_url is not None:
+        client_kwargs["base_url"] = base_url
+    client = OpenAI(**client_kwargs)
 
     try:
         # Call OpenAI Responses API
@@ -91,6 +96,9 @@ Examples:
   # Use different model
   python -m src.generate_desc path/to/instance.smt2 --model gpt-5-mini
 
+  # Use custom API endpoint
+  python -m src.generate_desc path/to/instance.smt2 --base-url https://api.example.com/v1
+
   # Specify reasoning effort
   python -m src.generate_desc path/to/instance.smt2 --reasoning-effort minimal
 
@@ -117,6 +125,12 @@ Examples:
         type=str,
         default="gpt-5-mini",
         help="Model name to use (default: gpt-5-mini)",
+    )
+    parser.add_argument(
+        "--base-url",
+        type=str,
+        default=None,
+        help="Base URL for the API endpoint. If not provided, uses OpenAI's default endpoint.",
     )
     parser.add_argument(
         "--reasoning-effort",
@@ -162,6 +176,7 @@ Examples:
             smt_file_path=args.smt_file_path,
             api_key=args.api_key,
             model=args.model,
+            base_url=args.base_url,
             reasoning_effort=args.reasoning_effort,
             verbosity=args.verbosity,
             char_limit=args.char_limit,
