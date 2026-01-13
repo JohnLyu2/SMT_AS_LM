@@ -4,8 +4,11 @@ import json
 from pathlib import Path
 
 BASIC_INFO_FIELDS = [
-    "family",
     "smtlib_path",
+    "logic",
+    "category",
+    "family",
+    "size",
     "asserts_count",
     "declare_fun_count",
     "declare_const_count",
@@ -86,11 +89,21 @@ def format_basic_info_text(basic_info: dict, symbol_counts: dict) -> str:
     """
     text = "\n\nBasic Information about the instance:\n"
     if basic_info:
+        # Core identification fields (in order of BASIC_INFO_FIELDS)
+        if "smtlib_path" in basic_info:
+            text += f"smtlib_path: {basic_info['smtlib_path']}\n"
+
+        if "logic" in basic_info:
+            text += f"logic: {basic_info['logic']}\n"
+
+        if "category" in basic_info:
+            text += f"category: {basic_info['category']}\n"
+
         if "family" in basic_info:
             text += f"family: {basic_info['family']}\n"
 
-        if "smtlib_path" in basic_info:
-            text += f"smtlib_path: {basic_info['smtlib_path']}\n"
+        if "size" in basic_info:
+            text += f"size: {basic_info['size']}\n"
 
         # Count fields (skip zero values)
         count_fields = [
@@ -123,6 +136,44 @@ def format_basic_info_text(basic_info: dict, symbol_counts: dict) -> str:
     return text
 
 
+def get_smt_content_from_file(
+    smt_file_path: str | Path, char_limit: int = 20000
+) -> str:
+    """
+    Read SMT file content and return it, optionally truncated to char_limit.
+
+    Args:
+        smt_file_path: Path to the SMT file (.smt2)
+        char_limit: Maximum number of characters to include from SMT content (default: 20000).
+                   Content exceeding this limit will be truncated.
+
+    Returns:
+        SMT file content as a string (truncated if necessary)
+    """
+    smt_path = Path(smt_file_path)
+    if not smt_path.exists():
+        raise FileNotFoundError(f"SMT file not found: {smt_path}")
+
+    # Read SMT file content
+    with open(smt_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    # Filter out lines starting with "(set-info :status"
+    filtered_lines = [
+        line for line in lines if not line.strip().startswith("(set-info :status")
+    ]
+    smt_content = "".join(filtered_lines).strip()
+
+    if not smt_content:
+        raise ValueError(f"SMT file is empty: {smt_path}")
+
+    # Truncate if exceeds char_limit
+    if len(smt_content) > char_limit:
+        smt_content = smt_content[:char_limit]
+
+    return smt_content
+
+
 def create_prompt_from_smt_file(
     smt_file_path: str | Path, char_limit: int = 20000
 ) -> str:
@@ -136,42 +187,26 @@ def create_prompt_from_smt_file(
 
     Returns:
         Prompt string for the LLM
-
-    Raises:
-        FileNotFoundError: If the SMT file doesn't exist
-        ValueError: If the SMT file is empty
     """
-    smt_path = Path(smt_file_path)
-    if not smt_path.exists():
-        raise FileNotFoundError(f"SMT file not found: {smt_path}")
-
     # Extract smtlib_path by keeping only the part after "non-incremental/"
-    smt_path_str = str(smt_path)
+    smt_path_str = str(smt_file_path)
     if "non-incremental/" not in smt_path_str:
-        raise ValueError(f"Path must contain 'non-incremental/': {smt_path}")
+        raise ValueError(f"Path must contain 'non-incremental/': {smt_file_path}")
     smtlib_path = smt_path_str.split("non-incremental/", 1)[1]
 
     # Get basic info from JSON
     basic_info_dict, symbol_counts = get_basic_info_from_json(smtlib_path)
 
-    # Read SMT file content
-    with open(smt_path, "r", encoding="utf-8") as f:
-        smt_content = f.read().strip()
-
-    if not smt_content:
-        raise ValueError(f"SMT file is empty: {smt_path}")
-
-    # Truncate if exceeds char_limit
-    if len(smt_content) > char_limit:
-        smt_content = smt_content[:char_limit]
+    # Get SMT file content
+    smt_content = get_smt_content_from_file(smt_file_path, char_limit)
 
     # Build basic info string
     basic_info_str = format_basic_info_text(basic_info_dict, symbol_counts)
 
     # Create prompt
-    prompt = f"""Analyze the following SMT-LIB instance and provide a concise description of what it represents. 
+    prompt = f"""Based on the following SMT-LIB instance and its metadata, provide a concise description of what it encodes. 
 Focus on:
-- The logic/theory used
+- Basic information, such as logic/theory, size, source, etc.
 - The main problem structure
 - Key constraints or properties being checked
 - Any notable characteristics

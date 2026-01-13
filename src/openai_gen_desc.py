@@ -16,6 +16,7 @@ def openai_gen_desc(
     model: str = "gpt-5-mini",
     reasoning_effort: str | None = None,
     char_limit: int = 20000,
+    prompt_only: bool = False,
 ):
     """
     Generate a description of an SMT instance using GPT-5-mini.
@@ -29,18 +30,17 @@ def openai_gen_desc(
                          If None, uses API default for the model.
         char_limit: Maximum number of characters to include from SMT content (default: 20000).
                    Content exceeding this limit will be truncated.
+        prompt_only: If True, only return the prompt string without calling the model (default: False).
 
     Returns:
-        Response object from OpenAI API
-
-    Raises:
-        FileNotFoundError: If the SMT file doesn't exist
-        ValueError: If the SMT file is empty
-        Exception: If API call fails
+        Response object from OpenAI API, or prompt string if prompt_only=True
     """
     # Create prompt from SMT file
     prompt = create_prompt_from_smt_file(smt_file_path, char_limit=char_limit)
-    print(prompt)
+
+    # If prompt_only is True, just return the prompt
+    if prompt_only:
+        return prompt
 
     # Initialize OpenAI client
     client = OpenAI(api_key=api_key)
@@ -73,6 +73,9 @@ def main():
 Examples:
   # Basic usage (requires OPENAI_API_KEY environment variable)
   python -m src.generate_desc path/to/instance.smt2
+
+  # Just print the prompt without calling the model
+  python -m src.generate_desc path/to/instance.smt2 --prompt
 
   # Specify API key explicitly
   python -m src.generate_desc path/to/instance.smt2 --api-key sk-...
@@ -126,23 +129,36 @@ Examples:
         help="Maximum number of characters to include from SMT content (default: 20000). "
         "Content exceeding this limit will be truncated.",
     )
+    parser.add_argument(
+        "--prompt",
+        action="store_true",
+        help="If specified, only print the prompt without calling the model",
+    )
 
     args = parser.parse_args()
 
     try:
-        response = openai_gen_desc(
+        result = openai_gen_desc(
             smt_file_path=args.smt_file_path,
             api_key=args.api_key,
             model=args.model,
             reasoning_effort=args.reasoning_effort,
             char_limit=args.char_limit,
+            prompt_only=args.prompt,
         )
-        print(response.output_text)
+
+        # If prompt_only, result is a string (the prompt)
+        if args.prompt:
+            print(result)
+            return 0
+
+        # Otherwise, result is a response object
+        print(result.output_text)
 
         # Save response to JSON if output path specified
         if args.output_json:
             output_path = Path(args.output_json)
-            response_dict = response.model_dump()
+            response_dict = result.model_dump()
 
             with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(response_dict, f, indent=2, ensure_ascii=False, default=str)
