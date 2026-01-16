@@ -52,8 +52,9 @@ class PairwiseXGBoost(xgb.XGBClassifier):
 
 
 class PairwiseSVM(SVC):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, c_value: float = 1.0, **kwargs):
+        self.c_value = c_value
+        super().__init__(C=c_value, **kwargs)
         self.scaler = StandardScaler()
 
     def fit(self, x, y, weights):
@@ -127,7 +128,13 @@ class PwcModel:
         return selected_id
 
 
-def train_pwc(multi_perf_data, save_dir, xg_flag=False, feature_csv_path=None):
+def train_pwc(
+    multi_perf_data,
+    save_dir,
+    xg_flag=False,
+    feature_csv_path=None,
+    svm_c: float = 1.0,
+):
     Path(save_dir).mkdir(parents=True, exist_ok=True)
     solver_size = multi_perf_data.num_solvers()
 
@@ -146,7 +153,7 @@ def train_pwc(multi_perf_data, save_dir, xg_flag=False, feature_csv_path=None):
                 model = DummyClassifier(strategy="constant", constant=unique_labels[0])
                 model.fit(inputs_array, labels_array)
             else:
-                model = PairwiseSVM()
+                model = PairwiseSVM(c_value=svm_c)
                 if xg_flag:
                     model = PairwiseXGBoost()
                 model.fit(inputs_array, labels_array, costs_array)
@@ -179,6 +186,12 @@ def main():
         required=True,
         help="Path to the features CSV file",
     )
+    parser.add_argument(
+        "--svm-c",
+        type=float,
+        default=1.0,
+        help="Regularization parameter C for SVM (default: 1.0)",
+    )
 
     args = parser.parse_args()
     logging.basicConfig(
@@ -194,7 +207,7 @@ def main():
         f"Training performance parse: {len(train_dataset)} benchmarks and {train_dataset.num_solvers()} solvers from {args.perf_csv}"
     )
 
-    train_pwc(train_dataset, save_dir, xg_flag, args.feature_csv)
+    train_pwc(train_dataset, save_dir, xg_flag, args.feature_csv, svm_c=args.svm_c)
 
 
 if __name__ == "__main__":

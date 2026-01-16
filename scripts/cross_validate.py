@@ -169,6 +169,7 @@ def cross_validate(
     save_models: bool = False,
     output_dir: Path = None,
     timeout: float = 1200.0,
+    svm_c: float = 1.0,
 ):
     """
     Perform k-fold cross-validation on algorithm selection model using pre-split fold files.
@@ -292,6 +293,7 @@ def cross_validate(
             save_dir=str(model_save_dir),
             xg_flag=xg_flag,
             feature_csv_path=feature_csv_path,
+            svm_c=svm_c,
         )
 
         # Load trained model
@@ -459,6 +461,7 @@ def cross_validate(
         "model_type": "XGBoost" if xg_flag else "SVM",
         "folds_dir": str(folds_dir),
         "feature_csv_path": feature_csv_path,
+        "svm_c": svm_c,
         "folds": fold_results,
         "aggregated": aggregated,
     }
@@ -542,6 +545,12 @@ def main():
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level (default: INFO)",
     )
+    parser.add_argument(
+        "--svm-c",
+        type=float,
+        default=1.0,
+        help="Regularization parameter C for SVM (default: 1.0)",
+    )
 
     args = parser.parse_args()
 
@@ -569,6 +578,7 @@ def main():
         save_models=args.save_models,
         output_dir=output_dir,
         timeout=args.timeout,
+        svm_c=args.svm_c,
     )
 
     # Print aggregated results
