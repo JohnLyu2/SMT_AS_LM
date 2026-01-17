@@ -24,16 +24,16 @@ class MultiSolverDataset:
         self._solver_id_dict = solver_id_dict
         self._timeout = timeout
 
-    def __getitem__(self, path: str) -> List[Tuple[int, float]]:
-        """Get performance list for a path."""
-        return self._dict[path]
+    def __getitem__(self, smt_path: str) -> List[Tuple[int, float]]:
+        """Get performance list for a SMT file path."""
+        return self._dict[smt_path]
 
     def __len__(self) -> int:
         """Get number of instances."""
         return len(self._dict)
 
     def __iter__(self):
-        """Iterate over instance paths."""
+        """Iterate over SMT file paths."""
         return iter(self._dict)
 
     def items(self):
@@ -44,38 +44,40 @@ class MultiSolverDataset:
         """Get all instance paths."""
         return self._dict.keys()
 
-    def get_performance(self, path: str, solver_id: int) -> Optional[Tuple[int, float]]:
+    def get_performance(
+        self, smt_path: str, solver_id: int
+    ) -> Optional[Tuple[int, float]]:
         """
         Get performance for a specific instance and solver.
 
         Args:
-            path: Instance path
+            smt_path: SMT file path
             solver_id: Solver ID
 
         Returns:
             Tuple of (is_solved, wc_time) or None if not found
         """
-        if path not in self._dict:
+        if smt_path not in self._dict:
             return None
-        perf_list = self._dict[path]
+        perf_list = self._dict[smt_path]
         if solver_id >= len(perf_list):
             return None
         return perf_list[solver_id]
 
-    def get_par2(self, path: str, solver_id: int) -> Optional[float]:
+    def get_par2(self, smt_path: str, solver_id: int) -> Optional[float]:
         """
         Get PAR-2 score for a specific instance and solver.
 
         PAR-2 is the solving time if solved, otherwise twice the timeout.
 
         Args:
-            path: Instance path
+            smt_path: SMT file path
             solver_id: Solver ID
 
         Returns:
             PAR-2 score (solving time if solved, else 2 * timeout) or None if not found
         """
-        perf = self.get_performance(path, solver_id)
+        perf = self.get_performance(smt_path, solver_id)
         if perf is None:
             return None
         is_solved, wc_time = perf
@@ -91,6 +93,20 @@ class MultiSolverDataset:
             if solver_id < len(perf_list) and perf_list[solver_id][0] == 1:
                 count += 1
         return count
+
+    def is_none_solved(self, smt_path: str) -> bool:
+        """Return True if no solver solved the instance."""
+        perf_list = self._dict.get(smt_path)
+        if perf_list is None:
+            return False
+        return all(is_solved == 0 for is_solved, _ in perf_list)
+
+    def is_all_solved(self, smt_path: str) -> bool:
+        """Return True if all solvers solved the instance."""
+        perf_list = self._dict.get(smt_path)
+        if perf_list is None:
+            return False
+        return all(is_solved == 1 for is_solved, _ in perf_list)
 
     def get_solver_name(self, solver_id: int) -> Optional[str]:
         """Get solver name by ID."""
@@ -207,6 +223,35 @@ class MultiSolverDataset:
 
         return SingleSolverDataset(virtual_best_perf_dict, "VirtualBest", self._timeout)
 
+    def get_best_solver_for_instance(self, smt_path: str) -> Optional[str]:
+        """
+        Get the solver name with the best PAR-2 score for a specific instance.
+
+        Args:
+            smt_path: Instance path
+
+        Returns:
+            Solver name with the lowest PAR-2 for the instance, or None if unavailable
+        """
+        if smt_path not in self._dict:
+            return None
+
+        best_solver_id: int | None = None
+        best_par2 = float("inf")
+
+        for solver_id in range(self.num_solvers()):
+            par2 = self.get_par2(smt_path, solver_id)
+            if par2 is None:
+                continue
+            if par2 < best_par2:
+                best_par2 = par2
+                best_solver_id = solver_id
+
+        if best_solver_id is None:
+            return None
+
+        return self.get_solver_name(best_solver_id)
+
 
 class SingleSolverDataset:
     """A data structure for performance data for a single solver."""
@@ -229,9 +274,9 @@ class SingleSolverDataset:
         self._solver_name = solver_name
         self._timeout = timeout
 
-    def __getitem__(self, path: str) -> Tuple[int, float]:
-        """Get performance tuple for a path."""
-        return self._dict[path]
+    def __getitem__(self, smt_path: str) -> Tuple[int, float]:
+        """Get performance tuple for a SMT file path."""
+        return self._dict[smt_path]
 
     def __len__(self) -> int:
         """Get number of instances."""
@@ -249,31 +294,31 @@ class SingleSolverDataset:
         """Get all instance paths."""
         return self._dict.keys()
 
-    def get_performance(self, path: str) -> Optional[Tuple[int, float]]:
+    def get_performance(self, smt_path: str) -> Optional[Tuple[int, float]]:
         """
         Get performance for a specific instance.
 
         Args:
-            path: Instance path
+            smt_path: SMT file path
 
         Returns:
             Tuple of (is_solved, wc_time) or None if not found
         """
-        return self._dict.get(path)
+        return self._dict.get(smt_path)
 
-    def get_par2(self, path: str) -> Optional[float]:
+    def get_par2(self, smt_path: str) -> Optional[float]:
         """
         Get PAR-2 score for a specific instance.
 
         PAR-2 is the solving time if solved, otherwise twice the timeout.
 
         Args:
-            path: Instance path
+            smt_path: SMT file path
 
         Returns:
             PAR-2 score (solving time if solved, else 2 * timeout) or None if not found
         """
-        perf = self.get_performance(path)
+        perf = self.get_performance(smt_path)
         if perf is None:
             return None
         is_solved, wc_time = perf
