@@ -219,15 +219,13 @@ def create_prompt_from_smt_file(
     basic_info_str = format_basic_info_text(basic_info_dict, symbol_counts)
 
     # Create prompt
-    prompt = f"""Based on the following SMT-LIB instance and its metadata, provide a concise description of what it encodes. 
+    prompt = f"""Analyze the SMT-LIB instance and its metadata provided below to generate a short summary. 
 
-Limit the description to 4–6 sentences.
-
-Focus on:
-- Basic information, such as logic/theory, size, source, etc.
-- The main problem structure
-- Key constraints or properties being checked
-- Any notable characteristics
+### Instructions
+1. Understand the instance by reading the SMT-LIB file content and its metadata. Also consider the function/constant/variable names and comments/annotations to infer the problem being encoded.
+2. Write a 2-3 sentence description (max 200 words) of what this instance encodes.
+3. Focus on the main problem type (e.g., verification, synthesis, scheduling, etc.), key constraints or properties being checked (e.g., overflow,fixpoint property, invariant, etc.), and any notable characteristics that may affect the solving difficulty (e.g., large number of variables, deep term depth, many quantifier alternations, etc.).
+4. Do NOT include administrative information such as the author/curator/translator names or specific paper titles.
 
 {smt_content}
 {basic_info_str}
