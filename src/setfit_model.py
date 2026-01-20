@@ -1,9 +1,11 @@
 import argparse
 import json
+import logging
 from pathlib import Path
 
 from datasets import Dataset
 from setfit import SetFitModel, Trainer, TrainingArguments
+import torch
 
 from .parser import parse_performance_csv
 
@@ -96,18 +98,43 @@ def train_setfit_model(
             raise ValueError("test texts and labels must be the same length.")
         eval_dataset = Dataset.from_dict({"text": test_texts, "label": test_labels})
 
-    model = SetFitModel.from_pretrained(model_name)
-    training_args = TrainingArguments(
-        batch_size=batch_size,
-        num_epochs=num_epochs,
-    )
+    logging.info("Training samples: %s", len(train_dataset))
+    if eval_dataset is not None:
+        logging.info("Eval samples: %s", len(eval_dataset))
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logging.info("Using device: %s", device)
+    logging.info("Base model: %s", model_name)
+    logging.info("Training specs: epochs=%s, batch_size=%s", num_epochs, batch_size)
+    try:
+        model = SetFitModel.from_pretrained(model_name, device=device)
+    except TypeError:
+        model = SetFitModel.from_pretrained(model_name)
+        try:
+            model.to(device)
+        except Exception:
+            pass
+
+    try:
+        training_args = TrainingArguments(
+            batch_size=batch_size,
+            num_epochs=num_epochs,
+            device=device,
+        )
+    except TypeError:
+        training_args = TrainingArguments(
+            batch_size=batch_size,
+            num_epochs=num_epochs,
+        )
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
     )
+    logging.info("Starting training...")
     trainer.train()
+    logging.info("Training complete.")
 
     if output_dir:
         model.save_pretrained(output_dir)
@@ -116,13 +143,14 @@ def train_setfit_model(
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
     parser = argparse.ArgumentParser(
         description="Create SetFit data from performance CSV and descriptions JSON."
     )
     parser.add_argument(
-        "--perf-csv",
+        "--train-perf-csv",
         required=True,
-        help="Path to performance CSV.",
+        help="Path to training performance CSV.",
     )
     parser.add_argument("--desc-json", required=True, help="Path to descriptions JSON.")
     parser.add_argument(
@@ -132,9 +160,9 @@ def main() -> None:
         help="Timeout value used in performance data (seconds).",
     )
     parser.add_argument(
-        "--output-json",
+        "--train-data-json",
         default=None,
-        help="Optional path to write SetFit data as JSON.",
+        help="Optional path to write training data as JSON.",
     )
     parser.add_argument(
         "--model-name",
@@ -142,9 +170,9 @@ def main() -> None:
         help="Base model name for SetFit training.",
     )
     parser.add_argument(
-        "--output-dir",
-        default=None,
-        help="Optional directory to save the trained SetFit model.",
+        "--model-dir",
+        required=True,
+        help="Directory to save the trained SetFit model.",
     )
     parser.add_argument(
         "--test-perf-csv",
@@ -166,25 +194,25 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    data = create_setfit_data(args.perf_csv, args.desc_json, args.timeout)
-    print(f"Total samples: {len(data['texts'])}")
-    print(f"Unique labels: {len(set(data['labels']))}")
+    train_data = create_setfit_data(args.train_perf_csv, args.desc_json, args.timeout)
+    logging.info("Total samples: %s", len(train_data["texts"]))
+    logging.info("Unique labels: %s", len(set(train_data["labels"])))
 
-    if args.output_json:
-        output_path = Path(args.output_json)
+    if args.train_data_json:
+        output_path = Path(args.train_data_json)
         with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"Wrote SetFit data to: {output_path}")
+            json.dump(train_data, f, ensure_ascii=False, indent=2)
+        logging.info("Wrote SetFit data to: %s", output_path)
 
     test_data = None
     if args.test_perf_csv:
         test_data = create_setfit_data(args.test_perf_csv, args.desc_json, args.timeout)
 
     train_setfit_model(
-        train_data=data,
+        train_data=train_data,
         test_data=test_data,
         model_name=args.model_name,
-        output_dir=args.output_dir,
+        output_dir=args.model_dir,
         num_epochs=args.num_epochs,
         batch_size=args.batch_size,
     )
