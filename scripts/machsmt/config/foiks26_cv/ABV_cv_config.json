@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "folds_dir": "/home/jchen688/projects/def-vganesh/jchen688/SMT_AS_LM/data/foiks26/perf_data/folds/ABV",
+    "benchmark_prefix": "/home/jchen688/scratch/non-incremental",
+    "output_dir": "/home/jchen688/projects/def-vganesh/jchen688/SMT_AS_LM/data/foiks26/cv_results/machsmt/ABV"
+  },
+  "settings": {
+    "timeout": 1200,
+    "selector": "EHM"
+  }
+}
