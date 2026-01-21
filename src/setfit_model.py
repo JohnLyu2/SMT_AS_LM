@@ -14,6 +14,7 @@ def create_setfit_data(
     perf_csv_path: str,
     desc_json_path: str,
     timeout: float = 1200.0,
+    include_all_solved: bool = False,
 ) -> dict[str, list]:
     """
     Create SetFit training data from performance CSV and description JSON.
@@ -22,6 +23,7 @@ def create_setfit_data(
         perf_csv_path: Path to performance CSV file.
         desc_json_path: Path to description JSON file.
         timeout: Timeout value in seconds.
+        include_all_solved: Whether to include instances solved by all solvers.
     Returns:
         Dict with keys: "texts", "labels", "paths".
     """
@@ -38,6 +40,8 @@ def create_setfit_data(
             raise AssertionError(f"Missing description for benchmark: {path}")
 
         if multi_perf_data.is_none_solved(path):
+            continue
+        if not include_all_solved and multi_perf_data.is_all_solved(path):
             continue
 
         solver_name = multi_perf_data.get_best_solver_for_instance(path)
@@ -191,10 +195,20 @@ def main() -> None:
         type=int,
         help="SetFit training batch size.",
     )
+    parser.add_argument(
+        "--include-all-solved",
+        action="store_true",
+        help="Include instances solved by all solvers in training data.",
+    )
 
     args = parser.parse_args()
 
-    train_data = create_setfit_data(args.train_perf_csv, args.desc_json, args.timeout)
+    train_data = create_setfit_data(
+        args.train_perf_csv,
+        args.desc_json,
+        args.timeout,
+        include_all_solved=args.include_all_solved,
+    )
     logging.info("Total samples: %s", len(train_data["texts"]))
     logging.info("Unique labels: %s", len(set(train_data["labels"])))
 
@@ -206,7 +220,12 @@ def main() -> None:
 
     test_data = None
     if args.test_perf_csv:
-        test_data = create_setfit_data(args.test_perf_csv, args.desc_json, args.timeout)
+        test_data = create_setfit_data(
+            args.test_perf_csv,
+            args.desc_json,
+            args.timeout,
+            include_all_solved=args.include_all_solved,
+        )
 
     train_setfit_model(
         train_data=train_data,
