@@ -5,7 +5,8 @@ from pathlib import Path
 
 from .performance import SingleSolverDataset
 from .parser import parse_performance_csv
-from .pwc import PwcSelector, PairwiseSVM
+from .pwc import PwcSelector
+from .setfit_model import SetfitSelector
 
 
 def as_evaluate(as_model, multi_perf_data, write_csv_path=None):
@@ -57,11 +58,22 @@ def main():
     parser = argparse.ArgumentParser(
         description="Evaluate algorithm selection model performance"
     )
-    parser.add_argument(
-        "--model",
+    model_group = parser.add_mutually_exclusive_group(required=True)
+    model_group.add_argument(
+        "--pwc-model",
         type=str,
-        required=True,
-        help="Path to the trained model file",
+        help="Path to the trained PWC model file",
+    )
+    model_group.add_argument(
+        "--setfit-model",
+        type=str,
+        help="SetFit model name",
+    )
+    parser.add_argument(
+        "--desc-json",
+        type=str,
+        default=None,
+        help="Path to descriptions JSON (required for SetfitSelector)",
     )
     parser.add_argument(
         "--perf-csv",
@@ -103,24 +115,30 @@ def main():
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    # Load model
-    logging.info(f"Loading model from {args.model}")
-    as_model = PwcSelector.load(args.model)
-    logging.info(
-        f"Loaded {as_model.model_type} model with {as_model.solver_size} solvers"
-    )
-
-    # Set feature CSV path if not already set or if override is provided
-    if args.feature_csv is not None:
-        as_model.feature_csv_path = args.feature_csv
-        logging.info(f"Using feature CSV: {args.feature_csv}")
-    elif as_model.feature_csv_path is None:
-        raise ValueError(
-            "feature_csv_path not set in model and --feature-csv not provided. "
-            "Please provide --feature-csv argument."
-        )
+    if args.setfit_model is not None:
+        if args.desc_json is None:
+            raise ValueError("--desc-json is required when using --setfit-model.")
+        logging.info("Using SetfitSelector with model %s", args.setfit_model)
+        as_model = SetfitSelector(args.setfit_model, args.desc_json)
     else:
-        logging.info(f"Using feature CSV from model: {as_model.feature_csv_path}")
+        # Load model
+        logging.info("Loading PWC model from %s", args.pwc_model)
+        as_model = PwcSelector.load(args.pwc_model)
+        logging.info(
+            f"Loaded {as_model.model_type} model with {as_model.solver_size} solvers"
+        )
+
+        # Set feature CSV path if not already set or if override is provided
+        if args.feature_csv is not None:
+            as_model.feature_csv_path = args.feature_csv
+            logging.info(f"Using feature CSV: {args.feature_csv}")
+        elif as_model.feature_csv_path is None:
+            raise ValueError(
+                "feature_csv_path not set in model and --feature-csv not provided. "
+                "Please provide --feature-csv argument."
+            )
+        else:
+            logging.info(f"Using feature CSV from model: {as_model.feature_csv_path}")
 
     # Load performance data
     logging.info(f"Loading performance data from {args.perf_csv}")

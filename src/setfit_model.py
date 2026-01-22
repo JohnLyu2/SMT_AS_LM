@@ -8,6 +8,15 @@ from setfit import SetFitModel, Trainer, TrainingArguments
 import torch
 
 from .parser import parse_performance_csv
+from .solver_selector import SolverSelector
+
+BV_SOLVER2ID = {
+    "Bitwuzla": 0,
+    "SMTInterpol": 1,
+    "YicesQS": 2,
+    "Z3alpha": 3,
+    "cvc5": 4,
+}  # TODO: temporary mapping; replace with model-provided label2id
 
 
 def create_setfit_data(
@@ -75,6 +84,43 @@ def _load_description_map(desc_json_path: str) -> dict[str, str]:
         desc_map[smtlib_path] = description.strip()
 
     return desc_map
+
+
+class SetfitSelector(SolverSelector):
+    def __init__(self, setfit_model: str, desc_json_path: str) -> None:
+        self.setfit_model = setfit_model
+        self.desc_json_path = desc_json_path
+        self._desc_map = _load_description_map(desc_json_path)
+        self._model = self._load_model(setfit_model)
+        self._label_to_id = BV_SOLVER2ID
+
+    def algorithm_select(self, instance_path: str | Path) -> int:
+        instance_key = str(instance_path)
+        description = self._desc_map.get(instance_key)
+        if not description or not description.strip():
+            raise ValueError(f"Missing description for benchmark: {instance_key}")
+
+        predicted = self._model.predict([description.strip()])[0]
+        if isinstance(predicted, int):
+            return predicted
+        if isinstance(predicted, str):
+            solver_id = self._label_to_id.get(predicted)
+            if solver_id is None:
+                raise ValueError(f"Unknown solver label: {predicted}")
+            return solver_id
+        raise TypeError(f"Unsupported prediction type: {type(predicted)}")
+
+    def _load_model(self, setfit_model: str) -> SetFitModel:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        try:
+            return SetFitModel.from_pretrained(setfit_model, device=device)
+        except TypeError:
+            model = SetFitModel.from_pretrained(setfit_model)
+            try:
+                model.to(device)
+            except Exception:
+                pass
+            return model
 
 
 def train_setfit_model(
