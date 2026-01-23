@@ -184,20 +184,32 @@ def main():
         total_par2_virtual_best / total_count if total_count > 0 else 0.0
     )
 
+    # Gap closed metrics: (AS - SBS) / (VBS - SBS)
+    solved_denom = virtual_best_solved - best_solver_solved
+    par2_denom = avg_par2_virtual_best - avg_par2_best
+    gap_cls_solved = (
+        (solved_count - best_solver_solved) / solved_denom if solved_denom != 0 else 0.0
+    )
+    gap_cls_par2 = (
+        (avg_par2_as - avg_par2_best) / par2_denom if par2_denom != 0 else 0.0
+    )
+
     logging.info("=" * 60)
     logging.info("Evaluation Results:")
     logging.info(f"  Total instances: {total_count}")
     logging.info(f"  Solved: {solved_count}")
     logging.info(f"  Solve rate: {solve_rate:.2f}%")
     logging.info(f"  Average PAR-2: {avg_par2_as:.2f}")
+    logging.info(f"  Gap closed (solved): {gap_cls_solved:.4f}")
+    logging.info(f"  Gap closed (PAR-2): {gap_cls_par2:.4f}")
     logging.info("")
-    logging.info("Best Single Solver (for comparison):")
+    logging.info("SBS:")
     logging.info(f"  Solver: {best_solver_dataset.get_solver_name()}")
     logging.info(f"  Solved: {best_solver_solved}")
     logging.info(f"  Solve rate: {best_solver_solve_rate:.2f}%")
     logging.info(f"  Average PAR-2: {avg_par2_best:.2f}")
     logging.info("")
-    logging.info("Virtual Best Solver (upper bound):")
+    logging.info("VBS:")
     logging.info(f"  Solver: {virtual_best_dataset.get_solver_name()}")
     logging.info(f"  Solved: {virtual_best_solved}")
     logging.info(f"  Solve rate: {virtual_best_solve_rate:.2f}%")
