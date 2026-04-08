@@ -13,16 +13,12 @@ __pycache__/
 dist/
 build/
 
-SMT-LIB-Catalog-2025/
 smtlib/
 /sibyl/
 
-data/features/wl/
-data/features/smtlib_desc/
 data/features/desc/
 data/results/wl_grakel
 models/setfit_mpnet/
-local_scripts/
 
 bin/klhm
 sv-benchmarks/
