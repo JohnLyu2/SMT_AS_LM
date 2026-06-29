@@ -17,8 +17,11 @@ smtlib/
 /sibyl/
 
 data/features/desc/
+data/features/desc_placeholder/
 data/results/wl_grakel
+data/results/machsmt/*/test_predictions_test_seed*.csv
 models/setfit_mpnet/
+models/fusion_pwc_ph_text/
 
 bin/klhm
 sv-benchmarks/

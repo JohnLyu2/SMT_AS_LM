@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from unittest.mock import Mock, patch
 
-from src.text_encoder import encode_text, get_embedding_model
+from src.desc_encoder import encode_text, get_embedding_model
 
 
 class TestGetEmbeddingModel:
@@ -13,7 +13,7 @@ class TestGetEmbeddingModel:
     def test_model_caching(self):
         """Test that models are cached and reused."""
         # Clear cache first
-        from src.text_encoder import _model_cache
+        from src.desc_encoder import _model_cache
 
         _model_cache.clear()
 
@@ -25,7 +25,7 @@ class TestGetEmbeddingModel:
 
     def test_different_models(self):
         """Test that different model names return different models."""
-        from src.text_encoder import _model_cache
+        from src.desc_encoder import _model_cache
 
         _model_cache.clear()
 
