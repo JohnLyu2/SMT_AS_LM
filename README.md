@@ -42,6 +42,10 @@ Our experimental results are stored in [data/results](data/results). The reprodu
 
 Precomputed syntactic features for all logic benchmarks, plus extraction times from [Klammerhammer](https://github.com/SMT-LIB/SMT-LIB-db/tree/main/klhm), are in [data/features/syntactic](data/features/syntactic). After downloading the benchmarks, reproduce these tables for one logic with:
 
+Build Klammerhammer from its linked source and place the executable at
+`bin/klhm` (the binary is not versioned in this repository). Alternatively,
+pass its location explicitly with `--klhm /path/to/klhm`.
+
 ```bash
 python scripts/extract_syntactic_features.py --logic QF_BV
 ```
