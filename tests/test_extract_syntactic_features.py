@@ -45,6 +45,18 @@ def test_parse_klhm_output_uses_expected_column_order():
     assert values[len(FIXED_COLUMNS) + SYMBOLS.index("Int")] == 3
 
 
+def test_parse_klhm_output_preserves_duplicate_minus_columns():
+    payload = json.loads(klhm_payload())
+    minus_indices = [i for i, symbol in enumerate(SYMBOLS) if symbol == "-"]
+    payload[0]["symbolFrequency"][minus_indices[0]] = 7
+
+    values = parse_klhm_output(json.dumps(payload))
+
+    assert [
+        values[len(FIXED_COLUMNS) + index] for index in minus_indices
+    ] == [7, 7]
+
+
 def test_parse_klhm_output_rejects_wrong_symbol_count():
     payload = json.loads(klhm_payload())
     payload[0]["symbolFrequency"].pop()

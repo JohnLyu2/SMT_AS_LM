@@ -60,6 +60,15 @@ def parse_klhm_output(stdout: str) -> list[int]:
             f"{len(frequencies) if isinstance(frequencies, list) else 'invalid data'}"
         )
 
+    # The historical schema contains two columns named "-". Its source metadata
+    # stored counts by symbol name, so both columns received the same value.
+    first_index_by_symbol: dict[str, int] = {}
+    normalized_frequencies: list[int] = []
+    for index, (symbol, value) in enumerate(zip(SYMBOLS, frequencies)):
+        first_index = first_index_by_symbol.setdefault(symbol, index)
+        source_value = frequencies[first_index] if first_index != index else value
+        normalized_frequencies.append(int(source_value or 0))
+
     fixed = {
         "size": metadata.get("size", syntactic.get("normalizedSize", 0)),
         **{
@@ -67,9 +76,9 @@ def parse_klhm_output(stdout: str) -> list[int]:
             for column, klhm_key in KLHM_TO_COLUMN.items()
         },
     }
-    return [int(fixed[column] or 0) for column in FIXED_COLUMNS] + [
-        int(value or 0) for value in frequencies
-    ]
+    return [
+        int(fixed[column] or 0) for column in FIXED_COLUMNS
+    ] + normalized_frequencies
 
 
 def extract_one(
