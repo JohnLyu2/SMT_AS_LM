@@ -40,7 +40,19 @@ Our experimental results are stored in [data/results](data/results). The reprodu
 
 ### `SMT-Select-Lite` 
 
-Precomputed syntactic features for all logic benchmarks, plus extraction times from [Klammerhammer](https://github.com/SMT-LIB/SMT-LIB-db/tree/main/klhm), are in [data/features/syntactic](data/features/syntactic). To run SVM experiments over the five splits for a given logic (e.g. QF_BV):
+Precomputed syntactic features for all logic benchmarks, plus extraction times from [Klammerhammer](https://github.com/SMT-LIB/SMT-LIB-db/tree/main/klhm), are in [data/features/syntactic](data/features/syntactic). After downloading the benchmarks, reproduce these tables for one logic with:
+
+```bash
+python scripts/extract_syntactic_features.py --logic QF_BV
+```
+
+Omit `--logic` to process every available logic. Use `--jobs` to run multiple
+Klammerhammer processes concurrently. The script reads benchmark paths from
+`data/raw_data/meta_info/`, expects SMT-LIB files under
+`smtlib/non-incremental/`, and writes each logic's `features.csv` and
+`extraction_times.csv` under `data/features/syntactic/`.
+
+To run SVM experiments over the five splits for a given logic (e.g. QF_BV):
 
 ```bash
 python scripts/experiment_svms.py --logic QF_BV --features-dir data/features/syntactic --output-dir data/results/lite
