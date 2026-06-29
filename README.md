@@ -2,6 +2,11 @@
 
 SMT-Select is a unified framework for SMT algorithm selection that learns representations from both formula AST and natural-language contextual descriptions (such as the ones in SMT-LIB headers).
 
+This repository accompanies the forthcoming CP 2026 paper **“Learning Unified
+Graph and Language Representations for SMT Algorithm Selection.”** It contains
+the implementation, processed data, trained models, and experiment outputs used
+to reproduce the paper's results.
+
 We offer the following variants, tailored to different data-availability and computational-resource scenarios:
 
 - `SMT-Select (Graph + Text)`: the full multimodal version that uses GNN and pretrained sentence encoder to represent SMT instances.
@@ -19,7 +24,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
-## Reproduction of CP'26 Submission 
+## Reproducing the CP 2026 Results
 
 ### Data Overview and Preparation
 
@@ -108,3 +113,18 @@ Our saved models live under `models/fusion_pwc/`, and you can also run evaluatio
 ### Baselines
 
 We evaluate `MachSMT` at [e524a61](https://github.com/MachSMT/MachSMT/commit/e524a617c1fc79a33c6c797b5c72a8f9650f89e3) and `Sibyl` at [133d33f](https://github.com/will-leeson/sibyl/commit/133d33f1a473eb46d4f6c09a410223907cab6104).
+
+## Citation
+
+```bibtex
+@inproceedings{smtselect_cp26,
+  author    = {Lu, Zhengyang and Sarnighausen-Cahn, Paul and Chen, Jiahao and
+               Gurfinkel, Arie and Manea, Florin and Ganesh, Vijay},
+  title     = {Learning Unified Graph and Language Representations for {SMT}
+               Algorithm Selection},
+  booktitle = {The 32nd International Conference on Principles and Practice of
+               Constraint Programming (CP 2026)},
+  year      = {2026},
+  note      = {To appear}
+}
+```
