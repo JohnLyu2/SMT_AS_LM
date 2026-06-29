@@ -311,7 +311,7 @@ class MultiSolverDataset:
         Args:
             threshold: Performance threshold in PAR-2 seconds. A is considered no worse
                 than B on an instance when par2(A) <= par2(B) + threshold.
-                Defaults to PERF_DIFF_THRESHOLD (1e-1), same as in pwc_wl.
+                Defaults to PERF_DIFF_THRESHOLD (1e-1).
 
         Returns:
             List of solver names that are dominated by at least one other solver.

@@ -135,36 +135,6 @@ def smt_to_graph(smt_path: str | Path) -> dict:
     return {"nodes": nodes, "edges": edges, "roots": roots}
 
 
-def smt_graph_to_grakel(graph_dict: dict) -> object:
-    """
-    Convert the internal graph dict from smt_to_graph() to a GraKel Graph.
-
-    Node labels are taken from nodes[nid]["type"] (e.g. "bvmul", "forall",
-    "const", "bound_var"). Edges are made undirected by including both
-    (u, v) and (v, u); the argument index from the internal format is dropped.
-
-    Args:
-        graph_dict: Dict returned by smt_to_graph() with keys "nodes", "edges".
-
-    Returns:
-        A grakel.Graph suitable for Weisfeiler-Lehman and other graph kernels.
-    """
-    try:
-        from grakel import Graph
-    except ModuleNotFoundError as e:
-        raise ModuleNotFoundError(
-            "grakel is required for WL graph-kernel features; install it with 'pip install grakel'."
-        ) from e
-    nodes = graph_dict["nodes"]
-    raw_edges = graph_dict["edges"]
-    node_labels = {nid: nodes[nid]["type"] for nid in nodes}
-    undirected_edges: list[tuple[int, int]] = []
-    for u, v, _ in raw_edges:
-        undirected_edges.append((u, v))
-        undirected_edges.append((v, u))
-    return Graph(undirected_edges, node_labels=node_labels)
-
-
 def smt_graph_to_gin(graph_dict: dict) -> dict:
     """
     Convert the internal graph dict from smt_to_graph() to a GIN-ready structure.
