@@ -6,8 +6,9 @@ Expects:
   - Splits: --splits-dir with seed subdirs (train.json, test.json); paths rebased with --benchmark-root.
   - GIN embeddings: --gin-features-base/{division}/seed{N}/features.csv (and extraction_times.csv for failed paths).
   - Text embeddings: --desc-features-dir/{division}/features.csv (e.g. desc/all-mpnet-base-v2/BV/features.csv).
+  Checkpoints: models_base/--fusion-models-subdir/{division}/seed{N}/ (default subdir name: fusion_pwc).
 
-For each seed: build emb_by_path (L2-normalize GIN), train Fusion-PWC, evaluate on train and test, write summary and per-seed CSVs.
+For each seed: build emb_by_path (L2-normalize GIN), train Fusion-PWC on the train split, evaluate the selector on the test split only, write summary and per-seed test CSVs.
 Use --eval-only with --models-base to evaluate pre-trained fusion models without training.
 """
 
@@ -123,10 +124,11 @@ def evaluate_multi_splits_fusion(
     skip_easy_unsolvable: bool = False,
     skip_trivial_under: float = 24.0,
     seeds: list[int] | None = None,
+    fusion_models_subdir: str = "fusion_pwc",
 ) -> dict:
     """
     Run Fusion-PWC train/eval for each seed under splits_dir.
-    When eval_only=True, load models from models_base/fusion_pwc/{division}/seed{N}.
+    When eval_only=True, load models from models_base/{fusion_models_subdir}/{division}/seed{N}.
     """
     splits_dir = Path(splits_dir).resolve()
     if not splits_dir.is_dir():
@@ -297,15 +299,15 @@ def evaluate_multi_splits_fusion(
         )
 
         if eval_only:
-            model_save_dir = models_base / "fusion_pwc" / division / f"seed{seed_val}"
+            model_save_dir = models_base / fusion_models_subdir / division / f"seed{seed_val}"
             if not model_save_dir.is_dir() or not (model_save_dir / "config.json").exists():
                 raise FileNotFoundError(f"Eval-only: model dir not found: {model_save_dir}")
             logging.info("Loading saved model from %s", model_save_dir)
         else:
             if save_models and models_base is not None:
-                model_save_dir = models_base / "fusion_pwc" / division / f"seed{seed_val}"
+                model_save_dir = models_base / fusion_models_subdir / division / f"seed{seed_val}"
             elif save_models and output_dir:
-                model_save_dir = output_dir / "models" / "fusion_pwc" / division / f"seed{seed_val}"
+                model_save_dir = output_dir / "models" / fusion_models_subdir / division / f"seed{seed_val}"
             else:
                 model_save_dir = Path(tempfile.mkdtemp())
             model_save_dir.mkdir(parents=True, exist_ok=True)
@@ -517,6 +519,13 @@ def main() -> None:
         help="When --skip-easy-unsolvable: exclude train instances where every solver solved with runtime <= this (default 24)",
     )
     parser.add_argument("--models-base", type=str, default=None, help="Base for saved models (required if --eval-only).")
+    parser.add_argument(
+        "--fusion-models-subdir",
+        type=str,
+        default="fusion_pwc",
+        metavar="NAME",
+        help="Checkpoint folder name under models base (default: fusion_pwc). Use e.g. fusion_pwc_family_only_desc for family-only-description runs.",
+    )
     parser.add_argument("--save-models", action="store_true")
     parser.add_argument("--timeout", type=float, default=1200.0)
     parser.add_argument("--d-text-small", type=int, default=64, help="Text projection output dim")
@@ -603,6 +612,7 @@ def main() -> None:
             skip_easy_unsolvable=args.skip_easy_unsolvable,
             skip_trivial_under=args.skip_trivial_under,
             seeds=args.seeds,
+            fusion_models_subdir=args.fusion_models_subdir,
         )
         return
 
@@ -682,6 +692,7 @@ def main() -> None:
             skip_easy_unsolvable=args.skip_easy_unsolvable,
             skip_trivial_under=args.skip_trivial_under,
             seeds=args.seeds,
+            fusion_models_subdir=args.fusion_models_subdir,
         )
 
 

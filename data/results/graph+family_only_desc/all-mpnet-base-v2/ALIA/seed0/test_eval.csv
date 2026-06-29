@@ -1,0 +1,386 @@
+benchmark,selected,solved,runtime,solver_runtime,overhead,feature_fail
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_27.smt2,cvc5,0,1200.0,1201.7479843979236,0.003896,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_search-2.i_12.smt2,iProver v3.9,0,1200.0,1201.7398016240913,0.003742,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-1.i_18.smt2,iProver v3.9,0,1200.0,1201.7376557081006,0.002771,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_unequal.i_65.smt2,iProver v3.9,0,1200.0,1201.7223185941111,0.003678,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_39.smt2,cvc5,0,1200.0,1201.715611715801,0.004037,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_74.smt2,iProver v3.9,0,1200.0,1201.7316536770668,0.003677,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_remove_all.i_14.smt2,cvc5,0,1200.0,1201.715437063016,0.003955,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_50.smt2,iProver v3.9,0,1200.0,1201.7229441290256,0.004070,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_51.smt2,iProver v3.9,0,1200.0,1201.7224981228355,0.003408,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_94.smt2,cvc5,1,0.27212029988507097,0.263513526879251,0.008607,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_26.smt2,cvc5,0,1200.0,1201.7359356270172,0.003494,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_91.smt2,cvc5,0,1200.0,1201.7390459189191,0.004485,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_58.smt2,iProver v3.9,0,1200.0,1201.7255399548449,0.003458,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_40.smt2,cvc5,0,1200.0,1201.713182988111,0.006573,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_38.smt2,cvc5,0,1200.0,1201.7144353799522,0.004795,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_3.smt2,cvc5,0,0.44400223201003214,0.44158198800869286,0.002420,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_23.smt2,SMTInterpol,0,1200.0,1201.7214867469738,0.004485,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/running_example.i_8.smt2,iProver v3.9,1,35.94280540106914,35.939150921069086,0.003654,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_11.smt2,cvc5,1,0.23867458706584116,0.23166066105477512,0.007014,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-2.i_53.smt2,iProver v3.9,0,1200.0,1201.72835231293,0.005317,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_94.smt2,iProver v3.9,0,1200.0,1201.7258790931664,0.005284,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_equal.i_37.smt2,iProver v3.9,0,1200.0,1201.732611326035,0.004277,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_13.smt2,iProver v3.9,0,1200.0,1201.7641109200194,0.004640,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_search-2.i_22.smt2,SMTInterpol,0,0.4732213260336063,0.4702417569933459,0.002980,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_75.smt2,iProver v3.9,0,1200.0,1201.725997372996,0.005486,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_143.smt2,iProver v3.9,0,1200.0,1201.7531945479568,0.004385,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_equal.i_14.smt2,cvc5,0,1200.0,1201.7129445590544,0.003876,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_56.smt2,iProver v3.9,0,1200.0,1201.7464303409215,0.004749,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_43.smt2,iProver v3.9,1,0.8880500142309099,0.8837554082274437,0.004295,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-queue-1.i_15.smt2,iProver v3.9,0,1200.0,1201.7264436760452,0.003392,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_unequal.i_30.smt2,iProver v3.9,0,1200.0,1201.7291963330936,0.003828,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_175.smt2,SMTInterpol,0,2.789959579958602,2.785417170962319,0.004542,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_unequal.i_25.smt2,SMTInterpol,0,0.4274675900428771,0.4245882880059071,0.002879,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-01-2.i_4.smt2,cvc5,0,1200.0,1201.737523314776,0.003529,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_90.smt2,SMTInterpol,1,0.7094854950169317,0.7044130360009149,0.005072,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-2.i_25.smt2,SMTInterpol,1,323.40754358000913,323.40219244000036,0.005351,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_7.smt2,SMTInterpol,0,0.4686811210317752,0.4658702570013702,0.002811,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test-0234-1.i_6.smt2,cvc5,0,1200.0,1201.715549810091,0.002294,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_112.smt2,iProver v3.9,0,1200.0,1201.738084242912,0.004462,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_94.smt2,SMTInterpol,0,0.6662082649613946,0.6621296929661185,0.004079,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-01-2.i_2.smt2,cvc5,0,1200.0,1201.7173628630117,0.004446,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_131.smt2,cvc5,0,1200.0,1201.7151969438419,0.003244,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_31.smt2,iProver v3.9,1,36.54275974202531,36.5373095870018,0.005450,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_37.smt2,cvc5,0,1200.0,1201.7171935169026,0.003272,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_54.smt2,iProver v3.9,0,1200.0,1201.7228850789834,0.002672,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_12.smt2,SMTInterpol,0,0.48619317899786224,0.48338906798744574,0.002804,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_33.smt2,cvc5,0,31.49620228123015,31.492138095200062,0.004064,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_122.smt2,SMTInterpol,1,0.5850325880069501,0.580924209963996,0.004108,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_173.smt2,cvc5,0,1200.0,1201.7437255210243,0.003232,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_26.smt2,iProver v3.9,0,1200.0,1201.7249061639886,0.004045,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_equal.i_24.smt2,cvc5,0,1200.0,1201.7152328270022,0.004268,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_127.smt2,iProver v3.9,1,61.4730700740088,61.468541820999235,0.004528,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_insert_unequal.i_5.smt2,iProver v3.9,0,1200.0,1201.7413489830215,0.003633,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_24.smt2,cvc5,0,1200.0,1201.7110884641297,0.002982,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_unequal.i_6.smt2,iProver v3.9,0,1200.0,1201.722135243006,0.003446,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_26.smt2,cvc5,0,1200.0,1201.7235099948011,0.003054,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_21.smt2,cvc5,0,1200.0,1201.7150284459349,0.006648,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_161.smt2,cvc5,1,0.2647752230600669,0.2613979110028595,0.003377,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_56.smt2,iProver v3.9,0,1200.0,1201.7364721589256,0.003838,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_159.smt2,iProver v3.9,0,1200.0,1201.723082876997,0.007067,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_59.smt2,cvc5,0,1200.0,1201.711579267867,0.002910,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_127.smt2,iProver v3.9,1,3.9078821740308993,3.9042701739817858,0.003612,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_57.smt2,SMTInterpol,0,0.4404639249746903,0.43739852600265294,0.003065,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_25.smt2,cvc5,0,1200.0,1201.7452904619277,0.003253,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-buckets-2.i_1.smt2,iProver v3.9,0,1200.0,1201.7361331959255,0.002596,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-2.i_32.smt2,iProver v3.9,0,1200.0,1201.751887531951,0.003610,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_equal.i_44.smt2,SMTInterpol,0,0.5410838110015245,0.5373779049987206,0.003706,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_cnstr.i_0.smt2,iProver v3.9,0,1200.0,1201.7247964860871,0.003228,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_97.smt2,cvc5,1,0.2260927300863183,0.2222032800782472,0.003889,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_unequal.i_6.smt2,iProver v3.9,0,1200.0,1201.72296025604,0.002428,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_unequal.i_10.smt2,iProver v3.9,0,1200.0,1201.724378413055,0.004177,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_68.smt2,cvc5,0,1200.0,1201.716041592881,0.004137,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_88.smt2,SMTInterpol,1,0.477385384981542,0.47379829100100324,0.003587,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_63.smt2,iProver v3.9,1,3.425358042140513,3.42076244414784,0.004596,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_188.smt2,iProver v3.9,0,1200.0,1201.7335937239695,0.004407,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_equal.i_0.smt2,cvc5,0,30.3467693730104,30.344345391960815,0.002424,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_and_skiplist_2lvl-2.i_14.smt2,iProver v3.9,1,2.3729230720978447,2.3702334540430456,0.002690,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_equal.i_16.smt2,cvc5,0,588.2688566809134,588.2655042049009,0.003352,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_unequal.i_47.smt2,iProver v3.9,0,1200.0,1201.721710975049,0.004025,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-1.i_40.smt2,cvc5,0,64.90518007295535,64.90027946489863,0.004901,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_102.smt2,iProver v3.9,0,1200.0,1201.7182693690993,0.003328,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-1.i_52.smt2,SMTInterpol,0,0.5213751790775202,0.5179622110445052,0.003413,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_unequal.i_22.smt2,iProver v3.9,0,1200.0,1201.7226157928817,0.002978,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_remove_all.i_12.smt2,cvc5,0,1200.0,1201.7173950090073,0.004944,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_36.smt2,iProver v3.9,1,25.512599443978186,25.508208547951654,0.004391,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_55.smt2,iProver v3.9,1,3.4585524518238597,3.4546215548180044,0.003931,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_30.smt2,iProver v3.9,0,1200.0,1201.7243908150122,0.005274,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/packet_filter.i_3.smt2,SMTInterpol,0,1.4784636029703757,1.4747760309837759,0.003688,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_and_skiplist_2lvl-2.i_43.smt2,cvc5,0,0.6828272640318825,0.6798806670121849,0.002947,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_76.smt2,iProver v3.9,0,1200.0,1201.7310992239509,0.004271,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_53.smt2,iProver v3.9,0,1200.0,1201.746663487982,0.002788,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_141.smt2,iProver v3.9,0,1200.0,1201.7456548342016,0.004252,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_unequal.i_5.smt2,SMTInterpol,0,0.4573610749989963,0.4545691669918597,0.002792,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-2.i_67.smt2,iProver v3.9,0,1200.0,1201.72390543879,0.004550,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_19.smt2,SMTInterpol,1,0.5231616799915425,0.5190609070123173,0.004101,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-2.i_17.smt2,iProver v3.9,0,1200.0,1201.7416504810099,0.003077,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_search_value-1.i_65.smt2,cvc5,1,360.29264622305845,360.2883137760218,0.004332,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_29.smt2,SMTInterpol,0,0.6531860599839344,0.6491952819633298,0.003991,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_19.smt2,iProver v3.9,0,1200.0,1201.7520711200777,0.002708,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_123.smt2,iProver v3.9,1,129.5968505629767,129.59091232693754,0.005938,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_157.smt2,cvc5,0,1200.0,1201.7120630489662,0.004656,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_79.smt2,iProver v3.9,0,1200.0,1201.7210993370973,0.002994,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all.i_20.smt2,SMTInterpol,0,0.4717477930439851,0.4690885019954294,0.002659,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_29.smt2,iProver v3.9,0,1200.0,1201.751752188895,0.003394,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_65.smt2,iProver v3.9,0,1200.0,1201.7220216810238,0.004239,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_219.smt2,SMTInterpol,1,0.6143640179848514,0.6089927699649706,0.005371,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_50.smt2,iProver v3.9,0,1200.0,1201.726258515846,0.004730,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_63.smt2,iProver v3.9,0,1200.0,1201.7299297598656,0.003708,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_10.smt2,iProver v3.9,0,1200.0,1201.7693112380803,0.003093,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_54.smt2,SMTInterpol,1,0.494020732954166,0.49030694196699187,0.003714,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_37.smt2,cvc5,0,1200.0,1201.7189418920316,0.003612,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-reverse.i_54.smt2,iProver v3.9,0,1200.0,1201.7412504639942,0.002640,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_remove_all.i_16.smt2,iProver v3.9,0,1200.0,1201.738849811023,0.003020,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_21.smt2,SMTInterpol,1,21.732831280057805,21.72726379602682,0.005567,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_75.smt2,cvc5,0,1200.0,1201.7129282979295,0.008486,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_36.smt2,cvc5,0,1200.0,1201.7122261680197,0.006465,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_11.smt2,SMTInterpol,1,0.4925783249978191,0.4888783000060357,0.003700,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_24.smt2,iProver v3.9,1,10.92856716116287,10.921919098123908,0.006648,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-rb-cnstr_1-2.i_9.smt2,cvc5,0,1200.0,1201.7281689518131,0.006429,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-optional-1.i_7.smt2,iProver v3.9,0,1200.0,1201.7267596260644,0.006958,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_141.smt2,cvc5,0,1200.0,1201.724880348891,0.002729,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_75.smt2,cvc5,0,1200.0,1201.712533164071,0.003665,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_33.smt2,iProver v3.9,0,1200.0,1201.7523089780007,0.003969,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_79.smt2,cvc5,1,425.2863610851541,425.28139239014126,0.004969,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_58.smt2,iProver v3.9,0,14.20555000719244,14.202279995195568,0.003270,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_123.smt2,SMTInterpol,1,0.5280123740281194,0.5237612890196033,0.004251,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_26.smt2,SMTInterpol,0,1200.0,1201.7192412010045,0.004488,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-1.i_54.smt2,SMTInterpol,0,0.4817634980622894,0.47817969002062455,0.003584,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_204.smt2,iProver v3.9,0,1200.0,1201.7253951439634,0.004420,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_insert_equal.i_2.smt2,iProver v3.9,0,1200.0,1201.7330834008753,0.002549,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_139.smt2,iProver v3.9,0,1200.0,1201.7269231590908,0.004241,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_16.smt2,cvc5,0,1200.0,1201.7158391370904,0.002685,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_31.smt2,iProver v3.9,0,1200.0,1201.7202853409108,0.003921,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_208.smt2,cvc5,0,1200.0,1201.736844029976,0.003667,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-2.i_5.smt2,iProver v3.9,0,1200.0,1201.7390767920297,0.003347,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_22.smt2,iProver v3.9,0,1200.0,1201.7535225378815,0.004400,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_77.smt2,iProver v3.9,0,1200.0,1201.7328028811608,0.002705,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_42.smt2,iProver v3.9,0,1200.0,1201.7359720421955,0.004918,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_28.smt2,iProver v3.9,0,1200.0,1201.7750156179536,0.002513,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_8.smt2,iProver v3.9,0,1200.0,1201.7264953299891,0.004168,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_of_cslls.i_42.smt2,SMTInterpol,0,0.44884507808231106,0.4456632810179144,0.003182,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_99.smt2,iProver v3.9,0,1200.0,1201.7218298879452,0.004447,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_40.smt2,SMTInterpol,0,0.4408371900986164,0.43731992703396827,0.003517,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_76.smt2,cvc5,0,1200.0,1201.7127620188985,0.003700,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/prefixsum_rec.c_33.smt2,cvc5,0,1200.0,1201.7124787787907,0.002654,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_47.smt2,iProver v3.9,0,1200.0,1201.7192122829147,0.003595,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_105.smt2,cvc5,0,3.990897765053458,3.9868053670506924,0.004092,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_27.smt2,iProver v3.9,0,1200.0,1201.7338011409156,0.004851,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_remove_all.i_7.smt2,cvc5,0,1200.0,1201.7177839439828,0.003376,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_70.smt2,cvc5,0,1200.0,1201.7136271139607,0.007155,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_2.smt2,cvc5,0,1200.0,1201.7202248789836,0.004017,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_57.smt2,cvc5,1,0.25142648393150707,0.24291040189564228,0.008516,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_43.smt2,SMTInterpol,0,0.4254402570273011,0.4226381499902345,0.002802,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_105.smt2,iProver v3.9,0,1200.0,1201.73439040198,0.004757,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_71.smt2,iProver v3.9,0,1200.0,1201.7256034079473,0.004074,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-01-2.i_11.smt2,cvc5,1,271.72559698795294,271.7203339219559,0.005263,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_36.smt2,SMTInterpol,1,0.5248883700310468,0.522031900996808,0.002856,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_11.smt2,iProver v3.9,1,36.49293585292392,36.48558010789566,0.007356,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_1.i_48.smt2,iProver v3.9,0,1200.0,1201.7253724848852,0.003211,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_max.c_2.smt2,SMTInterpol,1,0.4547298429729632,0.4513755029765889,0.003354,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_172.smt2,cvc5,0,1200.0,1201.7175240241922,0.003636,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_98.smt2,iProver v3.9,1,3.434100649979453,3.4285821369849145,0.005519,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_equal.i_3.smt2,iProver v3.9,0,1200.0,1201.7328674038872,0.002614,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_107.smt2,iProver v3.9,0,1200.0,1201.7310847160406,0.004242,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_192.smt2,SMTInterpol,1,119.0799775670362,119.0753882600111,0.004589,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_18.smt2,cvc5,0,30.5928886538218,30.589228443801403,0.003660,0
+ALIA/piVC/piVC_d91441.smt2,cvc5,1,0.275239733009155,0.2712759349960834,0.003964,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_73.smt2,cvc5,0,1200.0,1201.712405311875,0.003083,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_8.smt2,cvc5,0,1200.0,1201.719255523989,0.003794,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_35.smt2,cvc5,0,1200.0,1201.722712503979,0.006591,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_of_cslls.i_46.smt2,SMTInterpol,0,0.47878772202741643,0.47516433999408036,0.003623,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_197.smt2,iProver v3.9,1,2.8593345708991618,2.8544275008607656,0.004907,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_16.smt2,iProver v3.9,1,2.9405903930505954,2.9372988110408187,0.003292,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_169.smt2,cvc5,0,1200.0,1201.7107285030652,0.002790,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_30.smt2,iProver v3.9,1,3.3677044049450413,3.363897851901129,0.003807,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_66.smt2,cvc5,0,1200.0,1201.7221603239886,0.003657,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_100.smt2,iProver v3.9,1,7.949287771907191,7.943943955935538,0.005344,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_equal.i_7.smt2,cvc5,0,1200.0,1201.7167165370192,0.003636,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_182.smt2,cvc5,0,1200.0,1201.713373546023,0.003281,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_121.smt2,iProver v3.9,1,2.8709986900990114,2.865927033126354,0.005072,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_93.smt2,cvc5,0,1200.0,1201.7197858639993,0.002997,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_58.smt2,iProver v3.9,0,1200.0,1201.7315597459674,0.004650,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-optional-1.i_3.smt2,iProver v3.9,0,1200.0,1201.728362904163,0.004219,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-1.i_82.smt2,cvc5,1,0.3504740451076283,0.3364595191087574,0.014015,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_60.smt2,iProver v3.9,0,1200.0,1201.7328010930214,0.005800,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_20.smt2,SMTInterpol,0,1.1669597550258255,1.1633327460149303,0.003627,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_197.smt2,cvc5,0,1200.0,1201.709778481163,0.003513,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_32.smt2,iProver v3.9,0,1200.0,1201.7483656441327,0.003817,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_62.smt2,SMTInterpol,0,4.561091157976559,4.556068070989568,0.005023,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_equal.i_42.smt2,iProver v3.9,0,1200.0,1201.7454044469632,0.003470,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_87.smt2,cvc5,0,1200.0,1201.7217657892033,0.002693,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_91.smt2,iProver v3.9,0,1200.0,1201.7256814909633,0.004874,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_78.smt2,SMTInterpol,0,1200.0,1201.7413305329974,0.003799,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_53.smt2,cvc5,0,0.5206749910335272,0.5179151319898665,0.002760,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_70.smt2,iProver v3.9,1,80.54772222090608,80.54348926991224,0.004233,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_insert_unequal.i_68.smt2,SMTInterpol,0,181.59935245798764,181.5951743790065,0.004178,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_35.smt2,cvc5,0,1200.0,1201.7291772370227,0.004493,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_58.smt2,iProver v3.9,0,1200.0,1201.7318374740425,0.004360,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_equal.i_0.smt2,SMTInterpol,0,0.5626357950000308,0.5568983129924163,0.005737,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_remove_all.i_13.smt2,iProver v3.9,0,1200.0,1201.7412098299246,0.005136,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_31.smt2,SMTInterpol,0,0.409622837983559,0.40674298600060865,0.002880,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_107.smt2,iProver v3.9,1,14.00964795904795,14.00501753599383,0.004630,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_unequal.i_26.smt2,SMTInterpol,0,0.4403020630320749,0.43746501102577895,0.002837,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_78.smt2,iProver v3.9,0,1200.0,1201.7210323158652,0.004050,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_87.smt2,SMTInterpol,1,84.28175580398741,84.27685673901578,0.004899,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-1.i_66.smt2,cvc5,0,1200.0,1201.7129269009456,0.004056,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_44.smt2,cvc5,0,30.359986175860765,30.357604012824595,0.002382,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_92.smt2,iProver v3.9,0,1200.0,1201.7281256779097,0.005001,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_9.smt2,iProver v3.9,0,1200.0,1201.7259423681535,0.003066,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_stack.i_40.smt2,iProver v3.9,0,1200.0,1201.7522515091114,0.003336,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_95.smt2,cvc5,0,1200.0,1201.7132677431218,0.002939,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_remove_all.i_2.smt2,cvc5,0,1200.0,1201.7108006479684,0.005327,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_65.smt2,iProver v3.9,0,1200.0,1201.7362688281573,0.003511,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_28.smt2,cvc5,1,0.3163527899501129,0.3077767249196768,0.008576,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_38.smt2,iProver v3.9,1,25.463730920998866,25.459345916984603,0.004385,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_41.smt2,SMTInterpol,0,0.4607968389950908,0.45722545398166403,0.003571,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_80.smt2,cvc5,0,1200.0,1201.711388819851,0.004058,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple-2.i_36.smt2,cvc5,0,1200.0,1201.7167726610787,0.003309,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_80.smt2,cvc5,0,0.8112774029919162,0.8079428509809077,0.003335,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_unequal.i_48.smt2,iProver v3.9,0,1200.0,1201.7329843640327,0.004010,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_66.smt2,cvc5,0,1200.0,1201.7144698488992,0.003950,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_47.smt2,iProver v3.9,0,1200.0,1201.7425969629548,0.003860,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_32.smt2,SMTInterpol,0,0.674947269047632,0.6707075660233386,0.004240,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_and_skiplist_2lvl-2.i_59.smt2,iProver v3.9,0,1200.0,1201.727241880959,0.003040,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_32.smt2,iProver v3.9,0,1200.0,1201.7249528670218,0.004767,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_67.smt2,SMTInterpol,1,0.6826479460774205,0.6778706080513075,0.004777,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple-2.i_38.smt2,SMTInterpol,0,0.45520020697361147,0.45182287599891424,0.003377,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_16.smt2,iProver v3.9,0,1200.0,1201.7375407039654,0.003073,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_21.smt2,SMTInterpol,0,36.80921591296422,36.8051271319855,0.004089,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-reverse.i_32.smt2,SMTInterpol,0,0.4461382190543442,0.4434000410255976,0.002738,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-1.i_7.smt2,iProver v3.9,0,1200.0,1201.7253050811123,0.002563,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_append_unequal.i_20.smt2,cvc5,0,1200.0,1201.7298324550502,0.007675,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_90.smt2,iProver v3.9,0,1200.0,1201.7231020880863,0.004385,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_1.i_61.smt2,iProver v3.9,0,1200.0,1201.7302146551665,0.003199,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_90.smt2,cvc5,0,1200.0,1201.7163691800088,0.004255,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_66.smt2,iProver v3.9,0,1200.0,1201.7250757189468,0.003876,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_106.smt2,SMTInterpol,1,0.5930802070265851,0.5890136079979129,0.004067,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_update_all_reverse.i_4.smt2,iProver v3.9,0,1200.0,1201.7465255139396,0.003186,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_156.smt2,iProver v3.9,0,1200.0,1201.7504138969816,0.004211,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_94.smt2,cvc5,0,1.1940171438814355,1.1896967499051243,0.004320,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_21.smt2,iProver v3.9,0,1200.0,1201.7395822010003,0.004190,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_remove_all.i_1.smt2,iProver v3.9,0,1200.0,1201.7450200561434,0.003025,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_57.smt2,iProver v3.9,0,1200.0,1201.7258196689654,0.004263,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-1.i_65.smt2,cvc5,0,1200.0,1201.718115722062,0.004116,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_12.smt2,cvc5,0,1200.0,1201.7124047228135,0.004106,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-rb-cnstr_1-2.i_7.smt2,cvc5,0,1200.0,1201.7121011510026,0.006356,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_61.smt2,iProver v3.9,0,1200.0,1201.7220274459105,0.003721,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dancing.i_10.smt2,SMTInterpol,0,0.5199317799611233,0.5158509229659103,0.004081,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_20.smt2,cvc5,1,0.26627086605506306,0.25679655303247273,0.009474,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-1.i_52.smt2,SMTInterpol,0,2.8419829719546468,2.8373443429591134,0.004639,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-2.i_45.smt2,cvc5,0,1200.0,1201.7245019210968,0.004390,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-token-1.i_20.smt2,cvc5,1,4.315628666042837,4.31024422403425,0.005384,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_remove_all.i_6.smt2,SMTInterpol,0,1200.0,1201.7212447730126,0.005393,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_remove_all.i_22.smt2,iProver v3.9,0,1200.0,1201.7492771360558,0.003174,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_append_unequal.i_21.smt2,cvc5,0,1200.0,1201.7126920360606,0.007419,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-2.i_8.smt2,cvc5,0,0.5096174560217402,0.5068057710304856,0.002812,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_76.smt2,iProver v3.9,0,1200.0,1201.729251554003,0.003926,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_insert_unequal.i_15.smt2,cvc5,0,30.746644096061143,30.742994375061244,0.003650,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_55.smt2,iProver v3.9,0,1200.0,1201.7491294429637,0.004626,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_search-2.i_3.smt2,SMTInterpol,0,0.45644740803029676,0.4531927650095895,0.003255,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/alternating_list-1.i_4.smt2,iProver v3.9,0,1200.0,1201.7271282880101,0.003595,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_24.smt2,iProver v3.9,0,1200.0,1201.7266261728946,0.005183,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_61.smt2,iProver v3.9,0,1200.0,1201.7311141020618,0.004495,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_1.smt2,iProver v3.9,0,1200.0,1201.7250760861207,0.003529,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-1.i_61.smt2,iProver v3.9,0,1200.0,1201.7316966801882,0.006338,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_built_from_end.i_62.smt2,iProver v3.9,0,1200.0,1201.7267300889362,0.005799,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_66.smt2,cvc5,1,0.41085714394787615,0.4070705969352275,0.003787,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_12.smt2,cvc5,0,0.3723829259593255,0.36984008294530213,0.002543,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_double_unlock.i_42.smt2,cvc5,0,1200.0,1201.7406538340729,0.006414,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_update_all_reverse.i_76.smt2,iProver v3.9,1,29.971354970087784,29.967592769069597,0.003762,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-2.i_28.smt2,SMTInterpol,0,0.4489729749816685,0.44516228296561167,0.003811,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_125.smt2,iProver v3.9,1,64.97141353811233,64.96698965108953,0.004424,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_216.smt2,iProver v3.9,1,869.2820120018637,869.2775863108691,0.004426,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_60.smt2,cvc5,0,1200.0,1201.7143066148274,0.003852,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_165.smt2,iProver v3.9,1,836.3085985661796,836.3037700632121,0.004829,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-optional-1.i_0.smt2,iProver v3.9,0,1200.0,1201.7509270149749,0.004420,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_62.smt2,iProver v3.9,1,525.8715343239796,525.8670251369476,0.004509,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_77.smt2,cvc5,0,1200.0,1201.711947342148,0.003317,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_100.smt2,cvc5,1,38.685043037946826,38.68102682195604,0.004016,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_of_dll-1.i_16.smt2,SMTInterpol,1,0.5035980160660326,0.5000933060073294,0.003505,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_45.smt2,SMTInterpol,0,5.518740526012632,5.514657986001112,0.004083,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_82.smt2,cvc5,0,1200.0,1201.7146650080103,0.003864,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_2.smt2,SMTInterpol,1,0.49893499307429706,0.4958597660297528,0.003075,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_35.smt2,cvc5,0,1200.0,1201.7111719311215,0.003053,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_18.smt2,iProver v3.9,0,1200.0,1201.7260312980507,0.003461,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_197.smt2,iProver v3.9,1,3.9549174900362485,3.9505586039740592,0.004359,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-2.i_48.smt2,iProver v3.9,0,1200.0,1201.7739039279986,0.003771,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_27.smt2,cvc5,0,1200.0,1201.7196453979705,0.003805,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_18.smt2,cvc5,0,1200.0,1201.7125552140642,0.002999,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_89.smt2,SMTInterpol,1,0.6189554709904111,0.6142141909804195,0.004741,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_46.smt2,cvc5,1,0.2676111129890411,0.259025570936501,0.008586,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_56.smt2,iProver v3.9,1,57.52188726493253,57.51690311986022,0.004984,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-1.i_73.smt2,cvc5,1,516.1106662192228,516.104817309184,0.005849,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_26.smt2,cvc5,0,1200.0,1201.711426901864,0.003861,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_34.smt2,cvc5,1,0.2574764340147591,0.25240357499569654,0.005073,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_32.smt2,iProver v3.9,1,139.02397254600285,139.01992050302215,0.004052,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_mutex_unlock_at_exit.i_28.smt2,cvc5,0,1200.0,1201.712278867839,0.004421,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_152.smt2,iProver v3.9,1,2.9119236932215498,2.9083563261665404,0.003567,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_85.smt2,SMTInterpol,1,0.5097713400223508,0.506186569982674,0.003585,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_3.smt2,cvc5,0,1200.0,1201.713262039004,0.002946,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_1.smt2,cvc5,0,1200.0,1201.7135120599996,0.002624,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_search-2.i_33.smt2,SMTInterpol,0,0.4419075370147108,0.4383900130051188,0.003518,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_20.smt2,cvc5,0,1200.0,1201.720797920134,0.004253,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_84.smt2,iProver v3.9,1,3.382134923148922,3.378471637144685,0.003663,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_70.smt2,iProver v3.9,0,1200.0,1201.7253835229203,0.003797,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_42.smt2,cvc5,1,0.2721287639774597,0.2637086899485439,0.008420,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_40.smt2,cvc5,0,0.3692322429465345,0.36614687694236636,0.003085,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_update_all.i_47.smt2,SMTInterpol,0,0.48191698595976745,0.4787099929526448,0.003207,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all.i_0.smt2,SMTInterpol,1,0.51713147400508,0.514274843968451,0.002857,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll-sorted-2.i_72.smt2,iProver v3.9,0,1200.0,1201.7285543149337,0.002797,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_27.smt2,cvc5,1,0.25342845202751746,0.24385416298173368,0.009574,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/split_list_test05-2.i_10.smt2,iProver v3.9,0,1200.0,1201.726652387064,0.002665,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_88.smt2,iProver v3.9,1,530.3196749410904,530.3168286720756,0.002846,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-1.i_76.smt2,cvc5,1,305.4577103298702,305.4432387908455,0.014472,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_25.smt2,cvc5,1,0.2358647148553497,0.2262331978417933,0.009632,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_and_skiplist_2lvl-2.i_63.smt2,cvc5,0,30.658309776995818,30.654793614987284,0.003516,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/running_example.i_0.smt2,SMTInterpol,0,0.9750026350571058,0.9689330119872466,0.006070,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_57.smt2,iProver v3.9,1,25.973529967964648,25.969965064898133,0.003565,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_95.smt2,SMTInterpol,0,0.5760412099966995,0.5725195080158301,0.003522,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_126.smt2,iProver v3.9,1,24.44508245507816,24.441571163013577,0.003511,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/split_list_test05-2.i_8.smt2,SMTInterpol,1,0.428464894086144,0.42631781002273783,0.002147,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_104.smt2,iProver v3.9,0,1200.0,1201.7241398228798,0.004551,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_1.smt2,cvc5,0,1200.0,1201.715223475825,0.003716,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/shared_mem1.i_78.smt2,SMTInterpol,1,0.5819785199905961,0.5771801229566336,0.004798,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_9.smt2,SMTInterpol,0,0.6619235659796029,0.6576485869591124,0.004275,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dancing.i_5.smt2,SMTInterpol,0,0.5423026640396781,0.5377343069994822,0.004568,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_15.smt2,iProver v3.9,1,0.9122375110360078,0.9057316640391946,0.006506,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_108.smt2,SMTInterpol,1,0.5029005850278988,0.49867083999561146,0.004230,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_190.smt2,iProver v3.9,0,1200.0,1201.738367388025,0.004727,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_203.smt2,cvc5,0,1200.0,1201.7183044410776,0.003384,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_update_all_reverse.i_72.smt2,cvc5,0,1200.0,1201.7315176469274,0.003502,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/test_add-2.i_109.smt2,cvc5,0,8.913956928202904,8.909567715134472,0.004389,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_167.smt2,iProver v3.9,0,1200.0,1201.7434476581402,0.006340,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_77.smt2,iProver v3.9,1,37.535732527050214,37.531662771012634,0.004070,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-1.i_21.smt2,iProver v3.9,0,1200.0,1201.7356013958342,0.005219,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_76.smt2,iProver v3.9,1,820.0672680479088,820.063188653905,0.004079,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_79.smt2,cvc5,0,1200.0,1201.714643877931,0.003977,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_82.smt2,cvc5,0,35.625220491046576,35.62155948905274,0.003661,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-rb-cnstr_1-2.i_2.smt2,cvc5,1,0.27374231817296063,0.270279907155782,0.003462,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-2.i_7.smt2,SMTInterpol,0,1.6764329380435152,1.671437703014817,0.004995,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/ex3_forlist.i_10.smt2,cvc5,0,1200.0,1201.7164657858666,0.002564,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_76.smt2,iProver v3.9,0,1200.0,1201.734761215048,0.003118,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_and_skiplist_2lvl-2.i_46.smt2,SMTInterpol,0,0.5124320620284631,0.5091641150065698,0.003268,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_insert_unequal.i_33.smt2,cvc5,0,1200.0,1201.7364765291568,0.003975,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_120.smt2,SMTInterpol,1,0.5511175180631905,0.5467915729968809,0.004326,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_update_all.i_5.smt2,iProver v3.9,0,1200.0,1201.7649700418115,0.004257,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_107.smt2,SMTInterpol,0,1200.0,1202.730196574994,0.005377,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag_1.i_70.smt2,iProver v3.9,0,1200.0,1201.7497019059956,0.003097,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_to_dll_rev-2.i_53.smt2,iProver v3.9,0,1200.0,1201.7410280779004,0.003026,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_119.smt2,iProver v3.9,1,26.046652876267697,26.042102712206542,0.004550,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_equal.i_42.smt2,cvc5,0,1200.0,1201.7181269950233,0.003660,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_of_cslls.i_39.smt2,cvc5,0,1.3848379349997482,1.3819521910045296,0.002886,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-optional-1.i_13.smt2,cvc5,0,1200.0,1201.7133499139454,0.008645,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_26.smt2,iProver v3.9,0,1200.0,1201.7302923609968,0.003233,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_47.smt2,cvc5,0,1200.0,1201.713737715967,0.004218,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_prepend_unequal.i_20.smt2,iProver v3.9,1,2.4377535968865485,2.431056551868096,0.006697,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_unequal.i_93.smt2,cvc5,0,1200.0,1201.7128920599353,0.004160,0
+ALIA/piVC/piVC_ffb7db.smt2,cvc5,1,0.244906379919055,0.23775519686751068,0.007151,0
+ALIA/piVC/piVC_849b63.smt2,cvc5,1,0.3114703248916409,0.3044662568718195,0.007004,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll-optional-1.i_1.smt2,iProver v3.9,0,1200.0,1201.7271427239757,0.004280,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_append_unequal.i_11.smt2,cvc5,0,1200.0,1201.7285919650458,0.002626,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_65.smt2,iProver v3.9,0,1200.0,1201.7441756098997,0.003892,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/length_test03-1.i_101.smt2,iProver v3.9,1,3.905867224986221,3.901631098939106,0.004236,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list-ext_flag.i_103.smt2,iProver v3.9,0,1200.0,1201.7373674791306,0.005927,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_50.smt2,iProver v3.9,0,1200.0,1201.721925433958,0.002574,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_73.smt2,iProver v3.9,0,1200.0,1201.7242145929486,0.003710,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/list_and_tree_cnstr-2.i_58.smt2,iProver v3.9,0,1200.0,1201.7322263580281,0.005321,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/skiplist_3lvl.i_105.smt2,iProver v3.9,1,2.9347436750154228,2.9293232560157776,0.005420,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/simple_search_value-1.i_2.smt2,iProver v3.9,0,1200.0,1201.7269780628849,0.002449,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-2.i_1.smt2,SMTInterpol,1,0.4864909830116882,0.48140141199110076,0.005090,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2n_append_equal.i_27.smt2,cvc5,0,1200.0,1201.7134965858422,0.002816,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/bubble_sort_linux-2.i_27.smt2,SMTInterpol,1,191.62934941305642,191.62400897301268,0.005340,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_44.smt2,iProver v3.9,0,1200.0,1201.7421495600138,0.003514,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_103.smt2,cvc5,0,30.350170846989865,30.347766211954877,0.002405,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/splice-2.i_93.smt2,cvc5,0,0.4608920290679886,0.4578130850568414,0.003079,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll_circular_traversal-2.i_126.smt2,iProver v3.9,0,1200.0,1201.7340496880934,0.004237,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_insert_unequal.i_0.smt2,SMTInterpol,0,0.45848019306643223,0.4552429729956202,0.003237,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_of_cslls.i_44.smt2,SMTInterpol,0,0.4858062649923592,0.48277484899153933,0.003031,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_insert_equal.i_4.smt2,SMTInterpol,0,0.4117876960858918,0.4089180520386435,0.002870,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/dll2c_update_all_reverse.i_132.smt2,iProver v3.9,0,1200.0,1201.7235397300683,0.004304,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/tree_of_cslls.i_29.smt2,cvc5,0,0.41386021594146555,0.4111333389300853,0.002727,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll_circular_traversal-1.i_44.smt2,iProver v3.9,0,1200.0,1201.722730196081,0.003726,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_insert_unequal.i_40.smt2,cvc5,0,31.733388200014385,31.729596975026652,0.003791,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2n_prepend_equal.i_55.smt2,cvc5,0,1.8407375491420022,1.8369949851185083,0.003743,0
+ALIA/20230321-UltimateAutomizerSvcomp2023/sll2c_prepend_equal.i_46.smt2,iProver v3.9,0,1200.0,1201.743443907937,0.003256,0

@@ -1,0 +1,23 @@
+2026-04-19 00:17:40,562 - INFO - Fusion-PWC: 1152 train paths with embeddings, 799 pairwise samples
+2026-04-19 00:17:40,579 - INFO - Epoch 1/200 train loss 0.6176
+2026-04-19 00:17:40,698 - INFO - Epoch 10/200 train loss 0.1480
+2026-04-19 00:17:40,823 - INFO - Epoch 20/200 train loss 0.1238
+2026-04-19 00:17:40,951 - INFO - Epoch 30/200 train loss 0.1115
+2026-04-19 00:17:41,076 - INFO - Epoch 40/200 train loss 0.1310
+2026-04-19 00:17:41,204 - INFO - Epoch 50/200 train loss 0.0989
+2026-04-19 00:17:41,332 - INFO - Epoch 60/200 train loss 0.0925
+2026-04-19 00:17:41,453 - INFO - Epoch 70/200 train loss 0.1105
+2026-04-19 00:17:41,575 - INFO - Epoch 80/200 train loss 0.0888
+2026-04-19 00:17:41,729 - INFO - Epoch 90/200 train loss 0.0878
+2026-04-19 00:17:41,861 - INFO - Epoch 100/200 train loss 0.0878
+2026-04-19 00:17:41,997 - INFO - Epoch 110/200 train loss 0.0837
+2026-04-19 00:17:42,128 - INFO - Epoch 120/200 train loss 0.0795
+2026-04-19 00:17:42,264 - INFO - Epoch 130/200 train loss 0.0786
+2026-04-19 00:17:42,390 - INFO - Epoch 140/200 train loss 0.0764
+2026-04-19 00:17:42,523 - INFO - Epoch 150/200 train loss 0.0705
+2026-04-19 00:17:42,658 - INFO - Epoch 160/200 train loss 0.0802
+2026-04-19 00:17:42,790 - INFO - Epoch 170/200 train loss 0.0720
+2026-04-19 00:17:42,925 - INFO - Epoch 180/200 train loss 0.0671
+2026-04-19 00:17:43,057 - INFO - Epoch 190/200 train loss 0.0653
+2026-04-19 00:17:43,191 - INFO - Epoch 200/200 train loss 0.0748
+2026-04-19 00:17:43,193 - INFO - Saved Fusion-PWC model and config to models/fusion_pwc_ph_text/ALIA/seed20
