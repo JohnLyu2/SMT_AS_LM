@@ -22,7 +22,7 @@ from torch_geometric.data import Batch
 from tqdm import tqdm
 
 from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
-from smt_select.models.gin_ehm import graph_dict_to_gin_data
+from smt_select.models.gin_common import graph_dict_to_gin_data
 from smt_select.models.gin_pwc import GINPwcSelector
 from smt_select.representations.graph_rep import _suppress_z3_destructor_noise, build_smt_graph_dict_timeout
 

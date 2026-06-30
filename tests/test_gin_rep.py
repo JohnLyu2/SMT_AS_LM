@@ -9,7 +9,7 @@ import torch
 pytest.importorskip("torch_geometric")
 
 from smt_select.representations.graph_rep import smt_to_graph, smt_graph_to_gin
-from smt_select.models.gin_ehm import (
+from smt_select.models.gin_common import (
     NodeVocabulary,
     build_vocabulary_from_graph_dicts,
     graph_dict_to_gin_data,

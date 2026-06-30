@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate GIN selector (GIN-PWC or GIN EHM): load model, run as_evaluate, report metrics (solved, PAR2, gap_cls)."""
+"""Evaluate a saved GIN-PWC selector."""
 
 import json
 import logging
@@ -11,23 +11,17 @@ from smt_select.evaluation.evaluate import (
     as_evaluate_parallel,
 )
 from smt_select.evaluation.metrics import compute_metrics, format_evaluation_short
-from smt_select.models.gin_ehm import GINSelector
 from smt_select.models.gin_pwc import GINPwcSelector
 from smt_select.data.performance import MultiSolverDataset, parse_performance_json
-from smt_select.models.solver_selector import SolverSelector
 
 
 def _load_gin_selector(model_dir: str, device: str | None = None):
     """Top-level loader for GIN (picklable for multiprocessing). device='cpu' in workers to avoid CUDA in forked processes."""
     with open(Path(model_dir) / "config.json") as f:
         config = json.load(f)
-    if "num_heads" in config:
-        return GINSelector.load(model_dir, device=device)
     if "num_solvers" in config:
         return GINPwcSelector.load(model_dir, device=device)
-    raise ValueError(
-        f"Unknown GIN config in {model_dir}: expected 'num_heads' (EHM) or 'num_solvers' (PWC)"
-    )
+    raise ValueError(f"Invalid GIN-PWC config in {model_dir}: missing 'num_solvers'")
 
 
 def main() -> None:
@@ -60,10 +54,7 @@ def main() -> None:
     instance_paths = list(multi_perf_data.keys())
 
     if args.jobs > 1:
-        if "num_heads" in config:
-            logging.info("Evaluating GIN EHM (regression) with %d workers (CPU)", args.jobs)
-        else:
-            logging.info("Evaluating GIN-PWC with %d workers (CPU)", args.jobs)
+        logging.info("Evaluating GIN-PWC with %d workers (CPU)", args.jobs)
         # Use CPU in workers to avoid CUDA init errors in forked processes.
         fallback_ids = config.get("fallback_solver_ids") or config.get("timeout_solver_ids") or []
         fallback_solver_id = fallback_ids[0] if fallback_ids else None
@@ -78,16 +69,11 @@ def main() -> None:
             fallback_solver_id=fallback_solver_id,
         )
     else:
-        if "num_heads" in config:
-            selector: SolverSelector = GINSelector.load(args.model_dir)
-            logging.info("Loaded GIN EHM (regression) selector from %s", args.model_dir)
-        elif "num_solvers" in config:
+        if "num_solvers" in config:
             selector = GINPwcSelector.load(args.model_dir)
             logging.info("Loaded GIN-PWC selector from %s", args.model_dir)
         else:
-            raise ValueError(
-                f"Unknown GIN config in {args.model_dir}: expected 'num_heads' (EHM) or 'num_solvers' (PWC)"
-            )
+            raise ValueError("Invalid GIN-PWC config: missing 'num_solvers'")
         result = as_evaluate(
             selector,
             multi_perf_data,

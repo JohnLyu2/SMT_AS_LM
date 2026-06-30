@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Evaluate GIN (EHM or PWC) over multiple train/test splits.
+Evaluate GIN-PWC over multiple train/test splits.
 
 Expects --splits-dir to point at a division folder containing seed subdirs, e.g.:
   data/train_test_splits/BV/
@@ -10,7 +10,7 @@ Expects --splits-dir to point at a division folder containing seed subdirs, e.g.
 
 For each split (seed):
   1. Load train.json and test.json; rebase paths with --benchmark-root.
-  2. Train GIN EHM or GIN-PWC on the train set (--model-type), unless --eval-only.
+  2. Train GIN-PWC on the train set, unless --eval-only.
   3. Evaluate on train and test sets (load model from --models-base when --eval-only).
   4. Compute metrics (solve rate, PAR2, gap closed vs SBS/VBS).
 
@@ -45,7 +45,6 @@ from smt_select.evaluation.fallback import (
     merge_with_fallback,
     write_eval_csv,
 )
-from smt_select.models.gin_ehm import train_gin_regression
 from smt_select.models.gin_pwc import train_gin_pwc
 from smt_select.data.performance import (
     filter_training_instances,
@@ -87,7 +86,7 @@ def evaluate_multi_splits_gin(
     fallback_lite: bool = False,
 ) -> dict:
     """
-    Run train/test evaluation with GIN (EHM or PWC) for each split (seed) under splits_dir.
+    Run train/test evaluation with GIN-PWC for each split under splits_dir.
     When eval_only=True, load saved models from models_base/{model_type}/{division}/seed{N}.
     Returns dict with division, n_seeds, per-split results, and aggregated metrics.
     """
@@ -208,24 +207,7 @@ def evaluate_multi_splits_gin(
                 logging.getLogger().addHandler(log_handler)
 
             try:
-                if model_type == "gin_ehm":
-                    train_gin_regression(
-                        train_data_for_training,
-                        str(model_save_dir),
-                        graph_timeout=graph_timeout,
-                        jobs=jobs,
-                        hidden_dim=hidden_dim,
-                        num_layers=num_layers,
-                        num_epochs=num_epochs,
-                        batch_size=batch_size,
-                        lr=lr,
-                        dropout=dropout,
-                        val_ratio=val_ratio,
-                        patience=patience,
-                        val_split_seed=val_split_seed,
-                        min_epochs=min_epochs,
-                    )
-                elif model_type == "gin_pwc":
+                if model_type == "gin_pwc":
                     train_gin_pwc(
                         train_data_for_training,
                         str(model_save_dir),
@@ -424,12 +406,12 @@ def evaluate_multi_splits_gin(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Evaluate GIN (EHM or PWC) over multiple train/test splits (per seed)"
+        description="Evaluate GIN-PWC over multiple train/test splits"
     )
     parser.add_argument(
         "--model-type",
         type=str,
-        choices=["gin_ehm", "gin_pwc"],
+        choices=["gin_pwc"],
         default="gin_pwc",
         help="GIN model to train and evaluate (default: gin_pwc)",
     )

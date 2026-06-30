@@ -29,7 +29,7 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torch_geometric.data import Batch, Data
 from torch_geometric.nn import GINConv, global_mean_pool
 
-from smt_select.models.gin_ehm import (
+from smt_select.models.gin_common import (
     NodeVocabulary,
     build_vocabulary_from_graph_dicts,
     graph_dict_to_gin_data,

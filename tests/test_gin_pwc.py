@@ -10,7 +10,7 @@ pytest.importorskip("torch_geometric")
 
 from torch_geometric.data import Batch, Data
 
-from smt_select.models.gin_ehm import NodeVocabulary
+from smt_select.models.gin_common import NodeVocabulary
 from smt_select.models.gin_pwc import (
     GINPwc,
     GINPwcBackbone,
@@ -145,7 +145,7 @@ def test_gin_pwc_selector_algorithm_select():
         )
         smt_path = Path(f.name)
     try:
-        from smt_select.models.gin_ehm import build_vocabulary_from_graph_dicts
+        from smt_select.models.gin_common import build_vocabulary_from_graph_dicts
         from smt_select.representations.graph_rep import smt_to_graph
 
         graph_dict = smt_to_graph(smt_path)
