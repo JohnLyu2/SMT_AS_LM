@@ -4,8 +4,20 @@ Generate doc/cp26/family_only_graph_text_compare.tex comparing PAR-2 gap closed 
 for Graph vs. Graph + Text (family-only and full desc).
 """
 
-import json
 from pathlib import Path
+
+try:
+    from scripts.latex.common import (
+        collect_summary_logics as collect_logics_from_dir,
+        latex_escape,
+        test_metric_mean_std,
+    )
+except ModuleNotFoundError:
+    from common import (
+        collect_summary_logics as collect_logics_from_dir,
+        latex_escape,
+        test_metric_mean_std,
+    )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -19,47 +31,8 @@ LABELS = ["graph", "family_only_desc", "graph_text"]
 TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "family_only_graph_text_compare.tex"
 
 
-def latex_escape(s: str) -> str:
-    for old, new in [
-        ("\\", "\\textbackslash{}"), ("&", "\\&"), ("%", "\\%"),
-        ("$", "\\$"), ("#", "\\#"), ("_", "\\_"), ("{", "\\{"),
-        ("}", "\\}"), ("~", "\\textasciitilde{}"), ("^", "\\textasciicircum{}"),
-    ]:
-        s = s.replace(old, new)
-    return s
-
-
 def get_test_gap_par2(summary_path: Path) -> tuple[float | None, float | None]:
-    """Return (mean, std) of test gap_cls_par2 from summary.json, or (None, None)."""
-    if not summary_path.is_file():
-        return None, None
-    try:
-        with open(summary_path, encoding="utf-8") as f:
-            data = json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return None, None
-    agg = data.get("aggregated", {}).get("test", {})
-    if "gap_cls_par2_mean" in agg and "gap_cls_par2_std" in agg:
-        return float(agg["gap_cls_par2_mean"]), float(agg["gap_cls_par2_std"])
-    seeds = data.get("seeds") or []
-    values = [
-        float(s["test_metrics"]["gap_cls_par2"])
-        for s in seeds
-        if s and "test_metrics" in s and "gap_cls_par2" in s.get("test_metrics", {})
-    ]
-    if not values:
-        return None, None
-    mean = sum(values) / len(values)
-    std = (sum((x - mean) ** 2 for x in values) / len(values)) ** 0.5
-    return mean, std
-
-
-def collect_logics_from_dir(root: Path) -> set[str]:
-    out: set[str] = set()
-    for p in root.iterdir():
-        if p.is_dir() and (p / "summary.json").is_file():
-            out.add(p.name)
-    return out
+    return test_metric_mean_std(summary_path, "gap_cls_par2")
 
 
 def format_cell(mean: float | None) -> str:
