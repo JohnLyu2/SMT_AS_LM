@@ -15,9 +15,7 @@ Use --eval-only with --models-base to evaluate pre-trained fusion models without
 import argparse
 import csv
 import gc
-import json
 import logging
-import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -27,6 +25,13 @@ import torch
 
 from src.defaults import DEFAULT_BENCHMARK_ROOT
 from src.evaluate import as_evaluate, compute_metrics, load_extraction_times_csv
+from src.experiment_utils import (
+    aggregate_gap_metrics,
+    discover_seed_dirs,
+    rebase_performance_data,
+    select_seed_dirs,
+    write_summary,
+)
 from src.fallback_merge import (
     CSV_HEADER,
     load_eval_csv,
@@ -53,31 +58,6 @@ DEFAULT_LITETEXT_DIR = Path("data/results/lite+text/all-mpnet-base-v2")
 DEFAULT_SPLITS_BASE = Path("data/train_test_splits")
 
 CSV_HEADER = ["benchmark", "selected", "solved", "runtime", "solver_runtime", "overhead", "feature_fail"]
-
-
-def discover_seed_dirs(splits_dir: Path) -> list[tuple[int, Path]]:
-    """Find seed subdirs under splits_dir that contain train.json and test.json."""
-    out: list[tuple[int, Path]] = []
-    pattern = re.compile(r"^seed(\d+)$")
-    for sub in splits_dir.iterdir():
-        if not sub.is_dir():
-            continue
-        m = pattern.match(sub.name)
-        if not m:
-            continue
-        if (sub / "train.json").exists() and (sub / "test.json").exists():
-            out.append((int(m.group(1)), sub))
-    return sorted(out, key=lambda x: x[0])
-
-
-def _rebase_perf_data(multi_perf_data: MultiSolverDataset, benchmark_root: Path) -> MultiSolverDataset:
-    """Rebase instance paths with benchmark_root."""
-    rebased = {str(benchmark_root / p): multi_perf_data[p] for p in multi_perf_data.keys()}
-    return MultiSolverDataset(
-        rebased,
-        multi_perf_data.get_solver_id_dict(),
-        multi_perf_data.get_timeout(),
-    )
 
 
 def load_failed_gin_paths(extraction_times_csv: Path) -> list[str]:
@@ -160,10 +140,7 @@ def evaluate_multi_splits_fusion(
             f"No seed dirs (seedN with train.json and test.json) found in {splits_dir}"
         )
     if seeds is not None:
-        seed_set = set(seeds)
-        seed_entries = [(s, d) for s, d in seed_entries if s in seed_set]
-        if not seed_entries:
-            raise ValueError(f"No matching seed dirs for seeds {sorted(seed_set)} in {splits_dir}")
+        seed_entries = select_seed_dirs(seed_entries, seeds)
 
     # Detect flat vs per-seed desc layout
     desc_flat_ok = (desc_division_dir / "features.csv").is_file() and (
@@ -210,8 +187,8 @@ def evaluate_multi_splits_fusion(
         test_path = seed_dir / "test.json"
         train_data = parse_performance_json(str(train_path), timeout)
         test_data = parse_performance_json(str(test_path), timeout)
-        train_data = _rebase_perf_data(train_data, root)
-        test_data = _rebase_perf_data(test_data, root)
+        train_data = rebase_performance_data(train_data, root)
+        test_data = rebase_performance_data(test_data, root)
 
         if skip_easy_unsolvable:
             paths_to_keep, filter_stats = filter_training_instances(
@@ -413,14 +390,7 @@ def evaluate_multi_splits_fusion(
             torch.cuda.empty_cache()
 
     test_metrics_list = [r["test_metrics"] for r in seed_results]
-    aggregated = {
-        "test": {
-            "gap_cls_solved_mean": float(np.mean([m["gap_cls_solved"] for m in test_metrics_list])),
-            "gap_cls_solved_std": float(np.std([m["gap_cls_solved"] for m in test_metrics_list])),
-            "gap_cls_par2_mean": float(np.mean([m["gap_cls_par2"] for m in test_metrics_list])),
-            "gap_cls_par2_std": float(np.std([m["gap_cls_par2"] for m in test_metrics_list])),
-        },
-    }
+    aggregated = aggregate_gap_metrics(seed_results, ("test",))
 
     results = {
         "division": division,
@@ -435,23 +405,7 @@ def evaluate_multi_splits_fusion(
 
     if output_dir:
         summary_path = Path(output_dir) / "summary.json"
-        summary_path.parent.mkdir(parents=True, exist_ok=True)
-
-        def to_python(obj):
-            if isinstance(obj, (np.integer, np.int64)):
-                return int(obj)
-            if isinstance(obj, (np.floating, np.float64)):
-                return float(obj)
-            if isinstance(obj, np.ndarray):
-                return obj.tolist()
-            if isinstance(obj, dict):
-                return {k: to_python(v) for k, v in obj.items()}
-            if isinstance(obj, list):
-                return [to_python(x) for x in obj]
-            return obj
-
-        with open(summary_path, "w") as f:
-            json.dump(to_python(results), f, indent=2)
+        write_summary(summary_path, results)
         logging.info("Saved summary to %s", summary_path)
 
     agg = results["aggregated"]

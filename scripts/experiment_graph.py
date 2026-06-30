@@ -21,19 +21,22 @@ Use --eval-only with --models-base (e.g. models) to evaluate pre-trained models 
 
 import argparse
 import gc
-import json
 import logging
-import re
 import shutil
 import tempfile
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from src.defaults import DEFAULT_BENCHMARK_ROOT
 from src.evaluate import as_evaluate, as_evaluate_parallel, compute_metrics
 from src.evaluate_gin import _load_gin_selector
+from src.experiment_utils import (
+    aggregate_gap_metrics,
+    discover_seed_dirs,
+    rebase_performance_data,
+    write_summary,
+)
 from src.fallback_merge import (
     CSV_HEADER,
     load_eval_csv,
@@ -49,34 +52,6 @@ from src.performance import (
     parse_as_perf_csv,
     parse_performance_json,
 )
-
-
-def discover_seed_dirs(splits_dir: Path) -> list[tuple[int, Path]]:
-    """
-    Find seed subdirectories under splits_dir that contain train.json and test.json.
-    Returns list of (seed_value, seed_dir_path) sorted by seed value.
-    """
-    out: list[tuple[int, Path]] = []
-    pattern = re.compile(r"^seed(\d+)$")
-    for sub in splits_dir.iterdir():
-        if not sub.is_dir():
-            continue
-        m = pattern.match(sub.name)
-        if not m:
-            continue
-        if (sub / "train.json").exists() and (sub / "test.json").exists():
-            out.append((int(m.group(1)), sub))
-    return sorted(out, key=lambda x: x[0])
-
-
-def _rebase_perf_data(multi_perf_data: MultiSolverDataset, benchmark_root: Path) -> MultiSolverDataset:
-    """Rebase instance paths with benchmark_root."""
-    rebased = {str(benchmark_root / p): multi_perf_data[p] for p in multi_perf_data.keys()}
-    return MultiSolverDataset(
-        rebased,
-        multi_perf_data.get_solver_id_dict(),
-        multi_perf_data.get_timeout(),
-    )
 
 
 DEFAULT_LITE_DIR = Path("data") / "results" / "lite"
@@ -173,8 +148,8 @@ def evaluate_multi_splits_gin(
         test_path = seed_dir / "test.json"
         train_data = parse_performance_json(str(train_path), timeout)
         test_data = parse_performance_json(str(test_path), timeout)
-        train_data = _rebase_perf_data(train_data, root)
-        test_data = _rebase_perf_data(test_data, root)
+        train_data = rebase_performance_data(train_data, root)
+        test_data = rebase_performance_data(test_data, root)
 
         # For training we may use a filtered set; for train evaluation we always use full train set.
         if skip_easy_unsolvable:
@@ -406,23 +381,7 @@ def evaluate_multi_splits_gin(
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-    test_metrics_list = [r["test_metrics"] for r in seed_results]
-    train_metrics_list = [r["train_metrics"] for r in seed_results]
-
-    aggregated = {
-        "train": {
-            "gap_cls_solved_mean": float(np.mean([m["gap_cls_solved"] for m in train_metrics_list])),
-            "gap_cls_solved_std": float(np.std([m["gap_cls_solved"] for m in train_metrics_list])),
-            "gap_cls_par2_mean": float(np.mean([m["gap_cls_par2"] for m in train_metrics_list])),
-            "gap_cls_par2_std": float(np.std([m["gap_cls_par2"] for m in train_metrics_list])),
-        },
-        "test": {
-            "gap_cls_solved_mean": float(np.mean([m["gap_cls_solved"] for m in test_metrics_list])),
-            "gap_cls_solved_std": float(np.std([m["gap_cls_solved"] for m in test_metrics_list])),
-            "gap_cls_par2_mean": float(np.mean([m["gap_cls_par2"] for m in test_metrics_list])),
-            "gap_cls_par2_std": float(np.std([m["gap_cls_par2"] for m in test_metrics_list])),
-        },
-    }
+    aggregated = aggregate_gap_metrics(seed_results, ("train", "test"))
 
     results = {
         "division": division,
@@ -437,23 +396,7 @@ def evaluate_multi_splits_gin(
 
     if output_dir:
         summary_path = output_dir / "summary.json"
-        summary_path.parent.mkdir(parents=True, exist_ok=True)
-
-        def to_python(obj):
-            if isinstance(obj, (np.integer, np.int64)):
-                return int(obj)
-            if isinstance(obj, (np.floating, np.float64)):
-                return float(obj)
-            if isinstance(obj, np.ndarray):
-                return obj.tolist()
-            if isinstance(obj, dict):
-                return {k: to_python(v) for k, v in obj.items()}
-            if isinstance(obj, list):
-                return [to_python(x) for x in obj]
-            return obj
-
-        with open(summary_path, "w") as f:
-            json.dump(to_python(results), f, indent=2)
+        write_summary(summary_path, results)
         logging.info("Saved summary to %s", summary_path)
 
     agg = results["aggregated"]

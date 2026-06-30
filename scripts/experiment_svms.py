@@ -23,19 +23,20 @@ When output_dir is set, training logs are saved to output_dir/train_log/seed{N}.
 """
 
 import argparse
-import json
 import logging
-import re
 import shutil
 import tempfile
 from pathlib import Path
-
-import numpy as np
 
 from src.evaluate import as_evaluate
 from src.evaluate import compute_metrics
 from src.evaluate import load_extraction_times_csv
 from src.evaluate import load_failed_paths_from_extraction_times_csv
+from src.experiment_utils import (
+    aggregate_gap_metrics,
+    discover_seed_dirs,
+    write_summary,
+)
 from src.feature import validate_feature_coverage
 from src.performance import parse_performance_json
 from src.pwc import PwcSelector, train_pwc
@@ -45,39 +46,6 @@ from src.utils import normalize_path
 FEATURE_TIMEOUT = 5.0
 # Default splits base when using --logic (relative to project root)
 SPLITS_BASE = "data/train_test_splits"
-
-
-def _to_python_for_json(obj) -> int | float | list | dict | str | bool | None:
-    """Convert numpy types to native Python for JSON serialization."""
-    if isinstance(obj, (np.integer, np.int64)):
-        return int(obj)
-    if isinstance(obj, (np.floating, np.float64)):
-        return float(obj)
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, dict):
-        return {k: _to_python_for_json(v) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [_to_python_for_json(x) for x in obj]
-    return obj
-
-
-def discover_seed_dirs(splits_dir: Path) -> list[tuple[int, Path]]:
-    """
-    Find seed subdirectories under splits_dir that contain train.json and test.json.
-    Returns list of (seed_value, seed_dir_path) sorted by seed value.
-    """
-    out: list[tuple[int, Path]] = []
-    pattern = re.compile(r"^seed(\d+)$")
-    for sub in splits_dir.iterdir():
-        if not sub.is_dir():
-            continue
-        m = pattern.match(sub.name)
-        if not m:
-            continue
-        if (sub / "train.json").exists() and (sub / "test.json").exists():
-            out.append((int(m.group(1)), sub))
-    return sorted(out, key=lambda x: x[0])
 
 
 def evaluate_multi_splits(
@@ -345,27 +313,7 @@ def evaluate_multi_splits(
             if not save_models:
                 shutil.rmtree(model_save_dir, ignore_errors=True)
 
-    test_metrics_list = [r["test_metrics"] for r in seed_results]
-    train_metrics_list = [r["train_metrics"] for r in seed_results]
-
-    def _agg(metrics_list: list[dict], key: str) -> tuple[float, float]:
-        vals = [m[key] for m in metrics_list]
-        return float(np.mean(vals)), float(np.std(vals))
-
-    aggregated = {
-        "train": {
-            "gap_cls_solved_mean": _agg(train_metrics_list, "gap_cls_solved")[0],
-            "gap_cls_solved_std": _agg(train_metrics_list, "gap_cls_solved")[1],
-            "gap_cls_par2_mean": _agg(train_metrics_list, "gap_cls_par2")[0],
-            "gap_cls_par2_std": _agg(train_metrics_list, "gap_cls_par2")[1],
-        },
-        "test": {
-            "gap_cls_solved_mean": _agg(test_metrics_list, "gap_cls_solved")[0],
-            "gap_cls_solved_std": _agg(test_metrics_list, "gap_cls_solved")[1],
-            "gap_cls_par2_mean": _agg(test_metrics_list, "gap_cls_par2")[0],
-            "gap_cls_par2_std": _agg(test_metrics_list, "gap_cls_par2")[1],
-        },
-    }
+    aggregated = aggregate_gap_metrics(seed_results, ("train", "test"))
 
     results = {
         "division": division,
@@ -381,8 +329,7 @@ def evaluate_multi_splits(
 
     if output_dir:
         summary_path = output_dir / "summary.json"
-        with open(summary_path, "w") as f:
-            json.dump(_to_python_for_json(results), f, indent=2)
+        write_summary(summary_path, results)
         logging.info(f"Saved summary to {summary_path}")
 
     agg = results["aggregated"]
