@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate doc/cp26/family_only_graph_text_compare.tex comparing PAR-2 gap closed (%)
+Generate papers/cp26/tables/family_only_graph_text_compare.tex comparing PAR-2 gap closed (%)
 for Graph vs. Graph + Text (family-only and full desc).
 """
 
 from pathlib import Path
 
 try:
-    from scripts.latex.common import (
+    from papers.cp26.scripts.common import (
         collect_summary_logics as collect_logics_from_dir,
         latex_escape,
         test_metric_mean_std,
@@ -19,7 +19,7 @@ except ModuleNotFoundError:
         test_metric_mean_std,
     )
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 GRAPH_ROOT = PROJECT_ROOT / "data" / "results" / "graph"
 GRAPH_TEXT_ROOT = PROJECT_ROOT / "data" / "results" / "graph+text" / "all-mpnet-base-v2"
@@ -28,7 +28,7 @@ GRAPH_FAMILY_ONLY_ROOT = PROJECT_ROOT / "data" / "results" / "graph+family_only_
 # Column order: Graph | Graph+Text family-only | Graph+Text full desc (result paths)
 LABELS = ["graph", "family_only_desc", "graph_text"]
 
-TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "family_only_graph_text_compare.tex"
+TEX_PATH = PROJECT_ROOT / "papers" / "cp26" / "tables" / "family_only_graph_text_compare.tex"
 
 
 def get_test_gap_par2(summary_path: Path) -> tuple[float | None, float | None]:

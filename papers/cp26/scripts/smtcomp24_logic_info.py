@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Generate doc/cp26/smtcomp24_logic_info.tex from meta_info and performance data.
+Generate papers/cp26/tables/smtcomp24_logic_info.tex from meta_info and performance data.
 
 Data locations (different from output):
 - Meta-info: data/raw_data/meta_info/<logic>.json (benchmark list, description, size)
 - Performance: data/raw_data/smtcomp24_performance/<logic>.json (SMT-COMP 2024)
 
-Output: doc/cp26/smtcomp24_logic_info.tex (LaTeX table only).
+Output: papers/cp26/tables/smtcomp24_logic_info.tex (LaTeX table only).
 """
 
 import argparse
@@ -14,14 +14,14 @@ import json
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(PROJECT_ROOT))
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from smt_select.data.performance import parse_performance_json
 
 DEFAULT_META_DIR = PROJECT_ROOT / "data" / "raw_data" / "meta_info"
 DEFAULT_PERF_DIR = PROJECT_ROOT / "data" / "raw_data" / "smtcomp24_performance"
-DEFAULT_TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "smtcomp24_logic_info.tex"
+DEFAULT_TEX_PATH = PROJECT_ROOT / "papers" / "cp26" / "tables" / "smtcomp24_logic_info.tex"
 DEFAULT_CSV_PATH = PROJECT_ROOT / "doc" / "logic_filter" / "smtcomp24_logic_info.csv"
 
 
@@ -184,7 +184,7 @@ def rows_to_latex(rows: list[dict[str, int | str | float]], no_header: bool) -> 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Build SMT-COMP 2024 logic info from data/ and write doc/cp26/smtcomp24_logic_info.tex."
+        description="Build SMT-COMP 2024 logic info and write papers/cp26/tables/smtcomp24_logic_info.tex."
     )
     parser.add_argument(
         "--meta-dir",
@@ -203,7 +203,7 @@ def main() -> None:
         "--output",
         type=Path,
         default=DEFAULT_TEX_PATH,
-        help=f"Output .tex path (default: doc/cp26/smtcomp24_logic_info.tex)",
+        help="Output .tex path (default: papers/cp26/tables/smtcomp24_logic_info.tex)",
     )
     parser.add_argument(
         "--timeout",

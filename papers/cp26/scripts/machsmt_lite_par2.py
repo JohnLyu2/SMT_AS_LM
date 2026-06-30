@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate doc/cp26/machsmt_lite_par2.tex comparing PAR-2 gap closed (%)
+Generate papers/cp26/tables/machsmt_lite_par2.tex comparing PAR-2 gap closed (%)
 for MachSMT EHM, MachSMT PWC, and SMT-Select Lite.
 """
 
 import json
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 RESULT_DIRS = [
     PROJECT_ROOT / "data" / "results" / "machsmt" / "ehm",
@@ -16,7 +16,7 @@ RESULT_DIRS = [
 ]
 LABELS = ["mach_ehm", "mach_pwc", "synt"]
 
-TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "machsmt_lite_par2.tex"
+TEX_PATH = PROJECT_ROOT / "papers" / "cp26" / "tables" / "machsmt_lite_par2.tex"
 
 COLUMN_HEADERS = ["MachSMT-EHM", "MachSMT-PWC", "SMT-Select-Lite"]
 

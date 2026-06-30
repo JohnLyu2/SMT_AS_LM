@@ -6,19 +6,19 @@ Reads CSVs from data/features/graph/<logic>/seed*/extraction_times.csv,
 which have columns: path,time_sec,failed. For each seed, compute
 fail_rate = (# rows with failed==1) / (total rows). Then average over
 seeds per logic. Also reads data/results/sibyl/graph_log/graph_build_<logic>.csv
-(same format) for Sibyl fail rate. Writes doc/cp26/feature_fail.tex with
+(same format) for Sibyl fail rate. Writes papers/cp26/tables/feature_fail.tex with
 columns: Logic, Fail rate (%), Sibyl (%).
 """
 
 import csv
 from pathlib import Path
 
-# Script is under scripts/collect_results/
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Script is under papers/cp26/scripts/
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 GRAPH_FEATURE_ROOT = PROJECT_ROOT / "data" / "features" / "graph"
 SIBYL_GRAPH_LOG = PROJECT_ROOT / "data" / "results" / "sibyl" / "graph_log"
-OUTPUT_TEX = PROJECT_ROOT / "doc" / "cp26" / "feature_fail.tex"
+OUTPUT_TEX = PROJECT_ROOT / "papers" / "cp26" / "tables" / "feature_fail.tex"
 
 
 def latex_escape(s: str) -> str:

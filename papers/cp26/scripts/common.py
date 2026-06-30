@@ -1,4 +1,4 @@
-"""Shared helpers for generating paper tables from experiment summaries."""
+"""Shared helpers for generating CP26 paper tables from experiment summaries."""
 
 from __future__ import annotations
 

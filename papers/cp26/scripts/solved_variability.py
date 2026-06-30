@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate doc/cp26/solved_variability.tex from result summary.json files.
+Generate papers/cp26/tables/solved_variability.tex from result summary.json files.
 
 Reads summary.json from each SMT-Select result directory, extracts test solved count
 (mean ± std over seeds), and writes a LaTeX table. No MachSMT or Sibyl columns.
@@ -9,7 +9,7 @@ Reads summary.json from each SMT-Select result directory, extracts test solved c
 import json
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 # SMT-Select variants only (no MachSMT, Sibyl)
 RESULT_DIRS = [
@@ -21,7 +21,7 @@ RESULT_DIRS = [
 ]
 LABELS = ["synt", "gin_pwc", "text_mpnet", "synt_mpnet", "fusion_pwc"]
 
-TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "solved_variability.tex"
+TEX_PATH = PROJECT_ROOT / "papers" / "cp26" / "tables" / "solved_variability.tex"
 
 DISPLAY_ORDER = ["synt", "text_mpnet", "synt_mpnet", "gin_pwc", "fusion_pwc"]
 VARIANT_MAP = {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate doc/cp26/final_par2.tex directly from result summary.json files.
+Generate papers/cp26/tables/final_par2.tex directly from result summary.json files.
 
 Reads summary.json from each result directory, extracts test PAR-2 gap closed
 (mean ± std over seeds), and writes a LaTeX table.
@@ -9,11 +9,11 @@ Reads summary.json from each result directory, extracts test PAR-2 gap closed
 from pathlib import Path
 
 try:
-    from scripts.latex.common import latex_escape, test_metric_mean_std
+    from papers.cp26.scripts.common import latex_escape, test_metric_mean_std
 except ModuleNotFoundError:
     from common import latex_escape, test_metric_mean_std
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 RESULT_DIRS = [
     PROJECT_ROOT / "data" / "results" / "lite",
@@ -26,7 +26,7 @@ RESULT_DIRS = [
 ]
 LABELS = ["synt", "synt_mpnet", "gin_pwc", "mach_ehm", "fusion_pwc", "sibyl", "text_mpnet"]
 
-TEX_PATH = PROJECT_ROOT / "doc" / "cp26" / "final_par2.tex"
+TEX_PATH = PROJECT_ROOT / "papers" / "cp26" / "tables" / "final_par2.tex"
 
 DISPLAY_ORDER = ["mach_ehm", "sibyl", "synt", "gin_pwc", "text_mpnet", "synt_mpnet", "fusion_pwc"]
 VARIANT_MAP = {
