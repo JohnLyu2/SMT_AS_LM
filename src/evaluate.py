@@ -506,7 +506,3 @@ def main():
 
     if args.output_csv:
         logging.info(f"Results written to {args.output_csv}")
-
-
-if __name__ == "__main__":
-    main()

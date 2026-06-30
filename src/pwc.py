@@ -320,7 +320,6 @@ def main():
         default=None,
         help="Path to file listing failed instance paths (one per line, e.g. timeout10_failed_paths.txt); excluded from training and used for failback solver ranking.",
     )
-
     args = parser.parse_args()
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -350,7 +349,3 @@ def main():
         random_seed=args.random_seed,
         timeout_instance_paths=args.failed_instances,
     )
-
-
-if __name__ == "__main__":
-    main()

@@ -386,7 +386,3 @@ def main() -> None:
         with open(model_dir / "solver2id.json", "w", encoding="utf-8") as f:
             json.dump(solver2id, f, indent=2)
         logging.info("Wrote solver2id.json to: %s", model_dir / "solver2id.json")
-
-
-if __name__ == "__main__":
-    main()

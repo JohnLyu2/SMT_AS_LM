@@ -14,7 +14,7 @@ Example:
     --model-dir data/models/setfit_desc/BV
 
 After training, evaluate with:
-  python -m src.evaluate --setfit-model <model_dir> --desc-json <desc_json> \\
+  python scripts/evaluate_selector.py --setfit-model <model_dir> --desc-json <desc_json> \\
     --perf-json <test_perf_json> [--output-csv out.csv]
 """
 
@@ -176,7 +176,7 @@ def main() -> int:
 
     logging.info("Training complete. To evaluate:")
     logging.info(
-        "  python -m src.evaluate --setfit-model %s --desc-json %s --perf-json <TEST_JSON> [--output-csv out.csv]",
+        "  python scripts/evaluate_selector.py --setfit-model %s --desc-json %s --perf-json <TEST_JSON> [--output-csv out.csv]",
         model_dir.resolve(),
         Path(args.desc_json).resolve(),
     )

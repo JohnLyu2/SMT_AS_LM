@@ -99,7 +99,3 @@ def main() -> None:
     print(format_evaluation_short(metrics))
     if args.output_csv:
         print(f"Wrote per-instance results to {args.output_csv}")
-
-
-if __name__ == "__main__":
-    main()
