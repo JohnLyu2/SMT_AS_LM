@@ -5,6 +5,7 @@
 \usecolortheme{default}
 \setbeamertemplate{navigation symbols}{}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
 
 \definecolor{winnerblue}{RGB}{49,76,146}
 \definecolor{vbsorange}{RGB}{230,126,34}
@@ -87,13 +88,111 @@ for SMT Algorithm Selection}
   \begin{beamercolorbox}[rounded=true,sep=0.45em,center]{block body}
     \small
     \textbf{No single solver captures all solvable instances.}\\
-    Perfect per-instance selection recovers up to
+    Perfect solver selection recovers up to
     \textbf{\color{vbsorange}17.7\%}.
   \end{beamercolorbox}
 
   \vspace{0.25em}
   \tiny
   Source: \url{https://smt-comp.github.io/2025/results/}
+\end{frame}
+
+\begin{frame}{Machine Learning (ML)-Based Algorithm Selection}
+  \centering
+
+  \vspace{2.6em}
+  \begin{tikzpicture}[
+      font=\small,
+      node distance=0.65cm,
+      box/.style={
+        draw=gray!55,
+        fill=gray!5,
+        rounded corners,
+        minimum height=1.45cm,
+        minimum width=2.55cm,
+        align=center
+      },
+      selector/.style={
+        draw=winnerblue,
+        fill=winnerblue!16,
+        line width=1.2pt,
+        rounded corners,
+        minimum height=1.75cm,
+        minimum width=3.15cm,
+        align=center
+      },
+      arrow/.style={-{Latex[length=2.2mm]},thick,gray!70}
+    ]
+    \node[box] (instance) {Problem instance\\$x$};
+    \node[box,right=of instance] (features) {Extract features\\$\phi(x)$};
+    \node[selector,right=of features] (select) {
+      {\large\bfseries ML-based selector}\\[-0.1em]
+      {\scriptsize\bfseries\color{winnerblue!75!black}trained on past performance}
+    };
+    \node[box,right=of select] (solver) {Selected solver\\$\alpha^*$};
+
+    \draw[arrow] (instance) -- (features);
+    \draw[arrow] (features) -- (select);
+    \draw[arrow] (select) -- (solver);
+  \end{tikzpicture}
+
+  \vfill
+  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
+    \small
+    A machine learning (ML)-based algorithm selector learns from historical
+    solver performance to predict the best solver for each new instance.
+  \end{beamercolorbox}
+\end{frame}
+
+\begin{frame}{Feature Representation of Problem Instances}
+  \centering
+  \scriptsize
+  Algorithm selectors differ primarily in how they encode each problem instance.
+
+  \vspace{0.7em}
+  \begin{tikzpicture}[
+      font=\scriptsize,
+      card/.style={
+        draw=winnerblue!55,
+        fill=winnerblue!5,
+        rounded corners,
+        minimum width=4.15cm,
+        minimum height=4.0cm,
+        text width=3.55cm,
+        align=center
+      }
+    ]
+    \node[card] (manual) at (0,0) {
+      {\large\bfseries Handcrafted}\\[0.45em]
+      SMT symbol counts\\
+      file size and term depth\\[0.7em]
+      \textcolor{gray!75}{Fast, but requires\\domain expertise}
+    };
+
+    \node[card] (graph) at (4.65,0) {
+      {\large\bfseries Graph}\\[0.45em]
+      Formula AST / DAG\\
+      learned with a GNN\\[0.7em]
+      \textcolor{gray!75}{Captures structural\\relationships}
+    };
+
+    \node[card,draw=vbsorange!70,fill=vbsorange!7] (text) at (9.3,0) {
+      {\large\bfseries Language}\\[0.45em]
+      Application domain\\
+      benchmark source and intent\\[0.7em]
+      \textcolor{gray!75}{Provides high-level\\semantic context}
+    };
+
+    \draw[-{Latex[length=2mm]},thick,gray!50] (manual.east) -- (graph.west);
+    \draw[-{Latex[length=2mm]},thick,gray!50] (graph.east) -- (text.west);
+  \end{tikzpicture}
+
+  \vfill
+  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
+    \small
+    Formula structure tells us \emph{what} is encoded;
+    language context helps explain \emph{where it came from}.
+  \end{beamercolorbox}
 \end{frame}
 
 \end{document}
