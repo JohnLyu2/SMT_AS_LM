@@ -4,6 +4,10 @@
 \usetheme{Madrid}
 \usecolortheme{default}
 \setbeamertemplate{navigation symbols}{}
+\usepackage{tikz}
+
+\definecolor{winnerblue}{RGB}{49,76,146}
+\definecolor{vbsorange}{RGB}{230,126,34}
 
 \title[SMT-Select]{Learning Unified Graph and Language Representations\\
 for SMT Algorithm Selection}
@@ -32,6 +36,64 @@ for SMT Algorithm Selection}
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+\begin{frame}{Solver Complementarity in SMT-COMP 2025}
+  \centering
+  \scriptsize
+  Winner and virtual-best solver (VBS) solve rates for the six SMT-COMP 2025 Single Query
+  logics with the largest gaps.
+
+  \vspace{0.35em}
+  \begin{tikzpicture}[x=0.75cm,y=0.69cm,font=\scriptsize]
+    % Solve-rate axis and grid.
+    \foreach \x in {0,2,4,6,8,10} {
+      \pgfmathtruncatemacro{\percent}{\x*10}
+      \draw[gray!18] (\x,-0.55) -- (\x,5.55);
+      \node[below,gray!75] at (\x,-0.62) {\percent\%};
+    }
+
+    % Logic, solve rates, gap, winner, and number of participating solvers.
+    \foreach \logic/\winnerrate/\vbs/\gap/\winnername/\nsolvers
+      [count=\row from 0] in {
+      LIA/78.0/95.7/17.7/Z3-alpha/8,
+      QF\_DT/47.4/62.2/14.8/cvc5/2,
+      ALIA/21.4/35.8/14.4/cvc5/4,
+      UFBV/66.7/75.7/9.0/Bitwuzla/4,
+      QF\_UFBV/86.3/93.8/7.6/Bitwuzla/6,
+      QF\_UFNIA/77.9/85.0/7.1/Yices2/3
+    } {
+      \pgfmathsetmacro{\y}{5-\row}
+      \pgfmathsetmacro{\winnerx}{\winnerrate/10}
+      \pgfmathsetmacro{\vbsx}{\vbs/10}
+      \node[anchor=east,align=right] at (-0.28,\y)
+        {\logic\\[-0.2em]
+         \tiny\textcolor{winnerblue}{\textbf{\winnername}}
+         \textcolor{gray!75}{\,\textbullet\,\nsolvers\ solvers}};
+      \draw[line width=2.2pt,gray!40] (\winnerx,\y) -- (\vbsx,\y);
+      \fill[winnerblue] (\winnerx,\y) circle (2.2pt);
+      \fill[vbsorange] (\vbsx,\y) circle (2.2pt);
+      \node[anchor=west,text=vbsorange,font=\tiny\bfseries]
+        at (10.18,\y) {+\gap\%};
+    }
+
+    \fill[winnerblue] (1.20,6.05) circle (2.2pt);
+    \node[anchor=west] at (1.42,6.05) {Winner solve rate};
+    \fill[vbsorange] (6.20,6.05) circle (2.2pt);
+    \node[anchor=west] at (6.42,6.05) {VBS solve rate};
+  \end{tikzpicture}
+
+  \vspace{-0.25em}
+  \begin{beamercolorbox}[rounded=true,sep=0.45em,center]{block body}
+    \small
+    \textbf{No single solver captures all solvable instances.}\\
+    Perfect per-instance selection recovers up to
+    \textbf{\color{vbsorange}17.7\%}.
+  \end{beamercolorbox}
+
+  \vspace{0.25em}
+  \tiny
+  Source: \url{https://smt-comp.github.io/2025/results/}
 \end{frame}
 
 \end{document}
