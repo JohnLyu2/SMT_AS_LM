@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SVM-based algorithm selection over multiple train/test splits (experiment_svms).
+Tabular algorithm selection over multiple train/test splits.
 
 Use --logic (e.g. BV, QF_BV) to run one division; omit --logic to run all logics found in feature dir(s).
   Splits are read from data/train_test_splits/<logic>/ (seed0/, seed10/, ... with train.json, test.json).
@@ -41,7 +41,10 @@ from smt_select.evaluation.experiment_utils import (
 )
 from smt_select.data.feature import validate_feature_coverage
 from smt_select.data.performance import parse_performance_json
-from smt_select.models.pwc import PwcSelector, train_pwc
+from smt_select.models.tabular.selector import (
+    TabularSelector,
+    train_tabular_selector,
+)
 from smt_select.utils import normalize_path
 
 # Per-instance extraction-time overhead cap (seconds) when computing metrics
@@ -238,7 +241,7 @@ def evaluate_multi_splits(
                 )
                 timeout_file.write_text("\n".join(failed_paths_list), encoding="utf-8")
             try:
-                train_pwc(
+                train_tabular_selector(
                     train_data,
                     save_dir=str(model_save_dir),
                     feature_csv_path=feature_csv_path_this,
@@ -252,7 +255,7 @@ def evaluate_multi_splits(
                 if timeout_file and timeout_file.is_file():
                     timeout_file.unlink(missing_ok=True)
 
-            as_model = PwcSelector.load(str(model_save_dir / "model.joblib"))
+            as_model = TabularSelector.load(str(model_save_dir / "model.joblib"))
             # Ensure evaluation uses this seed's features (and times) for train/test
             as_model.feature_csv_path = feature_csv_path_this
             as_model.extraction_time_by_path = extraction_time_by_path_this

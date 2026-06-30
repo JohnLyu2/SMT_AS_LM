@@ -45,7 +45,7 @@ from smt_select.evaluation.fallback import (
     merge_with_fallback,
     write_eval_csv,
 )
-from smt_select.models.gin_pwc import train_gin_pwc
+from smt_select.models.graph.selector import train_graph_selector
 from smt_select.data.performance import (
     filter_training_instances,
     MultiSolverDataset,
@@ -208,7 +208,7 @@ def evaluate_multi_splits_gin(
 
             try:
                 if model_type == "gin_pwc":
-                    train_gin_pwc(
+                    train_graph_selector(
                         train_data_for_training,
                         str(model_save_dir),
                         graph_timeout=graph_timeout,

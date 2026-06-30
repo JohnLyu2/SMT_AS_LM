@@ -12,7 +12,7 @@ import pytest
         "scripts/encode_descriptions.py",
         "scripts/evaluate_gin.py",
         "scripts/evaluate_selector.py",
-        "scripts/train_pwc.py",
+        "scripts/train_tabular.py",
         "scripts/train_setfit.py",
     ],
 )

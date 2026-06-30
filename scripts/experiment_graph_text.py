@@ -41,11 +41,11 @@ from smt_select.evaluation.fallback import (
     merge_with_fallback,
     write_eval_csv,
 )
-from smt_select.models.fusion_pwc import (
+from smt_select.models.graph_text.selector import (
     build_emb_by_path,
     load_embedding_csv,
-    train_fusion_pwc,
-    FusionPWCSelector,
+    train_graph_text_selector,
+    GraphTextSelector,
 )
 from smt_select.data.performance import (
     filter_training_instances,
@@ -307,7 +307,7 @@ def evaluate_multi_splits_fusion(
                 train_paths_with_emb = [
                     p for p in train_data_for_training.keys() if p in emb_by_path
                 ]
-                train_fusion_pwc(
+                train_graph_text_selector(
                     emb_by_path,
                     train_paths_with_emb,
                     train_data_for_training,
@@ -331,7 +331,7 @@ def evaluate_multi_splits_fusion(
                     logging.getLogger().removeHandler(log_handler)
                     log_handler.close()
 
-        selector = FusionPWCSelector.load(
+        selector = GraphTextSelector.load(
             str(model_save_dir),
             emb_by_path=emb_by_path,
             device="cpu",

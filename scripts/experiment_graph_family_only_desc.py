@@ -5,7 +5,7 @@ Graph + family-only description (Fusion-PWC): same as graph+text, but uses
   - Text: data/features/desc_family_only/all-mpnet-base-v2
   - Lite+Text fallback rows: data/results/lite+family_only_desc/all-mpnet-base-v2
 
-Forwards other arguments to experiment_fusion.py.
+Forwards other arguments to experiment_graph_text.py.
 
 --logic: pass one or more division names to run them in sequence (each gets its own
   output under data/results/graph+family_only_desc/all-mpnet-base-v2/<LOGIC>/ unless overridden).
@@ -13,7 +13,7 @@ Forwards other arguments to experiment_fusion.py.
 
 Fusion checkpoints: models/fusion_pwc_family_only_desc/<LOGIC>/seed<N>/.
 
-Selector metrics are test-split only (see experiment_fusion.py).
+Selector metrics are test-split only (see experiment_graph_text.py).
 
 Examples:
   python scripts/experiment_graph_family_only_desc.py --logic BV
@@ -57,7 +57,7 @@ def _strip_output_dir(argv: list[str]) -> tuple[list[str], str | None]:
 def _fusion_prefix() -> list[str]:
     return [
         sys.executable,
-        str(PROJECT_ROOT / "scripts" / "experiment_fusion.py"),
+        str(PROJECT_ROOT / "scripts" / "experiment_graph_text.py"),
         "--desc-features-dir",
         str(DESC_FAMILY_ONLY),
         "--lite-text-dir",
@@ -72,7 +72,7 @@ def _fusion_prefix() -> list[str]:
 
 def main() -> int:
     wrapper = argparse.ArgumentParser(
-        description="Graph + family-only-description fusion (delegates to experiment_fusion.py).",
+        description="Graph + family-only-description fusion (delegates to experiment_graph_text.py).",
     )
     wrapper.add_argument(
         "--logic",

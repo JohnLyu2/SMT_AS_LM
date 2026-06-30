@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from smt_select.data.performance import SingleSolverDataset
 from smt_select.data.performance import parse_performance_json
-from smt_select.models.pwc import PwcSelector
+from smt_select.models.tabular.selector import TabularSelector
 from smt_select.models.setfit_model import SetfitSelector
 
 # Set by pool initializer in worker processes.
@@ -65,7 +65,7 @@ def _eval_worker(instance_path: str) -> tuple[str, int, float | None, bool]:
 
 def _load_pwc_selector(model_path: str):
     """Top-level loader for PWC (picklable for multiprocessing)."""
-    return PwcSelector.load(model_path)
+    return TabularSelector.load(model_path)
 
 
 def _load_setfit_selector(setfit_model: str, desc_json: str):
@@ -505,7 +505,7 @@ def main():
             as_model = SetfitSelector(args.setfit_model, args.desc_json)
         else:
             logging.info("Loading PWC model from %s", args.pwc_model)
-            as_model = PwcSelector.load(args.pwc_model)
+            as_model = TabularSelector.load(args.pwc_model)
             logging.info(
                 "Loaded %s model with %d solvers",
                 as_model.model_type,

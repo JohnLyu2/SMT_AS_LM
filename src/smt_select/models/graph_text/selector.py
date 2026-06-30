@@ -1,4 +1,4 @@
-"""Fusion of GIN + text embeddings with pairwise classification (Fusion-PWC)."""
+"""Graph-and-text algorithm selection with pairwise classification."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset, Subset
 
-from smt_select.models.gin_pwc import (
+from smt_select.models.graph.selector import (
     all_pairs,
     pair_to_idx,
     _weighted_bce_loss,
@@ -86,11 +86,11 @@ def build_emb_by_path(
     return out
 
 
-class FusionPWC(nn.Module):
+class GraphTextPairwiseNetwork(nn.Module):
     """
-    Fusion: text 768 -> d_text_small; concat(gin_64, text_small) -> 128;
+    Graph+Text: text 768 -> d_text_small; concat(gin_64, text_small) -> 128;
     LayerNorm; Linear(128, hidden_fused) -> ReLU -> Dropout;
-    then one binary head per solver pair (same as GIN-PWC).
+    then one binary head per solver pair.
     """
 
     def __init__(
@@ -162,15 +162,15 @@ class FusionPWC(nn.Module):
         return logits_all[torch.arange(B, device=fused.device), pair_idx]
 
 
-class FusionPWCSelector(SolverSelector):
+class GraphTextSelector(SolverSelector):
     """
-    Selector that uses precomputed (gin, text) embeddings and the fusion+PWC model.
+    Selector that uses precomputed graph and text embeddings.
     algorithm_select(instance_path): look up embeddings, run model, return solver.
     """
 
     def __init__(
         self,
-        model: FusionPWC,
+        model: GraphTextPairwiseNetwork,
         emb_by_path: dict[str, tuple[np.ndarray, np.ndarray]],
         fallback_solver_ids: list[int],
         device: str | None = None,
@@ -236,18 +236,18 @@ class FusionPWCSelector(SolverSelector):
         with open(save_dir / "config.json", "w") as f:
             json.dump(config, f, indent=2)
         torch.save(self.model.state_dict(), save_dir / "model.pt")
-        logging.info("Saved Fusion-PWC model to %s", save_dir)
+        logging.info("Saved graph+text selector to %s", save_dir)
 
     @staticmethod
     def load(
         load_path: str | Path,
         emb_by_path: dict[str, tuple[np.ndarray, np.ndarray]],
         device: str | None = None,
-    ) -> "FusionPWCSelector":
+    ) -> "GraphTextSelector":
         load_path = Path(load_path)
         with open(load_path / "config.json") as f:
             config = json.load(f)
-        model = FusionPWC(
+        model = GraphTextPairwiseNetwork(
             d_gin=config["d_gin"],
             d_text=config["d_text"],
             num_solvers=config["num_solvers"],
@@ -260,7 +260,7 @@ class FusionPWCSelector(SolverSelector):
         )
         fallback_solver_ids = config.get("fallback_solver_ids", [])
         random_seed = config.get("random_seed", 42)
-        return FusionPWCSelector(
+        return GraphTextSelector(
             model=model,
             emb_by_path=emb_by_path,
             fallback_solver_ids=fallback_solver_ids,
@@ -269,13 +269,13 @@ class FusionPWCSelector(SolverSelector):
         )
 
 
-def build_fusion_pwc_samples(
+def build_graph_text_pairwise_samples(
     instance_paths: list[str],
     emb_by_path: dict[str, tuple[np.ndarray, np.ndarray]],
     multi_perf_data: MultiSolverDataset,
 ) -> list[tuple[str, int, int, float]]:
     """
-    Build list of (path, pair_idx, label, weight) for Fusion-PWC training.
+    Build graph+text pairwise training samples.
     Only instances in emb_by_path and pairs with |PAR2_i - PAR2_j| > PERF_DIFF_THRESHOLD.
     """
     K = multi_perf_data.num_solvers()
@@ -298,7 +298,7 @@ def build_fusion_pwc_samples(
     return samples
 
 
-class FusionPWCDataset(Dataset[tuple[np.ndarray, np.ndarray, int, int, float]]):
+class GraphTextPairwiseDataset(Dataset[tuple[np.ndarray, np.ndarray, int, int, float]]):
     """Dataset of (gin_emb, text_emb, pair_idx, label, weight) from (path, ...) samples."""
 
     def __init__(
@@ -320,7 +320,7 @@ class FusionPWCDataset(Dataset[tuple[np.ndarray, np.ndarray, int, int, float]]):
         return (gin, text, pair_idx, label, weight)
 
 
-def _collate_fusion_pwc(
+def _collate_graph_text_pairwise(
     batch: list[tuple[np.ndarray, np.ndarray, int, int, float]],
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """Collate to (gin, text, pair_idx, labels, weights)."""
@@ -334,7 +334,7 @@ def _collate_fusion_pwc(
     return gin, text, pair_indices, labels, weights
 
 
-def train_fusion_pwc(
+def train_graph_text_selector(
     emb_by_path: dict[str, tuple[np.ndarray, np.ndarray]],
     train_paths: list[str],
     multi_perf_data: MultiSolverDataset,
@@ -356,7 +356,7 @@ def train_fusion_pwc(
     failed_paths: list[str] | None = None,
 ) -> None:
     """
-    Train Fusion-PWC on (gin, text) embeddings with weighted BCE.
+    Train the graph+text selector with weighted BCE.
     failed_paths: paths that failed GIN extraction (for fallback order); if None, use [].
     """
     save_dir = Path(save_dir)
@@ -366,19 +366,19 @@ def train_fusion_pwc(
     failed_list = failed_paths or []
 
     K = multi_perf_data.num_solvers()
-    samples = build_fusion_pwc_samples(train_paths, emb_by_path, multi_perf_data)
+    samples = build_graph_text_pairwise_samples(train_paths, emb_by_path, multi_perf_data)
     if not samples:
         raise ValueError(
             "No pairwise samples with |PAR2_i - PAR2_j| > PERF_DIFF_THRESHOLD. "
             "Check performance data and embedding coverage."
         )
     logging.info(
-        "Fusion-PWC: %d train paths with embeddings, %d pairwise samples",
+        "Graph+Text selector: %d train paths with embeddings, %d pairwise samples",
         len([p for p in train_paths if p in emb_by_path]),
         len(samples),
     )
 
-    dataset = FusionPWCDataset(samples, emb_by_path)
+    dataset = GraphTextPairwiseDataset(samples, emb_by_path)
     n_total = len(dataset)
     use_early_stop = val_ratio > 0 and patience > 0 and n_total >= 2
 
@@ -396,13 +396,13 @@ def train_fusion_pwc(
             train_dataset,
             batch_size=batch_size,
             shuffle=True,
-            collate_fn=_collate_fusion_pwc,
+            collate_fn=_collate_graph_text_pairwise,
         )
         val_loader = DataLoader(
             val_dataset,
             batch_size=batch_size,
             shuffle=False,
-            collate_fn=_collate_fusion_pwc,
+            collate_fn=_collate_graph_text_pairwise,
         )
         logging.info(
             "Early stopping: val_ratio=%.2f, patience=%d, min_epochs=%d -> %d train, %d val",
@@ -413,11 +413,11 @@ def train_fusion_pwc(
             dataset,
             batch_size=batch_size,
             shuffle=True,
-            collate_fn=_collate_fusion_pwc,
+            collate_fn=_collate_graph_text_pairwise,
         )
         val_loader = None
 
-    model = FusionPWC(
+    model = GraphTextPairwiseNetwork(
         d_gin=d_gin,
         d_text=d_text,
         num_solvers=K,
@@ -517,4 +517,4 @@ def train_fusion_pwc(
         with open(save_dir / "failed_paths.txt", "w") as f:
             for p in failed_list:
                 f.write(p + "\n")
-    logging.info("Saved Fusion-PWC model and config to %s", save_dir)
+    logging.info("Saved graph+text selector and config to %s", save_dir)

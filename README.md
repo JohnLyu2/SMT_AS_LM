@@ -59,7 +59,7 @@ Klammerhammer processes concurrently. The script reads benchmark paths from
 To run SVM experiments over the five splits for a given logic (e.g. QF_BV):
 
 ```bash
-python scripts/experiment_svms.py --logic QF_BV --features-dir data/features/syntactic --output-dir data/results/lite
+python scripts/experiment_tabular.py --logic QF_BV --features-dir data/features/syntactic --output-dir data/results/lite
 ```
 
 Results are saved to `data/results/lite/<logic>/` (e.g. `summary.json`, and per-seed `seed<N>/train_eval.csv`, `seed<N>/test_eval.csv`).
@@ -75,7 +75,7 @@ python scripts/encode_desc_logics.py --output-dir data/features/desc/all-mpnet-b
 Then run the experiments:
 
 ```bash
-python scripts/experiment_svms.py --logic QF_BV --features-dir data/features/desc/all-mpnet-base-v2 --output-dir data/results/text/all-mpnet-base-v2
+python scripts/experiment_tabular.py --logic QF_BV --features-dir data/features/desc/all-mpnet-base-v2 --output-dir data/results/text/all-mpnet-base-v2
 ```
 
 Results go to `data/results/text/all-mpnet-base-v2/<logic>/` (e.g. `summary.json`, per-seed CSVs). Use `--model-name` in `encode_desc_logics` for another encoder; omit `--logic` to run all logics that have desc features and splits.
@@ -87,7 +87,7 @@ Results go to `data/results/text/all-mpnet-base-v2/<logic>/` (e.g. `summary.json
 Run the experiments:  
 
 ```bash
-python scripts/experiment_svms.py --logic QF_BV --features-dir data/features/syntactic data/features/desc/all-mpnet-base-v2 --output-dir data/results/lite+text/all-mpnet-base-v2
+python scripts/experiment_tabular.py --logic QF_BV --features-dir data/features/syntactic data/features/desc/all-mpnet-base-v2 --output-dir data/results/lite+text/all-mpnet-base-v2
 ```
 
 Results are saved to `data/results/lite+text/all-mpnet-base-v2/<logic>/`.
@@ -119,7 +119,7 @@ This command looks for models under `models/gin_pwc/ABV/seed*/`, benchmarks in `
 To run the multimodal fusion experiments over the five splits for a logic (e.g. ABV), using precomputed graph and text features:
 
 ```bash
-python scripts/experiment_fusion.py --logic ABV
+python scripts/experiment_graph_text.py --logic ABV
 ```
 
 This will load the corresponding graph and text feature directories, train the fusion model across all seeds, and write results to `data/results/graph+text/all-mpnet-base-v2/ABV/` (per-seed `train_eval.csv`/`test_eval.csv` plus `summary.json`). Trained fusion models are saved under `models/fusion_pwc/ABV/seed<N>/`. 

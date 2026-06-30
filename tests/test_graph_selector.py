@@ -1,4 +1,4 @@
-"""Simple tests for GIN-PWC: pair helpers, model forward, selector save/load and algorithm_select."""
+"""Tests for graph pair helpers, model forward, and selector persistence."""
 
 import tempfile
 from pathlib import Path
@@ -10,11 +10,11 @@ pytest.importorskip("torch_geometric")
 
 from torch_geometric.data import Batch, Data
 
-from smt_select.models.gin_common import NodeVocabulary
-from smt_select.models.gin_pwc import (
-    GINPwc,
-    GINPwcBackbone,
-    GINPwcSelector,
+from smt_select.models.graph.common import NodeVocabulary
+from smt_select.models.graph.selector import (
+    GraphPairwiseNetwork,
+    GraphBackbone,
+    GraphSelector,
     all_pairs,
     idx_to_pair,
     num_pairs,
@@ -35,12 +35,12 @@ def test_pair_index_helpers():
             assert idx_to_pair(idx, K) == (i, j)
 
 
-def test_gin_pwc_backbone_forward():
+def test_graph_backbone_forward():
     """Backbone produces (batch_size, hidden_dim) from batched PyG Data."""
     num_node_types = 4
     hidden_dim = 8
     num_layers = 2
-    backbone = GINPwcBackbone(
+    backbone = GraphBackbone(
         num_node_types=num_node_types,
         hidden_dim=hidden_dim,
         num_layers=num_layers,
@@ -58,13 +58,13 @@ def test_gin_pwc_backbone_forward():
     assert g.shape == (2, hidden_dim)
 
 
-def test_gin_pwc_forward():
-    """GINPwc full forward and forward_batch_for_loss."""
+def test_graph_pairwise_network_forward():
+    """GraphPairwiseNetwork full forward and loss-oriented batch forward."""
     num_node_types = 4
     K = 3
     hidden_dim = 8
     num_layers = 2
-    model = GINPwc(
+    model = GraphPairwiseNetwork(
         num_node_types=num_node_types,
         num_solvers=K,
         hidden_dim=hidden_dim,
@@ -87,11 +87,11 @@ def test_gin_pwc_forward():
     assert logits_selected[1].item() == logits[1, 1].item()
 
 
-def test_gin_pwc_selector_save_load():
-    """GINPwcSelector save and load roundtrip."""
+def test_graph_selector_save_load():
+    """GraphSelector save and load roundtrip."""
     num_node_types = 4
     K = 3
-    model = GINPwc(
+    model = GraphPairwiseNetwork(
         num_node_types=num_node_types,
         num_solvers=K,
         hidden_dim=8,
@@ -102,7 +102,7 @@ def test_gin_pwc_selector_save_load():
     for t in ["a", "b", "c", "d"]:
         vocab.add_type(t)
     vocab.freeze()
-    selector = GINPwcSelector(
+    selector = GraphSelector(
         model=model,
         vocabulary=vocab,
         fallback_solver_ids=[0, 1, 2],
@@ -115,18 +115,18 @@ def test_gin_pwc_selector_save_load():
         assert (save_dir / "config.json").exists()
         assert (save_dir / "model.pt").exists()
         assert (save_dir / "vocab.json").exists()
-        loaded = GINPwcSelector.load(save_dir)
+        loaded = GraphSelector.load(save_dir)
         assert loaded.model.num_solvers == K
         assert loaded._K == K
         assert loaded.fallback_solver_ids == [0, 1, 2]
         assert loaded.random_seed == 123
 
 
-def test_gin_pwc_selector_algorithm_select():
-    """GINPwcSelector.algorithm_select on a minimal SMT file returns a solver id."""
+def test_graph_selector_algorithm_select():
+    """GraphSelector.algorithm_select returns a solver ID for a minimal SMT file."""
     num_node_types = 10
     K = 2
-    model = GINPwc(
+    model = GraphPairwiseNetwork(
         num_node_types=num_node_types,
         num_solvers=K,
         hidden_dim=8,
@@ -145,12 +145,12 @@ def test_gin_pwc_selector_algorithm_select():
         )
         smt_path = Path(f.name)
     try:
-        from smt_select.models.gin_common import build_vocabulary_from_graph_dicts
+        from smt_select.models.graph.common import build_vocabulary_from_graph_dicts
         from smt_select.representations.graph_rep import smt_to_graph
 
         graph_dict = smt_to_graph(smt_path)
         vocab = build_vocabulary_from_graph_dicts([graph_dict])
-        selector = GINPwcSelector(
+        selector = GraphSelector(
             model=model,
             vocabulary=vocab,
             fallback_solver_ids=[0, 1],

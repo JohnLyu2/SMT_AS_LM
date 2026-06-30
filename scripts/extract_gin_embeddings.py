@@ -22,8 +22,8 @@ from torch_geometric.data import Batch
 from tqdm import tqdm
 
 from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
-from smt_select.models.gin_common import graph_dict_to_gin_data
-from smt_select.models.gin_pwc import GINPwcSelector
+from smt_select.models.graph.common import graph_dict_to_gin_data
+from smt_select.models.graph.selector import GraphSelector
 from smt_select.representations.graph_rep import _suppress_z3_destructor_noise, build_smt_graph_dict_timeout
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -141,7 +141,7 @@ def run_extraction(
     all_relative_paths = list(perf.keys())
     logger.info("Loaded %d benchmark keys from %s", len(all_relative_paths), benchmarks_path)
 
-    selector = GINPwcSelector.load(model_dir, device=device)
+    selector = GraphSelector.load(model_dir, device=device)
     graph_timeout_val = graph_timeout if graph_timeout is not None else selector.graph_timeout
     hidden_dim = selector.model.backbone.embed.embedding_dim
 

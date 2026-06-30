@@ -1,4 +1,4 @@
-"""GIN backbone + pairwise classifier heads for algorithm selection (GIN-PWC)."""
+"""Graph-based algorithm selection using a GIN encoder and pairwise heads."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torch_geometric.data import Batch, Data
 from torch_geometric.nn import GINConv, global_mean_pool
 
-from smt_select.models.gin_common import (
+from smt_select.models.graph.common import (
     NodeVocabulary,
     build_vocabulary_from_graph_dicts,
     graph_dict_to_gin_data,
@@ -77,10 +77,10 @@ def all_pairs(K: int) -> list[tuple[int, int]]:
     return [idx_to_pair(p, K) for p in range(num_pairs(K))]
 
 
-class GINPwcBackbone(nn.Module):
+class GraphBackbone(nn.Module):
     """
     GIN backbone: embed -> GIN convs -> global mean pool -> graph embedding g.
-    Same structure as the non-head part of GINMultiHeadEHM.
+    The encoder produces one learned representation per SMT graph.
     """
 
     def __init__(
@@ -121,7 +121,7 @@ class GINPwcBackbone(nn.Module):
         return self.forward(data.x, data.edge_index, data.batch)
 
 
-class GINPwc(nn.Module):
+class GraphPairwiseNetwork(nn.Module):
     """
     GIN backbone + one binary head per solver pair (i,j), i < j.
     Each head maps graph embedding g -> logit for "solver i better than solver j".
@@ -138,7 +138,7 @@ class GINPwc(nn.Module):
         super().__init__()
         self.num_solvers = num_solvers
         self._num_pairs = num_pairs(num_solvers)
-        self.backbone = GINPwcBackbone(
+        self.backbone = GraphBackbone(
             num_node_types=num_node_types,
             hidden_dim=hidden_dim,
             num_layers=num_layers,
@@ -185,15 +185,15 @@ class GINPwc(nn.Module):
         return logits
 
 
-class GINPwcSelector(SolverSelector):
+class GraphSelector(SolverSelector):
     """
-    Algorithm selector using GIN-PWC: shared GIN backbone + pairwise binary heads.
+    Algorithm selector using a shared GIN backbone and pairwise binary heads.
     Inference: run all pair heads on graph embedding -> votes per solver -> return argmax votes (tie-break by random).
     """
 
     def __init__(
         self,
-        model: GINPwc,
+        model: GraphPairwiseNetwork,
         vocabulary: NodeVocabulary,
         fallback_solver_ids: list[int],
         graph_timeout: int,
@@ -276,10 +276,10 @@ class GINPwcSelector(SolverSelector):
         torch.save(self.model.state_dict(), save_dir / "model.pt")
         with open(save_dir / "vocab.json", "w") as f:
             json.dump({"type_names": self.vocabulary.type_names()}, f)
-        logging.info("Saved GIN-PWC model to %s", save_dir)
+        logging.info("Saved graph selector to %s", save_dir)
 
     @staticmethod
-    def load(load_path: str | Path, device: str | None = None) -> "GINPwcSelector":
+    def load(load_path: str | Path, device: str | None = None) -> "GraphSelector":
         load_path = Path(load_path)
         with open(load_path / "config.json") as f:
             config = json.load(f)
@@ -291,7 +291,7 @@ class GINPwcSelector(SolverSelector):
             vocabulary.add_type(t)
         vocabulary.freeze()
 
-        model = GINPwc(
+        model = GraphPairwiseNetwork(
             num_node_types=config["num_node_types"],
             num_solvers=config["num_solvers"],
             hidden_dim=config["hidden_dim"],
@@ -306,7 +306,7 @@ class GINPwcSelector(SolverSelector):
         )
         graph_timeout = config["graph_timeout"]
         random_seed = config.get("random_seed", 42)
-        return GINPwcSelector(
+        return GraphSelector(
             model=model,
             vocabulary=vocabulary,
             fallback_solver_ids=fallback_solver_ids,
@@ -316,14 +316,14 @@ class GINPwcSelector(SolverSelector):
         )
 
 
-def build_gin_pwc_samples(
+def build_graph_pairwise_samples(
     instance_paths: list[str],
     graph_dict_by_path: dict[str, dict],
     multi_perf_data: MultiSolverDataset,
     vocabulary: NodeVocabulary,
 ) -> list[tuple[Data, int, int, float]]:
     """
-    Build list of (Data, pair_idx, label, weight) for GIN-PWC training.
+    Build graph-based pairwise training samples.
     Only includes (instance, pair) with |PAR2_i - PAR2_j| > PERF_DIFF_THRESHOLD.
     label = 1 if solver i better than j else 0; weight = |PAR2_i - PAR2_j|.
     """
@@ -355,7 +355,7 @@ def build_gin_pwc_samples(
     return samples
 
 
-class GINPwcDataset(Dataset[tuple[Data, int, int, float]]):
+class GraphPairwiseDataset(Dataset[tuple[Data, int, int, float]]):
     """Dataset of (Data, pair_idx, label, weight) for weighted BCE training."""
 
     def __init__(
@@ -371,7 +371,7 @@ class GINPwcDataset(Dataset[tuple[Data, int, int, float]]):
         return self.samples[idx]
 
 
-def _collate_gin_pwc(
+def _collate_graph_pairwise(
     batch: list[tuple[Data, int, int, float]],
 ) -> tuple[Batch, torch.Tensor, torch.Tensor, torch.Tensor]:
     """Collate (Data, pair_idx, label, weight) list into Batch + stacked tensors."""
@@ -398,7 +398,7 @@ def _weighted_bce_loss(
     return (weights * bce).sum() / w_sum
 
 
-def train_gin_pwc(
+def train_graph_selector(
     multi_perf_data: MultiSolverDataset,
     save_dir: str | Path,
     *,
@@ -418,7 +418,7 @@ def train_gin_pwc(
 ) -> None:
     """
     Build graphs, vocab, pairwise samples (with weight = |PAR2_i - PAR2_j|);
-    train GINPwc with weighted BCE; save model, vocab, config, failed_paths.
+    Train the graph selector with weighted BCE and save its artifacts.
     jobs: number of parallel workers for graph building; 1 = sequential.
     If val_ratio > 0 and patience > 0: split off val_ratio of samples for validation,
     stop when validation loss does not improve for patience epochs (after at least min_epochs), and restore best checkpoint.
@@ -451,7 +451,7 @@ def train_gin_pwc(
     vocab = build_vocabulary_from_graph_dicts(graph_dicts)
     num_node_types = vocab.num_types()
 
-    samples = build_gin_pwc_samples(
+    samples = build_graph_pairwise_samples(
         train_paths, graph_by_path, multi_perf_data, vocab
     )
     if not samples:
@@ -460,11 +460,11 @@ def train_gin_pwc(
             "Check performance data and threshold."
         )
     logging.info(
-        "GIN-PWC: %d instances, %d pairwise samples",
+        "Graph selector: %d instances, %d pairwise samples",
         len(train_paths),
         len(samples),
     )
-    dataset = GINPwcDataset(samples)
+    dataset = GraphPairwiseDataset(samples)
     n_total = len(dataset)
 
     use_early_stop = val_ratio > 0 and patience > 0 and n_total >= 2
@@ -482,13 +482,13 @@ def train_gin_pwc(
             train_dataset,
             batch_size=batch_size,
             shuffle=True,
-            collate_fn=_collate_gin_pwc,
+            collate_fn=_collate_graph_pairwise,
         )
         val_loader = DataLoader(
             val_dataset,
             batch_size=batch_size,
             shuffle=False,
-            collate_fn=_collate_gin_pwc,
+            collate_fn=_collate_graph_pairwise,
         )
         logging.info(
             "Early stopping: val_ratio=%.2f, patience=%d, min_epochs=%d -> %d train, %d val samples",
@@ -503,11 +503,11 @@ def train_gin_pwc(
             dataset,
             batch_size=batch_size,
             shuffle=True,
-            collate_fn=_collate_gin_pwc,
+            collate_fn=_collate_graph_pairwise,
         )
         val_loader = None
 
-    model = GINPwc(
+    model = GraphPairwiseNetwork(
         num_node_types=num_node_types,
         num_solvers=K,
         hidden_dim=hidden_dim,
@@ -612,4 +612,4 @@ def train_gin_pwc(
     with open(save_dir / "failed_paths.txt", "w") as f:
         for p in failed_list:
             f.write(p + "\n")
-    logging.info("Saved GIN-PWC model, vocab, config, failed_paths to %s", save_dir)
+    logging.info("Saved graph selector, vocabulary, config, and failed paths to %s", save_dir)

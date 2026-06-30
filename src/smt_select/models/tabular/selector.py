@@ -95,7 +95,7 @@ class PairwiseSVM(SVC):
         return super().decision_function(x)
 
 
-class PwcSelector(SolverSelector):
+class TabularSelector(SolverSelector):
     def __init__(
         self,
         model_matrix,
@@ -123,7 +123,7 @@ class PwcSelector(SolverSelector):
         Path(save_dir).mkdir(parents=True, exist_ok=True)
         save_path = f"{save_dir}/model.joblib"
         joblib.dump(self, save_path)
-        logging.info(f"Saved PWC_{self.model_type} model at {save_path}")
+        logging.info("Saved tabular %s model at %s", self.model_type, save_path)
 
     @staticmethod
     def load(load_path):
@@ -184,7 +184,7 @@ class PwcSelector(SolverSelector):
             )
         if feature_csv_path is None:
             raise ValueError(
-                "feature_csv_path not set in PwcSelector. "
+                "feature_csv_path not set in TabularSelector. "
                 "It must be provided during model creation or loading."
             )
         t0 = time.perf_counter()
@@ -206,7 +206,7 @@ class PwcSelector(SolverSelector):
             return (fallback, overhead, True)
 
 
-def train_pwc(
+def train_tabular_selector(
     multi_perf_data,
     save_dir,
     feature_csv_path=None,
@@ -269,14 +269,14 @@ def train_pwc(
                 model = PairwiseSVM(c_value=svm_c)
                 model.fit(inputs_array, labels_array, costs_array)
             model_matrix[i, j] = model
-    pwc_model = PwcSelector(
+    selector = TabularSelector(
         model_matrix,
         feature_csv_path,
         random_seed=random_seed,
         fallback_solver_ids=fallback_solver_ids,
         failed_instance_paths=timeout_instance_paths,
     )
-    pwc_model.save(save_dir)
+    selector.save(save_dir)
 
 
 def main():
@@ -341,7 +341,7 @@ def main():
         f"Training performance parse: {len(train_dataset)} benchmarks and {train_dataset.num_solvers()} solvers from {args.perf_json}"
     )
 
-    train_pwc(
+    train_tabular_selector(
         train_dataset,
         save_dir,
         args.feature_csv,

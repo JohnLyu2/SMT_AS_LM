@@ -11,7 +11,7 @@ from smt_select.evaluation.evaluate import (
     as_evaluate_parallel,
 )
 from smt_select.evaluation.metrics import compute_metrics, format_evaluation_short
-from smt_select.models.gin_pwc import GINPwcSelector
+from smt_select.models.graph.selector import GraphSelector
 from smt_select.data.performance import MultiSolverDataset, parse_performance_json
 
 
@@ -20,7 +20,7 @@ def _load_gin_selector(model_dir: str, device: str | None = None):
     with open(Path(model_dir) / "config.json") as f:
         config = json.load(f)
     if "num_solvers" in config:
-        return GINPwcSelector.load(model_dir, device=device)
+        return GraphSelector.load(model_dir, device=device)
     raise ValueError(f"Invalid GIN-PWC config in {model_dir}: missing 'num_solvers'")
 
 
@@ -70,7 +70,7 @@ def main() -> None:
         )
     else:
         if "num_solvers" in config:
-            selector = GINPwcSelector.load(args.model_dir)
+            selector = GraphSelector.load(args.model_dir)
             logging.info("Loaded GIN-PWC selector from %s", args.model_dir)
         else:
             raise ValueError("Invalid GIN-PWC config: missing 'num_solvers'")
