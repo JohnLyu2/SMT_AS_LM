@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from src.performance import (
+from smt_select.data.performance import (
     MultiSolverDataset,
     SingleSolverDataset,
     filter_training_instances,

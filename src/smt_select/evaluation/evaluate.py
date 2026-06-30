@@ -6,10 +6,10 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from .performance import SingleSolverDataset
-from .performance import parse_performance_json
-from .pwc import PwcSelector
-from .setfit_model import SetfitSelector
+from smt_select.data.performance import SingleSolverDataset
+from smt_select.data.performance import parse_performance_json
+from smt_select.models.pwc import PwcSelector
+from smt_select.models.setfit_model import SetfitSelector
 
 # Set by pool initializer in worker processes.
 _worker_selector = None
@@ -73,7 +73,7 @@ def _load_setfit_selector(setfit_model: str, desc_json: str):
     return SetfitSelector(setfit_model, desc_json)
 
 
-from src.utils import normalize_path as _normalize_path
+from smt_select.utils import normalize_path as _normalize_path
 
 
 def load_extraction_times_csv(csv_path: Path) -> dict[str, float]:
@@ -391,6 +391,19 @@ def log_evaluation_summary(metrics: dict, multi_perf_data) -> None:
     logging.info("  Solved: %d", metrics["vbs_solved"])
     logging.info("  Average PAR-2: %.2f", metrics["vbs_avg_par2"])
     logging.info("=" * 60)
+
+
+# Backward-compatible facade: canonical implementations live in focused modules.
+from smt_select.evaluation.io import (  # noqa: E402
+    load_extraction_times_csv,
+    load_failed_paths_from_extraction_times_csv,
+)
+from smt_select.evaluation.metrics import (  # noqa: E402
+    compute_metrics,
+    format_evaluation_short,
+    log_evaluation_summary,
+)
+from smt_select.evaluation.overhead import apply_overhead as _apply_overhead_to_perf  # noqa: E402
 
 
 def main():

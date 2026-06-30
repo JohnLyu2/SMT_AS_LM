@@ -31,7 +31,7 @@ import torch
 # Add project root for imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.setfit_model import create_setfit_data, train_setfit_model
+from smt_select.models.setfit_model import create_setfit_data, train_setfit_model
 
 
 def set_seeds(seed: int = 42) -> None:

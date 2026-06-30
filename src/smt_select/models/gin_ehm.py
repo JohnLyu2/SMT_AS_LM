@@ -28,15 +28,15 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torch_geometric.data import Batch, Data
 from torch_geometric.nn import GINConv, global_mean_pool
 
-from .graph_rep import (
+from smt_select.representations.graph_rep import (
     smt_graph_to_gin,
     build_smt_graph_dict_timeout,
     generate_graph_dicts,
     generate_graph_dicts_parallel,
     _suppress_z3_destructor_noise,
 )
-from .performance import MultiSolverDataset
-from .solver_selector import SolverSelector
+from smt_select.data.performance import MultiSolverDataset
+from smt_select.models.solver_selector import SolverSelector
 
 # Index for node types not in the vocabulary (e.g. at inference time).
 UNK_TYPE_INDEX = 0

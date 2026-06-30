@@ -1,35 +1,8 @@
 from __future__ import annotations
 
-import csv
 from pathlib import Path
-from typing import Iterable
 
-CSV_HEADER = [
-    "benchmark",
-    "selected",
-    "solved",
-    "runtime",
-    "solver_runtime",
-    "overhead",
-    "feature_fail",
-]
-
-
-def load_eval_csv(path: Path) -> list[dict]:
-    """Load eval CSV; return list of row dicts."""
-    with path.open(newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
-
-
-def write_eval_csv(path: Path, rows: Iterable[dict], header: list[str] | None = None) -> None:
-    """Write rows using header order (defaults to standard AS CSV header)."""
-    hdr = header or CSV_HEADER
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(hdr)
-        for row in rows:
-            writer.writerow([row.get(k, "") for k in hdr])
+from smt_select.evaluation.io import CSV_HEADER, load_eval_csv, write_eval_csv
 
 
 def load_fallback_lookup(path: Path) -> dict[str, dict]:
@@ -114,4 +87,3 @@ def merge_with_fallback(
         out.append(row_out)
 
     return out
-

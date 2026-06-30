@@ -9,7 +9,7 @@ from typing import Any, Iterable
 
 import numpy as np
 
-from .performance import MultiSolverDataset
+from smt_select.data.performance import MultiSolverDataset
 
 SEED_DIR_PATTERN = re.compile(r"^seed(\d+)$")
 GAP_METRICS = ("gap_cls_solved", "gap_cls_par2")

@@ -14,13 +14,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset, Subset
 
-from .gin_pwc import (
+from smt_select.models.gin_pwc import (
     all_pairs,
     pair_to_idx,
     _weighted_bce_loss,
 )
-from .performance import MultiSolverDataset, PERF_DIFF_THRESHOLD
-from .solver_selector import SolverSelector
+from smt_select.data.performance import MultiSolverDataset, PERF_DIFF_THRESHOLD
+from smt_select.models.solver_selector import SolverSelector
 
 GIN_L2_EPS = 1e-8
 

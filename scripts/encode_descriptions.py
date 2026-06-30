@@ -3,7 +3,7 @@
 
 import sys
 
-from src.desc_encoder import main
+from smt_select.representations.desc_encoder import main
 
 
 if __name__ == "__main__":

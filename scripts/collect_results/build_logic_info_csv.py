@@ -21,7 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 import sys
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.performance import parse_performance_json
+from smt_select.data.performance import parse_performance_json
 
 
 def load_meta_info(meta_dir: Path, logic: str) -> tuple[int, int, int, int] | None:

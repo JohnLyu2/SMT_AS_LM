@@ -28,19 +28,21 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from src.evaluate import as_evaluate
-from src.evaluate import compute_metrics
-from src.evaluate import load_extraction_times_csv
-from src.evaluate import load_failed_paths_from_extraction_times_csv
-from src.experiment_utils import (
+from smt_select.evaluation.evaluate import as_evaluate
+from smt_select.evaluation.metrics import compute_metrics
+from smt_select.evaluation.io import (
+    load_extraction_times_csv,
+    load_failed_paths_from_extraction_times_csv,
+)
+from smt_select.evaluation.experiment_utils import (
     aggregate_gap_metrics,
     discover_seed_dirs,
     write_summary,
 )
-from src.feature import validate_feature_coverage
-from src.performance import parse_performance_json
-from src.pwc import PwcSelector, train_pwc
-from src.utils import normalize_path
+from smt_select.data.feature import validate_feature_coverage
+from smt_select.data.performance import parse_performance_json
+from smt_select.models.pwc import PwcSelector, train_pwc
+from smt_select.utils import normalize_path
 
 # Per-instance extraction-time overhead cap (seconds) when computing metrics
 FEATURE_TIMEOUT = 5.0

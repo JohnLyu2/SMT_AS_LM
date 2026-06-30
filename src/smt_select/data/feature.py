@@ -3,7 +3,7 @@
 import csv
 import numpy as np
 
-from src.utils import normalize_path
+from smt_select.utils import normalize_path
 
 # Global dictionary to cache features, keyed by CSV path
 _feature_cache = {}

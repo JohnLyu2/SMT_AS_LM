@@ -23,29 +23,31 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from src.defaults import DEFAULT_BENCHMARK_ROOT
-from src.evaluate import as_evaluate, compute_metrics, load_extraction_times_csv
-from src.experiment_utils import (
+from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
+from smt_select.evaluation.evaluate import as_evaluate
+from smt_select.evaluation.io import load_extraction_times_csv
+from smt_select.evaluation.metrics import compute_metrics
+from smt_select.evaluation.experiment_utils import (
     aggregate_gap_metrics,
     discover_seed_dirs,
     rebase_performance_data,
     select_seed_dirs,
     write_summary,
 )
-from src.fallback_merge import (
+from smt_select.evaluation.fallback import (
     CSV_HEADER,
     load_eval_csv,
     load_fallback_lookup,
     merge_with_fallback,
     write_eval_csv,
 )
-from src.fusion_pwc import (
+from smt_select.models.fusion_pwc import (
     build_emb_by_path,
     load_embedding_csv,
     train_fusion_pwc,
     FusionPWCSelector,
 )
-from src.performance import (
+from smt_select.data.performance import (
     filter_training_instances,
     parse_as_perf_csv,
     parse_performance_json,

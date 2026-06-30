@@ -17,7 +17,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.performance import parse_performance_json
+from smt_select.data.performance import parse_performance_json
 
 DEFAULT_META_DIR = PROJECT_ROOT / "data" / "raw_data" / "meta_info"
 DEFAULT_PERF_DIR = PROJECT_ROOT / "data" / "raw_data" / "smtcomp24_performance"

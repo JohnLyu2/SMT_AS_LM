@@ -11,8 +11,8 @@ from datasets import Dataset
 from setfit import SetFitModel, Trainer, TrainingArguments
 import torch
 
-from .performance import parse_performance_json
-from .solver_selector import SolverSelector
+from smt_select.data.performance import parse_performance_json
+from smt_select.models.solver_selector import SolverSelector
 
 
 def create_setfit_data(

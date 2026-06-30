@@ -316,16 +316,16 @@ def main():
         epilog="""
 Examples:
   # Basic usage - output saved next to the JSON with .csv extension
-  python -m src.desc_encoder data/descriptions/ABV.json
+  python scripts/encode_descriptions.py data/descriptions/ABV.json
 
   # Specify custom output path
-  python -m src.desc_encoder data/descriptions/ABV.json -o data/embeddings/ABV.csv
+  python scripts/encode_descriptions.py data/descriptions/ABV.json -o data/embeddings/ABV.csv
 
   # Use different model and normalize embeddings
-  python -m src.desc_encoder data/descriptions/ABV.json --model all-MiniLM-L6-v2 --normalize
+  python scripts/encode_descriptions.py data/descriptions/ABV.json --model all-MiniLM-L6-v2 --normalize
 
   # Adjust batch size and disable progress bar
-  python -m src.desc_encoder data/descriptions/ABV.json --batch-size 64 --no-progress
+  python scripts/encode_descriptions.py data/descriptions/ABV.json --batch-size 64 --no-progress
         """,
     )
     parser.add_argument(

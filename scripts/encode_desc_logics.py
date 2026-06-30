@@ -23,7 +23,7 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 # Add src to path to import desc_encoder
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.desc_encoder import encode_all_desc_from_descriptions_file
+from smt_select.representations.desc_encoder import encode_all_desc_from_descriptions_file
 
 # Fixed input directory for description JSONs (path -> {raw_description, description})
 DESCRIPTIONS_DIR = "data/descriptions"

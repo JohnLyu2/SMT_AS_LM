@@ -28,25 +28,26 @@ from pathlib import Path
 
 import torch
 
-from src.defaults import DEFAULT_BENCHMARK_ROOT
-from src.evaluate import as_evaluate, as_evaluate_parallel, compute_metrics
-from src.evaluate_gin import _load_gin_selector
-from src.experiment_utils import (
+from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
+from smt_select.evaluation.evaluate import as_evaluate, as_evaluate_parallel
+from smt_select.evaluation.metrics import compute_metrics
+from smt_select.evaluation.evaluate_gin import _load_gin_selector
+from smt_select.evaluation.experiment_utils import (
     aggregate_gap_metrics,
     discover_seed_dirs,
     rebase_performance_data,
     write_summary,
 )
-from src.fallback_merge import (
+from smt_select.evaluation.fallback import (
     CSV_HEADER,
     load_eval_csv,
     load_fallback_lookup,
     merge_with_fallback,
     write_eval_csv,
 )
-from src.gin_ehm import train_gin_regression
-from src.gin_pwc import train_gin_pwc
-from src.performance import (
+from smt_select.models.gin_ehm import train_gin_regression
+from smt_select.models.gin_pwc import train_gin_pwc
+from smt_select.data.performance import (
     filter_training_instances,
     MultiSolverDataset,
     parse_as_perf_csv,

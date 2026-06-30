@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.experiment_utils import (
+from smt_select.evaluation.experiment_utils import (
     aggregate_gap_metrics,
     discover_seed_dirs,
     select_seed_dirs,

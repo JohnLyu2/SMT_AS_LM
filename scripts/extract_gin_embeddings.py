@@ -21,10 +21,10 @@ import torch
 from torch_geometric.data import Batch
 from tqdm import tqdm
 
-from src.defaults import DEFAULT_BENCHMARK_ROOT
-from src.gin_ehm import graph_dict_to_gin_data
-from src.gin_pwc import GINPwcSelector
-from src.graph_rep import _suppress_z3_destructor_noise, build_smt_graph_dict_timeout
+from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
+from smt_select.models.gin_ehm import graph_dict_to_gin_data
+from smt_select.models.gin_pwc import GINPwcSelector
+from smt_select.representations.graph_rep import _suppress_z3_destructor_noise, build_smt_graph_dict_timeout
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -258,7 +258,7 @@ def main() -> None:
         "--benchmark-root",
         type=Path,
         default=None,
-        help="Root for relative instance paths (default: from src.defaults)",
+        help="Root for relative instance paths (default: from smt_select.defaults)",
     )
     parser.add_argument(
         "--graph-timeout",

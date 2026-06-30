@@ -5,17 +5,16 @@ import json
 import logging
 from pathlib import Path
 
-from .defaults import DEFAULT_BENCHMARK_ROOT
-from .evaluate import (
+from smt_select.defaults import DEFAULT_BENCHMARK_ROOT
+from smt_select.evaluation.evaluate import (
     as_evaluate,
     as_evaluate_parallel,
-    compute_metrics,
-    format_evaluation_short,
 )
-from .gin_ehm import GINSelector
-from .gin_pwc import GINPwcSelector
-from .performance import MultiSolverDataset, parse_performance_json
-from .solver_selector import SolverSelector
+from smt_select.evaluation.metrics import compute_metrics, format_evaluation_short
+from smt_select.models.gin_ehm import GINSelector
+from smt_select.models.gin_pwc import GINPwcSelector
+from smt_select.data.performance import MultiSolverDataset, parse_performance_json
+from smt_select.models.solver_selector import SolverSelector
 
 
 def _load_gin_selector(model_dir: str, device: str | None = None):

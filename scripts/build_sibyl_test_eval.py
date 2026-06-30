@@ -21,10 +21,10 @@ from pathlib import Path
 
 import numpy as np
 
-from src.evaluate import _apply_overhead_to_perf
-from src.evaluate import compute_metrics
-from src.performance import parse_as_perf_csv
-from src.performance import parse_performance_json
+from smt_select.evaluation.metrics import compute_metrics
+from smt_select.evaluation.overhead import apply_overhead as _apply_overhead_to_perf
+from smt_select.data.performance import parse_as_perf_csv
+from smt_select.data.performance import parse_performance_json
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SELECTION_DIR = PROJECT_ROOT / "data" / "results" / "sibyl" / "selection"

@@ -29,19 +29,19 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torch_geometric.data import Batch, Data
 from torch_geometric.nn import GINConv, global_mean_pool
 
-from .gin_ehm import (
+from smt_select.models.gin_ehm import (
     NodeVocabulary,
     build_vocabulary_from_graph_dicts,
     graph_dict_to_gin_data,
 )
-from .graph_rep import (
+from smt_select.representations.graph_rep import (
     build_smt_graph_dict_timeout,
     generate_graph_dicts,
     generate_graph_dicts_parallel,
     _suppress_z3_destructor_noise,
 )
-from .performance import MultiSolverDataset, PERF_DIFF_THRESHOLD
-from .solver_selector import SolverSelector
+from smt_select.data.performance import MultiSolverDataset, PERF_DIFF_THRESHOLD
+from smt_select.models.solver_selector import SolverSelector
 
 
 def num_pairs(K: int) -> int:

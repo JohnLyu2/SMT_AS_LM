@@ -25,7 +25,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.setfit_model import create_setfit_data, train_setfit_model
+from smt_select.models.setfit_model import create_setfit_data, train_setfit_model
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SPLITS_BASE = PROJECT_ROOT / "data" / "train_test_splits"
