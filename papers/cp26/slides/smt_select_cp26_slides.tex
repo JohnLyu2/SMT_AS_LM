@@ -9,11 +9,12 @@
 
 \definecolor{winnerblue}{RGB}{49,76,146}
 \definecolor{vbsorange}{RGB}{230,126,34}
+\definecolor{mutedtext}{RGB}{90,90,90}
 
 \title[SMT-Select]{Learning Unified Graph and Language Representations\\
 for SMT Algorithm Selection}
 
-\author[John Zhengyang Lu et al.]{
+\author[Lu et al.]{
   \textbf{John Zhengyang Lu}\inst{1} \quad
   Paul Sarnighausen-Cahn\inst{2} \quad
   Jiahao Chen\inst{3}\\[0.35em]
@@ -51,7 +52,7 @@ for SMT Algorithm Selection}
     \foreach \x in {0,2,4,6,8,10} {
       \pgfmathtruncatemacro{\percent}{\x*10}
       \draw[gray!18] (\x,-0.55) -- (\x,5.55);
-      \node[below,gray!75] at (\x,-0.62) {\percent\%};
+      \node[below,mutedtext] at (\x,-0.62) {\percent\%};
     }
 
     % Logic, solve rates, gap, winner, and number of participating solvers.
@@ -68,9 +69,9 @@ for SMT Algorithm Selection}
       \pgfmathsetmacro{\winnerx}{\winnerrate/10}
       \pgfmathsetmacro{\vbsx}{\vbs/10}
       \node[anchor=east,align=right] at (-0.28,\y)
-        {\logic\\[-0.2em]
+         {\logic\\[-0.2em]
          \tiny\textcolor{winnerblue}{\textbf{\winnername}}
-         \textcolor{gray!75}{\,\textbullet\,\nsolvers\ solvers}};
+         \textcolor{mutedtext}{\,\textbullet\,\nsolvers\ solvers}};
       \draw[line width=2.2pt,gray!40] (\winnerx,\y) -- (\vbsx,\y);
       \fill[winnerblue] (\winnerx,\y) circle (2.2pt);
       \fill[vbsorange] (\vbsx,\y) circle (2.2pt);
@@ -139,59 +140,53 @@ for SMT Algorithm Selection}
   \vfill
   \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
     \small
-    A machine learning (ML)-based algorithm selector learns from historical
-    solver performance to predict the best solver for each new instance.
+    Trained upon historical solver performance data, the machine learning
+    (ML)-based algorithm selector predicts the best solver for each new instance.
   \end{beamercolorbox}
 \end{frame}
 
 \begin{frame}{Feature Representation of Problem Instances}
   \centering
-  \scriptsize
-  Algorithm selectors differ primarily in how they encode each problem instance.
-
-  \vspace{0.7em}
+  \vspace{1.2em}
   \begin{tikzpicture}[
       font=\scriptsize,
       card/.style={
         draw=winnerblue!55,
         fill=winnerblue!5,
         rounded corners,
-        minimum width=4.15cm,
+        minimum width=5.2cm,
         minimum height=4.0cm,
-        text width=3.55cm,
+        text width=4.45cm,
         align=center
       }
     ]
     \node[card] (manual) at (0,0) {
-      {\large\bfseries Handcrafted}\\[0.45em]
-      SMT symbol counts\\
-      file size and term depth\\[0.7em]
-      \textcolor{gray!75}{Fast, but requires\\domain expertise}
+      {\large\bfseries Expert-Designed Features}\\[0.55em]
+      \textbf{SATzilla} {\small (SAT)} {\tiny [Xu+08]}\\[-0.1em]
+      {\scriptsize\color{mutedtext}
+       \# clauses, \# variables\\[-0.1em]
+       clause/variable ratio\\[-0.1em]
+       Horn-clause fraction\\[-0.1em]
+       graph node-degree statistics, \ldots}\\[0.4em]
+      \textbf{MachSMT} {\small (SMT)} {\tiny [Scott+21]}\\[-0.1em]
+      {\scriptsize\color{mutedtext}mostly theory-symbol counts\\[-0.1em]
+       \texttt{bvadd}, \texttt{mod}, \ldots}
     };
 
-    \node[card] (graph) at (4.65,0) {
-      {\large\bfseries Graph}\\[0.45em]
-      Formula AST / DAG\\
-      learned with a GNN\\[0.7em]
-      \textcolor{gray!75}{Captures structural\\relationships}
+    \node[card,draw=vbsorange!70,fill=vbsorange!7] (graph) at (6.6,0) {
+      {\large\bfseries Graph Neural Networks}\\[0.55em]
+      \textbf{GraSS} {\small (SAT)} {\tiny [Zhang+24]}\\
+      \textbf{Sibyl} {\small (SMT)} {\tiny [Leeson+23]}\\[0.7em]
+      \textcolor{mutedtext}{Learn structural patterns\\from formula ASTs}
     };
 
-    \node[card,draw=vbsorange!70,fill=vbsorange!7] (text) at (9.3,0) {
-      {\large\bfseries Language}\\[0.45em]
-      Application domain\\
-      benchmark source and intent\\[0.7em]
-      \textcolor{gray!75}{Provides high-level\\semantic context}
-    };
-
-    \draw[-{Latex[length=2mm]},thick,gray!50] (manual.east) -- (graph.west);
-    \draw[-{Latex[length=2mm]},thick,gray!50] (graph.east) -- (text.west);
   \end{tikzpicture}
 
   \vfill
   \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
     \small
-    Formula structure tells us \emph{what} is encoded;
-    language context helps explain \emph{where it came from}.
+    Existing selectors typically focus on \textbf{syntactic or structural features}---either
+    handcrafted by experts or learned automatically with graph neural networks (GNNs).
   \end{beamercolorbox}
 \end{frame}
 
