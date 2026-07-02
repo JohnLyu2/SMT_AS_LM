@@ -603,63 +603,44 @@ for SMT Algorithm Selection}
 
 \end{frame}
 
-\begin{frame}{Cost-Sensitive Pairwise Solver Selection}
+\begin{frame}{Cost-Sensitive Training}
   \centering
-  \vspace{0.25em}
+  \vspace{0.55em}
+  \small
+  Both examples say \textbf{Solver 1 is better}---but by very different margins.
+
+  \vspace{0.8em}
   \begin{tikzpicture}[
       font=\scriptsize,
-      box/.style={
-        draw=gray!55,fill=gray!5,rounded corners,
-        minimum height=0.95cm,align=center
-      },
-      pair/.style={
+      classifier/.style={
         draw=winnerblue!70,fill=winnerblue!7,rounded corners,
-        minimum width=3.0cm,minimum height=1.15cm,align=center
+        minimum width=3.6cm,minimum height=0.95cm,align=center
       },
       arrow/.style={-{Latex[length=2mm]},thick,gray!65}
     ]
-    \node[box,minimum width=2.2cm] (instance) at (0,0.65)
-      {Instance\\representation};
-    \node[pair] (classifier) at (4.1,0.65)
-      {Classifier for\\\textbf{Solver A vs.\ Solver B}};
-    \node[box,minimum width=2.5cm] (decision) at (8.1,0.65)
-      {Pairwise preference};
-    \node[box,minimum width=2.4cm] (vote) at (11.6,0.65)
-      {Majority vote\\over all pairs};
-
-    \draw[arrow] (instance) -- (classifier);
-    \draw[arrow] (classifier) -- (decision);
-    \draw[arrow] (decision) -- (vote);
-
-    \node[draw=vbsorange!75,fill=vbsorange!8,rounded corners,
-          minimum width=5.2cm,minimum height=1.15cm,align=center]
-      (weight) at (4.1,-1.25) {
-        \textbf{Training weight:}
-        $\left|\mathrm{PAR2}_A(x)-\mathrm{PAR2}_B(x)\right|$\\
-        {\tiny larger performance difference $\Rightarrow$ larger penalty}
-      };
-    \draw[arrow] (weight) -- (classifier);
-
-    \node[align=left,font=\tiny] at (9.9,-1.35) {
-      \textcolor{vbsorange!70!black}{\textbf{High weight:}}
-      solved vs.\ timeout\\[0.2em]
-      \textcolor{mutedtext}{\textbf{Low weight:}}
-      nearly equal runtimes
+    \node[draw=gray!55,fill=gray!3,rounded corners,inner sep=0.75em]
+      (examples) at (0,1.0) {
+      \renewcommand{\arraystretch}{1.55}
+      \begin{tabular}{l c c}
+        \textbf{Instance} & \textbf{Solver 1} & \textbf{Solver 2}\\ \hline
+        A.smt2 & 8 s & \textcolor{vbsorange!75!black}{timeout}\\
+        B.smt2 & 45 s & 52 s
+      \end{tabular}
     };
+
+    \node[classifier] (classifier) at (0,-1.45) {
+      Solver 1 vs.\ Solver 2 classifier
+    };
+
+    \draw[arrow] (examples) -- node[right,font=\scriptsize]{train}
+      (classifier);
   \end{tikzpicture}
 
-  \vspace{0.25em}
-  \scriptsize
-  \textbf{Variants:}\quad
-  Lite \(\rightarrow\) syntactic features\quad
-  Graph \(\rightarrow\) formula DAG\quad
-  Lite+Text / Graph+Text \(\rightarrow\) add descriptions
-
   \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.5em,center]{block body}
+  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
     \small
-    Cost-sensitive pairwise classification (PWC) focuses learning on
-    solver choices with the greatest performance impact.
+    We weight each training instance by the PAR-2 difference between
+    the two solvers.
   \end{beamercolorbox}
 \end{frame}
 
