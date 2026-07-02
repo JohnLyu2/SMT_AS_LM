@@ -647,26 +647,23 @@ for SMT Algorithm Selection}
 \begin{frame}{SMT-Select Variants}
   \vspace{0.55em}
   \small
-  We evaluate four variants to separate the effects of formula
-  representation and natural-language descriptions.
+  We provide four variants for different levels of data availability
+  and computational budgets. All variants use the same pairwise
+  selection mechanism and cost-sensitive training objective.
 
-  \vspace{0.8em}
-  \begin{itemize}
-    \setlength{\itemsep}{0.75em}
-    \item \textbf{Lite}: expert-designed syntactic features.
-    \item \textbf{Graph}: a graph representation of the formula.
-    \item \textbf{Lite+Text}: Lite features together with the benchmark
-      description.
-    \item \textbf{Graph+Text}: graph and description representations
-      combined.
-  \end{itemize}
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \small
-    Comparing each base variant with its \(+\)Text counterpart isolates
-    the value of natural-language descriptions.
-  \end{beamercolorbox}
+  \vspace{1.25em}
+  \begin{center}
+    \renewcommand{\arraystretch}{2.15}
+    \begin{tabular}{l c c}
+      & \textbf{Without Description} & \textbf{With Description}\\ \hline
+      \textbf{Syntactic Features + SVM}
+        & \textbf{\textcolor{winnerblue}{Lite}}
+        & \textbf{\textcolor{winnerblue}{Lite+Text}}\\
+      \textbf{GNN}
+        & \textbf{\textcolor{winnerblue}{Graph}}
+        & \textbf{\textcolor{winnerblue}{Graph+Text}}
+    \end{tabular}
+  \end{center}
 \end{frame}
 
 \begin{frame}{Experimental Setup}
