@@ -445,6 +445,60 @@ for SMT Algorithm Selection}
 
 \end{frame}
 
+\begin{frame}{Pairwise Classifiers for Algorithm Selection}
+  \centering
+  \vspace{0.6em}
+  \begin{tikzpicture}[
+      font=\small,
+      head/.style={
+        draw=winnerblue!70,fill=winnerblue!7,rounded corners,
+        minimum width=2.0cm,minimum height=0.85cm,align=center
+      },
+      vote/.style={
+        draw=vbsorange!75,line width=1.1pt,fill=vbsorange!8,rounded corners,
+        minimum width=2.6cm,minimum height=1.5cm,align=center
+      },
+      result/.style={
+        draw=vbsorange!75,line width=1.1pt,fill=vbsorange!15,rounded corners,
+        minimum width=2.6cm,minimum height=1.1cm,align=center
+      },
+      arrow/.style={-{Latex[length=2.4mm]},thick,gray!65}
+    ]
+    \node[align=center] (hf) at (0,0) {
+      \textbf{\textcolor{fusiongreen}{Unified Repr.}}\\[0.12em]
+      \(\mathbf{h}_F\)\\[0.12em]
+      \textcolor{fusiongreen!20}{\rule{0.4cm}{0.32cm}}\\[-0.1em]
+      \textcolor{fusiongreen!45}{\rule{0.4cm}{0.32cm}}\\[-0.1em]
+      \textcolor{fusiongreen!80}{\rule{0.4cm}{0.32cm}}\\[-0.1em]
+      \textcolor{fusiongreen!55}{\rule{0.4cm}{0.32cm}}\\[-0.1em]
+      \textcolor{fusiongreen!90}{\rule{0.4cm}{0.32cm}}\\[-0.1em]
+      \textcolor{fusiongreen!35}{\rule{0.4cm}{0.32cm}}
+    };
+
+    \node[head] (h12) at (4.7,1.3) {Solver 1 vs.\ 2};
+    \node[head] (h13) at (4.7,0.4) {Solver 1 vs.\ 3};
+    \node at (4.7,-0.4) {\(\vdots\)};
+    \node[head] (hkk) at (4.7,-1.3) {Solver $K{-}1$ vs.\ $K$};
+
+    \draw[arrow] (hf) -- (h12);
+    \draw[arrow] (hf) -- (h13);
+    \draw[arrow] (hf) -- (hkk);
+
+    \node[vote] (vote) at (8.5,0) {
+      \textbf{Majority vote}\\[0.2em]
+      over \(\binom{K}{2}\) pairs
+    };
+    \node[result] (result) at (11.5,0) {
+      {\bfseries\color{vbsorange!70!black}Selected solver}
+    };
+
+    \draw[arrow] (h12) -- (vote);
+    \draw[arrow] (h13) -- (vote);
+    \draw[arrow] (hkk) -- (vote);
+    \draw[arrow] (vote) -- (result);
+  \end{tikzpicture}
+\end{frame}
+
 \begin{frame}{Two-Stage Multimodal Training}
   \centering
   \vspace{0.35em}
