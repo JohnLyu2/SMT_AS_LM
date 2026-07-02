@@ -499,47 +499,108 @@ for SMT Algorithm Selection}
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Two-Stage Multimodal Training}
+\begin{frame}{Training the Multimodal Selector}
   \centering
-  \vspace{0.35em}
+  \vspace{-0.1em}
   \begin{tikzpicture}[
-      font=\scriptsize,
-      stage/.style={
-        rounded corners,minimum width=5.2cm,minimum height=3.0cm,
-        text width=4.55cm,align=center
+      font=\small,
+      learnable/.style={
+        draw=winnerblue!70,fill=winnerblue!7,rounded corners,
+        minimum width=2.5cm,minimum height=0.9cm,
+        align=center,font=\scriptsize
       },
-      arrow/.style={-{Latex[length=2.4mm]},thick,gray!65}
+      frozen/.style={
+        draw=gray!60,dashed,fill=gray!6,rounded corners,
+        minimum width=2.5cm,minimum height=0.9cm,
+        align=center,font=\scriptsize
+      },
+      head/.style={
+        draw=winnerblue!70,fill=winnerblue!7,rounded corners,
+        minimum width=2.0cm,minimum height=0.85cm,
+        align=center,font=\scriptsize
+      },
+      labels/.style={
+        draw=gray!55,fill=gray!4,rounded corners,
+        minimum width=3.0cm,minimum height=1.3cm,
+        align=center,font=\fontsize{7}{7.5}\selectfont
+      },
+      arrow/.style={-{Latex[length=2.4mm]},thick,gray!65},
+      labelarrow/.style={-{Latex[length=1.8mm]},thin,gray!55}
     ]
-    \node[stage,draw=winnerblue!65,fill=winnerblue!6] (stageone) at (0,0) {
-      {\normalsize\bfseries Stage 1: Graph Pretraining}\\[0.55em]
-      Formula DAG \(\rightarrow\) GIN encoder\\[0.35em]
-      Train graph encoder and pairwise heads\\
-      with cost-sensitive pairwise loss\\[0.45em]
-      {\color{winnerblue}\bfseries Learn stable graph representations}
+    \node[draw=winnerblue!70,fill=winnerblue!7,rounded corners,
+          minimum width=0.5cm,minimum height=0.3cm] (learnkey) at (3.0,2.75) {};
+    \node[right=0.1cm of learnkey,font=\scriptsize,text=winnerblue!80!black]
+      {Learnable};
+    \node[draw=gray!60,dashed,fill=gray!6,rounded corners,
+          minimum width=0.5cm,minimum height=0.3cm] (frozenkey) at (5.25,2.75) {};
+    \node[right=0.1cm of frozenkey,font=\scriptsize,text=mutedtext]
+      {Frozen};
+
+    \node[learnable] (gin) at (0,1.35) {GIN Encoder};
+    \node[frozen] (sent) at (0,-1.35) {Pretrained Transformer};
+
+    \node[learnable] (fusion) at (3.6,0) {Fusion Network};
+
+    \draw[arrow] (gin) -- (fusion);
+    \draw[arrow] (sent) -- (fusion);
+
+    \node[head] (h12) at (6.9,1.65) {Solver 1 vs.\ 2};
+    \node[head] (h13) at (6.9,0) {Solver 1 vs.\ 3};
+    \node[head] (hkk) at (6.9,-1.85) {Solver $K{-}1$ vs.\ $K$};
+    \node[font=\scriptsize,text=winnerblue!80!black] at (10.55,2.75)
+      {Training data};
+    \node[labels] (l12) at (10.55,1.65) {
+      {\renewcommand{\arraystretch}{0.8}
+      \begin{tabular}{@{}l@{\qquad}c@{}}
+        Instance & Better solver\\ \hline
+        A.smt2 & \(S_1\)\\
+        B.smt2 & \(S_2\)\\
+        C.smt2 & \(S_1\)\\
+        \multicolumn{2}{c}{\(\ldots\)}
+      \end{tabular}}
+    };
+    \node[labels] (l13) at (10.55,0) {
+      {\renewcommand{\arraystretch}{0.8}
+      \begin{tabular}{@{}l@{\qquad}c@{}}
+        Instance & Better solver\\ \hline
+        A.smt2 & \(S_3\)\\
+        B.smt2 & \(S_1\)\\
+        C.smt2 & \(S_3\)\\
+        \multicolumn{2}{c}{\(\ldots\)}
+      \end{tabular}}
+    };
+    \node[labels] (lkk) at (10.55,-1.85) {
+      {\renewcommand{\arraystretch}{0.8}
+      \begin{tabular}{@{}l@{\qquad}c@{}}
+        Instance & Better solver\\ \hline
+        A.smt2 & \(S_{K-1}\)\\
+        B.smt2 & \(S_K\)\\
+        C.smt2 & \(S_K\)\\
+        \multicolumn{2}{c}{\(\ldots\)}
+      \end{tabular}}
     };
 
-    \node[stage,draw=vbsorange!75,fill=vbsorange!7] (stagetwo) at (6.65,0) {
-      {\normalsize\bfseries Stage 2: Fusion Training}\\[0.55em]
-      Freeze the pretrained graph encoder\\[0.35em]
-      Train text projection, fusion layer,\\
-      and new pairwise heads\\[0.45em]
-      {\color{vbsorange!65!black}\bfseries Learn graph--text interactions}
-    };
-
-    \draw[arrow] (stageone) -- (stagetwo);
+    \draw[arrow] (fusion) -- (h12);
+    \draw[arrow] (fusion) -- (h13);
+    \draw[arrow] (fusion) -- (hkk);
+    \draw[labelarrow] (l12) -- (h12);
+    \draw[labelarrow] (l13) -- (h13);
+    \draw[labelarrow] (lkk) -- (hkk);
+    \node[fill=white,inner sep=1.5pt,font=\normalsize] at (6.9,-0.82)
+      {\(\vdots\)};
   \end{tikzpicture}
 
-  \vspace{0.4em}
-  \scriptsize
-  Fine-tuning the graph encoder in Stage 2 increased training cost
-  without noticeable performance improvement.
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \small
-    Freezing the structural encoder makes multimodal training
-    \textbf{stable and computationally efficient}.
+  \vspace{0.15em}
+  \begin{beamercolorbox}[rounded=true,sep=0.35em]{block body}
+    \scriptsize
+    \(\bullet\)\enspace
+    The graph encoder, fusion network, and pairwise classifiers are
+    trainable; the pretrained description encoder is frozen.\\[0.15em]
+    \(\bullet\)\enspace
+    Pairwise classifiers use pair-specific training data; the graph
+    encoder and fusion network are shared across all pairs.
   \end{beamercolorbox}
+
 \end{frame}
 
 \begin{frame}{Cost-Sensitive Pairwise Solver Selection}
