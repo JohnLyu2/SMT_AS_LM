@@ -9,6 +9,7 @@
 
 \definecolor{winnerblue}{RGB}{49,76,146}
 \definecolor{vbsorange}{RGB}{230,126,34}
+\definecolor{fusiongreen}{RGB}{46,134,72}
 \definecolor{mutedtext}{RGB}{90,90,90}
 
 \title[SMT-Select]{Learning Unified Graph and Language Representations\\
@@ -330,66 +331,118 @@ for SMT Algorithm Selection}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{SMT-Select: Unified Graph and Language Representations}
+\begin{frame}{Unified Graph and Language Representation}
   \centering
-  \vspace{0.45em}
+  \vspace{0.2em}
   \begin{tikzpicture}[
-      font=\scriptsize,
-      box/.style={
-        draw=gray!55,fill=gray!5,rounded corners,
-        minimum width=2.25cm,minimum height=0.92cm,align=center
-      },
-      graph/.style={
+      scale=1.12,
+      transform shape,
+      font=\tiny,
+      encoder/.style={
         draw=winnerblue!70,fill=winnerblue!7,rounded corners,
-        minimum width=2.25cm,minimum height=0.92cm,align=center
+        minimum width=3.0cm,minimum height=2.1cm,align=center
       },
       textenc/.style={
         draw=vbsorange!75,fill=vbsorange!8,rounded corners,
-        minimum width=2.25cm,minimum height=0.92cm,align=center
+        minimum width=3.0cm,minimum height=2.1cm,align=center
       },
       fusion/.style={
-        draw=winnerblue,line width=1.1pt,fill=winnerblue!13,rounded corners,
-        minimum width=2.5cm,minimum height=1.15cm,align=center
+        draw=fusiongreen,line width=1.1pt,fill=fusiongreen!13,rounded corners,
+        minimum width=2.45cm,minimum height=1.9cm,align=center
+      },
+      output/.style={
+        draw=gray!55,fill=gray!5,rounded corners,
+        minimum width=1.75cm,minimum height=0.95cm,align=center
+      },
+      astnode/.style={
+        draw=gray!65,fill=white,circle,minimum size=0.82cm,
+        inner sep=0pt,font=\tiny
       },
       arrow/.style={-{Latex[length=2mm]},thick,gray!65}
     ]
-    \node[box] (formula) at (0,1.2) {SMT formula};
-    \node[graph] (dag) at (3.0,1.2) {Formula DAG};
-    \node[graph] (gin) at (6.0,1.2) {\textbf{GIN}\\graph encoder};
-
-    \node[box] (description) at (0,-1.2) {Header description};
-    \node[textenc] (transformer) at (3.0,-1.2)
-      {\textbf{Pretrained transformer}\\text encoder};
-    \node[textenc] (projection) at (6.0,-1.2) {Projection};
-
-    \node[fusion] (fusion) at (9.0,0) {
-      \textbf{Multimodal fusion}\\
-      {\tiny structure + context}
+    \node[astnode] (eq) at (0,1.55) {\texttt{=}};
+    \node[astnode] (div) at (-0.8,0.7) {\texttt{bvsdiv}};
+    \node[astnode] (zero) at (0.8,0.7) {\texttt{const}};
+    \node[astnode] (three) at (-1.25,-0.2) {\texttt{const}};
+    \node[astnode] (two) at (-0.3,-0.2) {\texttt{const}};
+    \draw[gray!65] (eq) -- (div);
+    \draw[gray!65] (eq) -- (zero);
+    \draw[gray!65] (div) -- (three);
+    \draw[gray!65] (div) -- (two);
+    \coordinate (formula) at (1.25,1.2);
+    \node[encoder] (gin) at (3.85,1.25) {
+      \textbf{Graph Isomorphism Network}\\[0.15em]
+      3 message-passing layers\\
+      hidden dimension 64\\
+      2-layer MLP + ReLU updates\\
+      global mean pooling
     };
-    \node[box] (pwc) at (12.0,0.55) {Pairwise\\classifiers};
-    \node[box] (solver) at (12.0,-0.75) {\textbf{Selected solver}};
 
-    \draw[arrow] (formula) -- (dag);
-    \draw[arrow] (dag) -- (gin);
+    \node[minimum width=3.65cm,minimum height=1.7cm,
+          text width=3.3cm,align=left] (description) at (0,-1.55) {
+      \textbf{Description:} Constructed by Trevor Hansen to test that
+      signed division rounds to zero.
+    };
+    \node[textenc] (transformer) at (3.85,-1.55) {
+      \textbf{Sentence Transformer}\\[0.15em]
+      pretrained all-mpnet-base-v2\\
+      maximum 384 tokens\\
+      768-d embedding\\
+      learnable projection to 64
+    };
+
+    \node[align=center] (gvec) at (6.1,1.25) {
+      \(\mathbf{h}_G\)\\[0.08em]
+      \textcolor{winnerblue!25}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{winnerblue!55}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{winnerblue!85}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{winnerblue!40}{\rule{0.27cm}{0.2cm}}
+    };
+    \node[above=0.02cm of gvec,text=winnerblue,font=\tiny\bfseries]
+      {Graph Repr.};
+    \node[align=center] (tvec) at (6.1,-1.55) {
+      \(\mathbf{h}_T\)\\[0.08em]
+      \textcolor{vbsorange!25}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{vbsorange!55}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{vbsorange!85}{\rule{0.27cm}{0.2cm}}\\[-0.12em]
+      \textcolor{vbsorange!40}{\rule{0.27cm}{0.2cm}}
+    };
+    \node[above=0.02cm of tvec,text=vbsorange!65!black,font=\tiny\bfseries]
+      {Text Repr.};
+
+    \node[fusion] (fusion) at (8.1,0) {
+      \textbf{Multimodal Fusion}\\[0.15em]
+      concatenation\\
+      LayerNorm\\
+      bottleneck MLP\\
+      output dimension 64
+    };
+    \node[minimum width=2.15cm,minimum height=2.35cm,align=center]
+      (vector) at (10.75,0) {
+        \textbf{\textcolor{fusiongreen}{Unified Repr.}}\\[0.1em]
+        \(\mathbf{h}_F\)\\[0.15em]
+        \textcolor{fusiongreen!20}{\rule{0.34cm}{0.28cm}}\\[-0.08em]
+        \textcolor{fusiongreen!45}{\rule{0.34cm}{0.28cm}}\\[-0.08em]
+        \textcolor{fusiongreen!80}{\rule{0.34cm}{0.28cm}}\\[-0.08em]
+        \textcolor{fusiongreen!55}{\rule{0.34cm}{0.28cm}}\\[-0.08em]
+        \textcolor{fusiongreen!90}{\rule{0.34cm}{0.28cm}}\\[-0.08em]
+        \textcolor{fusiongreen!35}{\rule{0.34cm}{0.28cm}}
+      };
+
+    \draw[arrow] (formula) -- (gin);
     \draw[arrow] (description) -- (transformer);
-    \draw[arrow] (transformer) -- (projection);
-    \draw[arrow] (gin) -- (fusion);
-    \draw[arrow] (projection) -- (fusion);
-    \draw[arrow] (fusion) -- (pwc);
-    \draw[arrow] (pwc) -- node[right,font=\tiny]{majority vote} (solver);
+    \draw[arrow] (gin) -- (gvec);
+    \draw[arrow] (gvec) -- (fusion);
+    \draw[arrow] (transformer) -- (tvec);
+    \draw[arrow] (tvec) -- (fusion);
+    \draw[arrow] (fusion) -- (vector);
 
     \node[above=0.05cm of gin,text=winnerblue,font=\tiny\bfseries]
-      {structural embedding};
-    \node[below=0.05cm of projection,text=vbsorange!65!black,font=\tiny\bfseries]
-      {contextual embedding};
+      {Graph Encoder};
+    \node[above=0.05cm of transformer,text=vbsorange!65!black,font=\tiny\bfseries]
+      {Desc.\ Encoder};
   \end{tikzpicture}
 
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \small
-    SMT-Select combines \textbf{structural} and \textbf{contextual}
-    representations to guide solver selection.
-  \end{beamercolorbox}
 \end{frame}
 
 \begin{frame}{Two-Stage Multimodal Training}
