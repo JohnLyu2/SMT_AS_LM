@@ -644,6 +644,31 @@ for SMT Algorithm Selection}
   \end{beamercolorbox}
 \end{frame}
 
+\begin{frame}{SMT-Select Variants}
+  \vspace{0.55em}
+  \small
+  We evaluate four variants to separate the effects of formula
+  representation and natural-language descriptions.
+
+  \vspace{0.8em}
+  \begin{itemize}
+    \setlength{\itemsep}{0.75em}
+    \item \textbf{Lite}: expert-designed syntactic features.
+    \item \textbf{Graph}: a graph representation of the formula.
+    \item \textbf{Lite+Text}: Lite features together with the benchmark
+      description.
+    \item \textbf{Graph+Text}: graph and description representations
+      combined.
+  \end{itemize}
+
+  \vfill
+  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
+    \small
+    Comparing each base variant with its \(+\)Text counterpart isolates
+    the value of natural-language descriptions.
+  \end{beamercolorbox}
+\end{frame}
+
 \begin{frame}{Experimental Setup}
   \centering
   \vspace{0.55em}
