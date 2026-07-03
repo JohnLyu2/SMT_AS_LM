@@ -846,6 +846,39 @@ for SMT Algorithm Selection}
   \end{beamercolorbox}
 \end{frame}
 
+\begin{frame}{Resource Budgets: Lite vs.\ Graph}
+  \centering
+  \vspace{0.35em}
+  \footnotesize
+  \setlength{\tabcolsep}{0.85em}
+  \renewcommand{\arraystretch}{1.24}
+  \begin{tabular}{l c c c c}
+      & \multicolumn{2}{c}{\textbf{Training Data}}
+      & \multicolumn{2}{c}{\textbf{Average Training Time (min)}}\\[-0.15em]
+    \cline{2-3}\cline{4-5}
+    \textbf{Logic}
+      & \textbf{Instances}
+      & \textbf{Avg.\ Instance Size}
+      & \textbf{Lite+Text}
+      & \textbf{Graph+Text}\\ \hline
+    ABV      & 1,865  & 4.1 KB    & $\leq 0.1$ & 0.3\\
+    ALIA     & 1,152  & 5.0 KB    & $\leq 0.1$ & 0.3\\
+    BV       & 780    & 303.2 KB  & $\leq 0.1$ & 1.6\\
+    QF\_BV   & 8,027  & 1.5 MB    & 1.9        & 321.0\\
+    QF\_IDL  & 906    & 1.6 MB    & 0.2        & 65.6\\
+    QF\_LIA  & 3,618  & 861.4 KB  & 0.4        & 158.8\\
+    QF\_NRA  & 2,328  & 670.9 KB  & $\leq 0.1$ & 39.3\\
+    QF\_SLIA & 17,791 & 35.1 KB   & 1.5        & 17.8\\
+    UFNIA    & 4,709  & 75.5 KB   & $\leq 0.1$ & 12.8\\ \hline
+  \end{tabular}
+
+  \vspace{0.9em}
+  \scriptsize
+  \textbf{Hardware:} Graph+Text was trained on an RTX 3090 GPU (24 GB);
+  Lite+Text requires no GPU.
+
+\end{frame}
+
 \begin{frame}{Conclusion}
   \centering
   \vspace{0.35em}
