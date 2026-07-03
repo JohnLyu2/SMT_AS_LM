@@ -668,51 +668,101 @@ for SMT Algorithm Selection}
 
 \begin{frame}{Experimental Setup}
   \centering
-  \vspace{0.55em}
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      card/.style={
-        draw=winnerblue!55,fill=winnerblue!5,rounded corners,
-        minimum width=3.65cm,minimum height=2.15cm,
-        text width=3.15cm,align=center
-      }
-    ]
-    \node[card] at (0,0) {
-      {\large\bfseries Data}\\[0.45em]
-      SMT-COMP 2024\\
-      \textbf{9 logics}\\
-      3--6 solvers per logic
-    };
-    \node[card,draw=vbsorange!70,fill=vbsorange!7] at (4.4,0) {
-      {\large\bfseries Evaluation}\\[0.45em]
-      75\% train / 25\% test\\
-      \textbf{5 random splits}\\
-      20-minute timeout
-    };
-    \node[card] at (8.8,0) {
-      {\large\bfseries Metrics}\\[0.45em]
-      PAR-2 gap closed\\
-      instances solved\\
-      overhead included
-    };
+  \scriptsize
+  {\large\bfseries SMT-COMP 2024 Data}
+
+  \vspace{0.25em}
+  \begin{tikzpicture}[x=0.014cm,y=0.47cm,font=\tiny]
+    \foreach \x in {0,100,200,300,400} {
+      \draw[gray!18] (\x,-0.55) -- (\x,8.55);
+      \node[below,mutedtext] at (\x,-0.62) {\x};
+    }
+
+    \foreach \logic/\winner/\vbs/\gap/\winnername/\solvers
+      [count=\row from 0] in {
+      ABV/837/971/134/cvc5/3,
+      ALIA/298/390/92/iProver v3.9/3,
+      BV/952/1002/50/cvc5/5,
+      QF\_BV/10489/10560/71/Bitwuzla/6,
+      QF\_IDL/1047/1101/54/Z3-alpha/5,
+      QF\_LIA/4514/4726/212/OpenSMT/5,
+      QF\_NRA/2813/2933/120/Z3-alpha/5,
+      QF\_SLIA/23276/23700/424/Z3-Noodler/4,
+      UFNIA/3688/3759/71/cvc5/3
+    } {
+      \pgfmathsetmacro{\y}{8-\row}
+      \node[anchor=west,font=\scriptsize] at (-430,\y) {\logic};
+      \node[font=\scriptsize] at (-300,\y) {\solvers};
+      \node[anchor=east,font=\tiny] at (-15,\y)
+        {\winner\ (\textcolor{winnerblue}{\winnername})};
+      \draw[line width=3.2pt,vbsorange!65] (0,\y) -- (\gap,\y);
+      \fill[vbsorange] (\gap,\y) circle (1.9pt);
+      \node[anchor=west,text=vbsorange!75!black,font=\tiny\bfseries]
+        at (\gap+10,\y) {+\gap};
+    }
+
+    \node[anchor=west,font=\scriptsize\bfseries] at (-430,9.15)
+      {Logic};
+    \node[font=\scriptsize\bfseries] at (-300,9.15)
+      {Participants};
+    \node[anchor=east,font=\scriptsize\bfseries] at (-15,9.15)
+      {Winner (SBS) Solved};
+    \node[anchor=west,font=\scriptsize\bfseries] at (0,9.15)
+      {Additionally Solved by VBS};
+    \draw[gray!45] (-430,8.65) -- (450,8.65);
   \end{tikzpicture}
 
-  \vspace{0.45em}
+  \vspace{0.2em}
   \tiny
-  Logics require at least 50 instances of SBS--VBS headroom and
-  at least 75\% description coverage.
-
-  \vspace{0.45em}
-  \scriptsize
-  \textbf{Single best solver (SBS):} competition winner \qquad
-  \textbf{Virtual best solver (VBS):} oracle choice per instance
+  All logics that (1) have at least 50 SBS--VBS headroom instances and
+  (2) have at least 75\% description coverage are included.
 
   \vfill
   \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
     \small
-    We measure how much of the \textbf{SBS--VBS performance gap}
-    a selector recovers on held-out instances.
+    How much of the \textbf{SBS--VBS gap} can algorithm selection close?
   \end{beamercolorbox}
+\end{frame}
+
+\begin{frame}{Evaluation Protocol}
+  \centering
+  \vspace{0.45em}
+  \begin{tikzpicture}[
+      font=\scriptsize,
+      card/.style={
+        draw=winnerblue!55,fill=winnerblue!5,rounded corners,
+        minimum width=5.75cm,minimum height=1.75cm,
+        text width=5.15cm,align=center
+      }
+    ]
+    \node[card] at (0,1.25) {
+      {\normalsize\bfseries Logic Selection}\\[0.3em]
+      9 SMT-COMP 2024 logics\\
+      \(\geq 50\) SBS--VBS headroom instances\\
+      \(\geq 75\%\) description coverage
+    };
+    \node[card,draw=vbsorange!70,fill=vbsorange!7] at (6.45,1.25) {
+      {\normalsize\bfseries Data Splits}\\[0.3em]
+      75\% training / 25\% test\\
+      \textbf{5 random splits}
+    };
+    \node[card] at (0,-1.25) {
+      {\normalsize\bfseries Runtime Accounting}\\[0.3em]
+      20-minute solver timeout\\
+      Feature extraction and inference\\
+      overhead included
+    };
+    \node[card,draw=vbsorange!70,fill=vbsorange!7] at (6.45,-1.25) {
+      {\normalsize\bfseries Metrics}\\[0.3em]
+      PAR-2 SBS--VBS gap closed\\
+      Instances solved
+    };
+  \end{tikzpicture}
+
+  \vfill
+  \scriptsize
+  \textbf{Single best solver (SBS):} competition winner \qquad
+  \textbf{Virtual best solver (VBS):} oracle choice per instance
 \end{frame}
 
 \begin{frame}{SMT-Select Consistently Narrows the VBS Gap}
