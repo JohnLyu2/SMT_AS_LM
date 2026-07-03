@@ -725,291 +725,44 @@ for SMT Algorithm Selection}
   \end{beamercolorbox}
 \end{frame}
 
-\begin{frame}{SMT-Select Consistently Narrows the VBS Gap}
+\begin{frame}{Cost-Sensitive Pairwise Selection Outperforms Prior Methods}
   \centering
   \scriptsize
-  Test-set PAR-2 SBS--VBS gap closed (\%), averaged over five splits.
+  Test-set PAR-2 SBS--VBS gap closed (\%).
 
-  \vspace{0.2em}
-  \begin{tikzpicture}[x=0.087cm,y=0.48cm,font=\tiny]
-    \foreach \x in {0,25,50,75,100} {
-      \draw[gray!18] (\x,-0.65) -- (\x,8.55);
-      \node[below,mutedtext] at (\x,-0.72) {\x\%};
-    }
+  \vspace{0.45em}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{l cc cc}
+    & \multicolumn{2}{c}{\textbf{Prior Selectors}}
+    & \multicolumn{2}{c}{\textbf{SMT-Select}}\\
+    \textbf{Logic} & \textbf{MachSMT} & \textbf{Sibyl}
+      & \textbf{Lite} & \textbf{Graph}\\ \hline
+    ABV      & 7.8  & 18.0 & 71.5 & \textbf{\textcolor{winnerblue}{76.6}}\\
+    ALIA     & 27.7 & 33.3 & \textbf{\textcolor{winnerblue}{55.3}} & 55.1\\
+    BV       & 17.1 & 12.0 & 38.2 & \textbf{\textcolor{winnerblue}{42.4}}\\
+    QF\_BV   & 7.4  & \(<0\) & 35.4 & \textbf{\textcolor{winnerblue}{47.7}}\\
+    QF\_IDL  & 6.1  & \(<0\) & 64.5 & \textbf{\textcolor{winnerblue}{69.7}}\\
+    QF\_LIA  & 84.7 & 76.7 & 89.0 & \textbf{\textcolor{winnerblue}{92.6}}\\
+    QF\_NRA  & 17.3 & \(<0\) & 44.6 & \textbf{\textcolor{winnerblue}{50.6}}\\
+    QF\_SLIA & 77.0 & --- & 90.7 & \textbf{\textcolor{winnerblue}{92.8}}\\
+    UFNIA    & \(<0\) & --- & 14.8 & \textbf{\textcolor{winnerblue}{24.5}}
+  \end{tabular}
 
-    \foreach \logic/\mach/\sibyl/\lite/\graph/\full
-      [count=\row from 0] in {
-      ABV/7.83/17.97/71.45/76.56/79.44,
-      ALIA/27.73/33.34/55.30/55.07/67.65,
-      BV/17.11/12.00/38.22/42.43/53.82,
-      QF\_BV/7.35/-1/35.40/47.68/57.52,
-      QF\_IDL/6.06/-1/64.53/69.66/81.82,
-      QF\_LIA/84.70/76.66/89.01/92.56/91.65,
-      QF\_NRA/17.25/-1/44.61/50.61/55.17,
-      QF\_SLIA/76.96/-2/90.70/92.82/93.50,
-      UFNIA/-1/-2/14.79/24.48/31.84
-    } {
-      \pgfmathsetmacro{\y}{8-\row}
-      \node[anchor=east,font=\scriptsize] at (-3,\y) {\logic};
-      \draw[gray!30] (0,\y) -- (100,\y);
-      \ifdim \mach pt>-0.5pt
-        \fill[gray!70] (\mach,\y+0.18) circle (1.35pt);
-      \else
-        \node[anchor=west,text=gray!65] at (0,\y+0.18) {$<0$};
-      \fi
-      \ifdim \sibyl pt>-0.5pt
-        \draw[gray!75,line width=0.6pt] (\sibyl,\y+0.06) circle (1.35pt);
-      \else
-        \ifdim \sibyl pt>-1.5pt
-          \node[anchor=west,text=gray!65] at (5,\y+0.05) {$<0$};
-        \fi
-      \fi
-      \fill[winnerblue!45] (\lite,\y-0.06) circle (1.45pt);
-      \fill[winnerblue] (\graph,\y-0.18) circle (1.55pt);
-      \fill[vbsorange] (\full,\y-0.30) circle (2.25pt);
-    }
-
-    \fill[gray!70] (4,9.25) circle (1.35pt);
-    \node[anchor=west] at (7,9.25) {MachSMT};
-    \draw[gray!75,line width=0.6pt] (28,9.25) circle (1.35pt);
-    \node[anchor=west] at (31,9.25) {Sibyl};
-    \fill[winnerblue!45] (45,9.25) circle (1.45pt);
-    \node[anchor=west] at (48,9.25) {Lite};
-    \fill[winnerblue] (60,9.25) circle (1.55pt);
-    \node[anchor=west] at (63,9.25) {Graph};
-    \fill[vbsorange] (78,9.25) circle (2.25pt);
-    \node[anchor=west,font=\bfseries] at (81,9.25) {Graph+Text};
-  \end{tikzpicture}
-
-  \vspace{-0.1em}
-  \begin{beamercolorbox}[rounded=true,sep=0.45em,center]{block body}
-    \small
-    Graph+Text closes at least \textbf{\color{vbsorange}30\%} of the gap in every logic,
-    reaching \textbf{93.5\%} on QF\_SLIA and \textbf{91.7\%} on QF\_LIA.
-  \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{SMT-Select Outperforms Prior Selectors}
-  \centering
-  \vspace{0.4em}
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      card/.style={
-        rounded corners,minimum width=5.35cm,minimum height=3.5cm,
-        text width=4.75cm,align=center
-      }
-    ]
-    \node[card,draw=winnerblue!65,fill=winnerblue!6] at (0,0) {
-      {\large\bfseries Lite vs.\ MachSMT}\\[0.25em]
-      {\fontsize{22}{24}\selectfont\color{winnerblue}\bfseries 9 / 9}\\[-0.1em]
-      logics improved\\[0.55em]
-      \begin{tabular}{r@{\quad}c@{\quad}c}
-        & MachSMT & Lite\\
-        ABV & 7.8\% & \textbf{71.5\%}\\
-        QF\_IDL & 6.1\% & \textbf{64.5\%}\\
-        QF\_NRA & 17.3\% & \textbf{44.6\%}
-      \end{tabular}
-    };
-
-    \node[card,draw=vbsorange!75,fill=vbsorange!7] at (6.55,0) {
-      {\large\bfseries Graph vs.\ Sibyl}\\[0.25em]
-      {\fontsize{22}{24}\selectfont\color{vbsorange!70!black}\bfseries 7 / 7}\\[-0.1em]
-      commonly evaluated logics improved\\[0.55em]
-      \begin{tabular}{r@{\quad}c@{\quad}c}
-        & Sibyl & Graph\\
-        ABV & 18.0\% & \textbf{76.6\%}\\
-        QF\_IDL & $<0$\% & \textbf{69.7\%}\\
-        QF\_LIA & 76.7\% & \textbf{92.6\%}
-      \end{tabular}
-    };
-  \end{tikzpicture}
-
-  \vspace{0.35em}
+  \vspace{0.3em}
   \tiny
-  Values show test-set PAR-2 SBS--VBS gap closed.
+  Results are averaged over five train--test splits.
 
   \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.5em,center]{block body}
-    \small
-    The \textbf{cost-sensitive PWC framework} is an important contributor
-    beyond the choice of instance representation.
-  \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{Descriptions Are Predictive---and Complementary}
-  \centering
-  \scriptsize
-  PAR-2 SBS--VBS gap closed (\%) by Graph, Text-only, and Graph+Text.
-
-  \vspace{0.35em}
-  \begin{tikzpicture}[x=0.105cm,y=0.8cm,font=\scriptsize]
-    \foreach \x in {0,20,40,60,80} {
-      \draw[gray!18] (\x,-0.5) -- (\x,4.5);
-      \node[below,mutedtext,font=\tiny] at (\x,-0.58) {\x\%};
-    }
-
-    \foreach \logic/\graph/\textonly/\full [count=\row from 0] in {
-      ABV/76.56/62.83/79.44,
-      QF\_BV/47.68/55.63/57.52,
-      QF\_IDL/69.66/44.92/81.82,
-      QF\_NRA/50.61/44.94/55.17,
-      UFNIA/24.48/-3.95/31.84
-    } {
-      \pgfmathsetmacro{\y}{4-\row}
-      \node[anchor=east] at (-3,\y) {\logic};
-      \draw[gray!30] (0,\y) -- (85,\y);
-      \fill[winnerblue] (\graph,\y+0.16) circle (2pt);
-      \ifdim \textonly pt>0pt
-        \fill[gray!65] (\textonly,\y) circle (2pt);
-      \else
-        \node[anchor=west,text=gray!65,font=\tiny] at (0,\y) {$<0$};
-      \fi
-      \fill[vbsorange] (\full,\y-0.16) circle (2.5pt);
-    }
-
-    \fill[winnerblue] (12,5.2) circle (2pt);
-    \node[anchor=west] at (14,5.2) {Graph};
-    \fill[gray!65] (38,5.2) circle (2pt);
-    \node[anchor=west] at (40,5.2) {Text only};
-    \fill[vbsorange] (65,5.2) circle (2.5pt);
-    \node[anchor=west,font=\bfseries] at (67,5.2) {Graph+Text};
-  \end{tikzpicture}
-
-  \vspace{0.2em}
-  \scriptsize
-  Text alone even outperforms Graph on QF\_BV, but its value depends on
-  description quality and diversity.
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.5em,center]{block body}
-    \small
-    The two modalities capture \textbf{different signals};
-    their combination gives the strongest overall selector.
-  \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{Descriptions Provide More Than Family Information}
-  \centering
-  \scriptsize
-  Graph-model PAR-2 SBS--VBS gap closed (\%) under three description modes.
-
-  \vspace{0.15em}
-  \begin{tikzpicture}[x=0.098cm,y=1.05cm,font=\scriptsize]
-    \foreach \x in {20,40,60,80} {
-      \draw[gray!18] (\x,-0.45) -- (\x,3.55);
-      \node[below,mutedtext,font=\tiny] at (\x,-0.52) {\x\%};
-    }
-
-    \foreach \logic/\none/\family/\full [count=\row from 0] in {
-      ALIA/55.07/62.15/67.65,
-      QF\_BV/47.68/49.83/57.52,
-      QF\_IDL/69.66/80.42/81.82,
-      UFNIA/24.48/26.60/31.84
-    } {
-      \pgfmathsetmacro{\y}{3-\row}
-      \node[anchor=east] at (16,\y) {\logic};
-      \draw[line width=1.3pt,gray!35] (\none,\y) -- (\full,\y);
-      \fill[gray!65] (\none,\y) circle (2pt);
-      \fill[winnerblue] (\family,\y) circle (2pt);
-      \fill[vbsorange] (\full,\y) circle (2.5pt);
-      \node[anchor=west,text=vbsorange!70!black,font=\tiny\bfseries]
-        at (\full+1.4,\y) {\full\%};
-    }
-
-    \fill[gray!65] (20,4.15) circle (2pt);
-    \node[anchor=west] at (22,4.15) {No description};
-    \fill[winnerblue] (45,4.15) circle (2pt);
-    \node[anchor=west] at (47,4.15) {Family only};
-    \fill[vbsorange] (68,4.15) circle (2.5pt);
-    \node[anchor=west] at (70,4.15) {Full description};
-  \end{tikzpicture}
-
-  \vspace{0.05em}
-  \scriptsize
-  Across all nine logics: full descriptions beat family-only descriptions;
-  they improve over no description in eight.
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.45em,center]{block body}
-    \small
-    \textbf{Finer-grained semantic content} contributes beyond simply identifying
-    the benchmark family.
-  \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{Accuracy--Cost Trade-offs}
-  \centering
-  \vspace{0.45em}
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      card/.style={
-        rounded corners,minimum width=5.45cm,minimum height=3.45cm,
-        text width=4.75cm,align=center
-      }
-    ]
-    \node[card,draw=winnerblue!60,fill=winnerblue!6] at (0,0) {
-      {\large\bfseries SMT-Select-Lite+Text}\\[0.55em]
-      simple syntactic features + descriptions\\[0.45em]
-      \textbf{Training:} seconds to about 2 minutes\\
-      \textbf{Selection overhead:} $<0.1$ s average\\[0.55em]
-      {\color{winnerblue}\bfseries Practical low-cost option}
-    };
-
-    \node[card,draw=vbsorange!75,fill=vbsorange!7] at (6.55,0) {
-      {\large\bfseries SMT-Select-Graph+Text}\\[0.55em]
-      GIN representation + descriptions\\[0.45em]
-      \textbf{Training:} up to 5.35 h on QF\_BV\\
-      \textbf{Selection overhead:} at most 1.7 s average\\[0.55em]
-      {\color{vbsorange!65!black}\bfseries Strongest overall option}
-    };
-  \end{tikzpicture}
-
-  \vspace{0.45em}
-  \scriptsize
-  The text-fusion stage reuses the pretrained graph encoder and adds little
-  training cost beyond graph pretraining.
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \small
-    SMT-Select supports a clear trade-off between
-    \textbf{computational cost} and \textbf{selection performance}.
-  \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{Scope and Limitations}
-  \centering
-  \vspace{0.35em}
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      item/.style={
-        draw=gray!50,fill=gray!4,rounded corners,
-        minimum width=11.5cm,minimum height=1.05cm,
-        text width=10.8cm,align=left,inner xsep=0.45cm
-      }
-    ]
-    \node[item] at (0,1.5) {
-      \textbf{\color{winnerblue}Description availability and quality.}\quad
-      Text features are less useful when descriptions are missing, repetitive,
-      or too coarse.
-    };
-    \node[item,draw=vbsorange!70,fill=vbsorange!6] at (0,0.15) {
-      \textbf{\color{vbsorange!65!black}Portfolio scaling.}\quad
-      Pairwise classification requires \(K(K-1)/2\) classifiers for a
-      portfolio of \(K\) solvers.
-    };
-    \node[item] at (0,-1.2) {
-      \textbf{\color{winnerblue}Offline single-solver selection.}\quad
-      SMT-Select commits to one solver; scheduling, online adaptation,
-      and parallel portfolios are outside the current scope.
-    };
-  \end{tikzpicture}
-
-  \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \small
-    Future work can combine multimodal representations with
-    \textbf{scalable, adaptive portfolio strategies}.
+  \begin{beamercolorbox}[rounded=true,sep=0.45em]{block body}
+    \scriptsize
+    \(\bullet\)\enspace
+    \textbf{Lite vs.\ MachSMT:} Both use lightweight syntactic features.
+    MachSMT predicts individual solver runtimes; Lite learns pairwise
+    choices weighted by runtime differences.\\[0.25em]
+    \(\bullet\)\enspace
+    \textbf{Graph vs.\ Sibyl:} Both encode formula ASTs with GNNs.
+    Sibyl weights pairwise training by ranking differences; Graph uses
+    runtime differences.
   \end{beamercolorbox}
 \end{frame}
 
