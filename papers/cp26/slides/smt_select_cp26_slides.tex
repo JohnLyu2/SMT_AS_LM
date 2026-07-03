@@ -766,6 +766,51 @@ for SMT Algorithm Selection}
   \end{beamercolorbox}
 \end{frame}
 
+\begin{frame}{Contextual Descriptions Help Algorithm Selection}
+  \centering
+  \scriptsize
+  Test-set PAR-2 SBS--VBS gap closed (\%).
+
+  \vspace{0.45em}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{l ccc ccc}
+    & \multicolumn{3}{c}{\textbf{Syntactic Features}}
+    & \multicolumn{3}{c}{\textbf{Graph Representation}}\\
+    \textbf{Logic}
+      & \textbf{Lite} & \textbf{Lite+Text} & \(\boldsymbol{\Delta}\)
+      & \textbf{Graph} & \textbf{Graph+Text} & \(\boldsymbol{\Delta}\)\\ \hline
+    ABV      & 71.5 & 67.2 & \textcolor{mutedtext}{-4.3}
+             & 76.6 & \textcolor{winnerblue}{79.4} & \textcolor{vbsorange!75!black}{+2.9}\\
+    ALIA     & 55.3 & 56.4 & \textcolor{vbsorange!75!black}{+1.1}
+             & 55.1 & \textcolor{winnerblue}{67.7} & \textcolor{vbsorange!75!black}{+12.6}\\
+    BV       & 38.2 & 49.2 & \textcolor{vbsorange!75!black}{+11.0}
+             & 42.4 & \textcolor{winnerblue}{53.8} & \textcolor{vbsorange!75!black}{+11.4}\\
+    QF\_BV   & 35.4 & 55.6 & \textcolor{vbsorange!75!black}{+20.2}
+             & 47.7 & \textcolor{winnerblue}{57.5} & \textcolor{vbsorange!75!black}{+9.8}\\
+    QF\_IDL  & 64.5 & 71.7 & \textcolor{vbsorange!75!black}{+7.2}
+             & 69.7 & \textcolor{winnerblue}{81.8} & \textcolor{vbsorange!75!black}{+12.2}\\
+    QF\_LIA  & 89.0 & 91.2 & \textcolor{vbsorange!75!black}{+2.2}
+             & \textcolor{winnerblue}{92.6} & 91.7 & \textcolor{mutedtext}{-0.9}\\
+    QF\_NRA  & 44.6 & 50.7 & \textcolor{vbsorange!75!black}{+6.1}
+             & 50.6 & \textcolor{winnerblue}{55.2} & \textcolor{vbsorange!75!black}{+4.6}\\
+    QF\_SLIA & 90.7 & \textcolor{winnerblue}{93.5} & \textcolor{vbsorange!75!black}{+2.8}
+             & 92.8 & \textcolor{winnerblue}{93.5} & \textcolor{vbsorange!75!black}{+0.7}\\
+    UFNIA    & 14.8 & 24.0 & \textcolor{vbsorange!75!black}{+9.2}
+             & 24.5 & \textcolor{winnerblue}{31.8} & \textcolor{vbsorange!75!black}{+7.4}
+  \end{tabular}
+
+  \vspace{0.3em}
+  \tiny
+  Results are averaged over five train--test splits.
+
+  \vfill
+  \begin{beamercolorbox}[rounded=true,sep=0.5em,center]{block body}
+    \small
+    Adding descriptions improves both variants in \textbf{8 of 9 logics},
+    with gains of up to \textbf{20.2\%}.
+  \end{beamercolorbox}
+\end{frame}
+
 \begin{frame}{Conclusion}
   \centering
   \vspace{0.35em}
