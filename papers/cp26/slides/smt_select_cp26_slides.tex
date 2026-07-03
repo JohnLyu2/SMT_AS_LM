@@ -670,6 +670,7 @@ for SMT Algorithm Selection}
   \centering
   \scriptsize
   {\large\bfseries SMT-COMP 2024 Data}
+  {\scriptsize (75\% training / 25\% test)}
 
   \vspace{0.25em}
   \begin{tikzpicture}[x=0.014cm,y=0.47cm,font=\tiny]
@@ -722,47 +723,6 @@ for SMT Algorithm Selection}
     \small
     How much of the \textbf{SBS--VBS gap} can algorithm selection close?
   \end{beamercolorbox}
-\end{frame}
-
-\begin{frame}{Evaluation Protocol}
-  \centering
-  \vspace{0.45em}
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      card/.style={
-        draw=winnerblue!55,fill=winnerblue!5,rounded corners,
-        minimum width=5.75cm,minimum height=1.75cm,
-        text width=5.15cm,align=center
-      }
-    ]
-    \node[card] at (0,1.25) {
-      {\normalsize\bfseries Logic Selection}\\[0.3em]
-      9 SMT-COMP 2024 logics\\
-      \(\geq 50\) SBS--VBS headroom instances\\
-      \(\geq 75\%\) description coverage
-    };
-    \node[card,draw=vbsorange!70,fill=vbsorange!7] at (6.45,1.25) {
-      {\normalsize\bfseries Data Splits}\\[0.3em]
-      75\% training / 25\% test\\
-      \textbf{5 random splits}
-    };
-    \node[card] at (0,-1.25) {
-      {\normalsize\bfseries Runtime Accounting}\\[0.3em]
-      20-minute solver timeout\\
-      Feature extraction and inference\\
-      overhead included
-    };
-    \node[card,draw=vbsorange!70,fill=vbsorange!7] at (6.45,-1.25) {
-      {\normalsize\bfseries Metrics}\\[0.3em]
-      PAR-2 SBS--VBS gap closed\\
-      Instances solved
-    };
-  \end{tikzpicture}
-
-  \vfill
-  \scriptsize
-  \textbf{Single best solver (SBS):} competition winner \qquad
-  \textbf{Virtual best solver (VBS):} oracle choice per instance
 \end{frame}
 
 \begin{frame}{SMT-Select Consistently Narrows the VBS Gap}
