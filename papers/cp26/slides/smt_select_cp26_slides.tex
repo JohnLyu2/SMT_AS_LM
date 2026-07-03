@@ -714,9 +714,9 @@ for SMT Algorithm Selection}
   \end{tikzpicture}
 
   \vspace{0.2em}
-  \tiny
-  All logics that (1) have at least 50 SBS--VBS headroom instances and
-  (2) have at least 75\% description coverage are included.
+  \scriptsize
+  Included logics have at least 50 SBS--VBS headroom instances and
+  75\% description coverage.
 
   \vfill
   \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
@@ -873,34 +873,75 @@ for SMT Algorithm Selection}
   \end{tabular}
 
   \vspace{0.9em}
-  \scriptsize
-  \textbf{Hardware:} Graph+Text was trained on an RTX 3090 GPU (24 GB);
+  \small
+  \textbf{Hardware:} Graph+Text was trained on an RTX 3090 GPU;
   Lite+Text requires no GPU.
 
 \end{frame}
 
 \begin{frame}{Conclusion}
   \centering
-  \vspace{0.35em}
+  \vspace{0.2em}
   \begin{tikzpicture}[
-      font=\small,
+      marker/.style={
+        circle,fill=winnerblue,text=white,font=\large\bfseries,
+        minimum size=0.72cm,inner sep=0pt
+      },
       claim/.style={
-        draw=winnerblue!55,fill=winnerblue!5,rounded corners,
-        minimum width=11.4cm,minimum height=0.95cm,
-        text width=10.7cm,align=left,inner xsep=0.45cm
+        anchor=west,text width=10.4cm,align=left,font=\small
       }
     ]
-    \node[claim] at (0,1.45) {
-      \textbf{1.\quad} Natural-language descriptions provide semantic context
-      complementary to formula structure.
+    \node[marker] at (-5.45,1.65) {1};
+    \node[claim] at (-4.85,1.65) {
+      \textbf{Multimodal Representations}\\[0.12em]
+      SMT-Select fuses formula structure and natural-language context, with
+      variants for different data and compute budgets.
     };
-    \node[claim,draw=vbsorange!70,fill=vbsorange!7] at (0,0.2) {
-      \textbf{2.\quad} Cost-sensitive pairwise training prioritizes solver
-      decisions with the greatest performance impact.
+
+    \draw[gray!25] (-5.0,0.83) -- (5.45,0.83);
+
+    \node[marker,fill=vbsorange!80!black] at (-5.45,0) {2};
+    \node[claim] at (-4.85,0) {
+      \textbf{Algorithm Selection Mechanism}\\[0.12em]
+      Cost-sensitive pairwise selection helps SMT-Select consistently
+      outperform prior selectors and competition-winning solvers.
     };
-    \node[claim] at (0,-1.05) {
-      \textbf{3.\quad} Graph+Text achieves the best overall performance and
-      closes at least 30\% of the VBS gap in every evaluated logic.
+
+    \draw[gray!25] (-5.0,-0.83) -- (5.45,-0.83);
+
+    \node[marker] at (-5.45,-1.65) {3};
+    \node[claim] at (-4.85,-1.65) {
+      \textbf{Fine-Grained Contextual Information Helps}\\[0.12em]
+      Instance-level descriptions further improve selection performance.
+    };
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Future Directions}
+  \centering
+  \vspace{0.15em}
+  \begin{tikzpicture}[
+      font=\small,
+      direction/.style={
+        draw=winnerblue!45,fill=winnerblue!4,rounded corners,
+        minimum width=11.2cm,minimum height=0.8cm,
+        text width=10.5cm,align=left,inner xsep=0.45cm
+      }
+    ]
+    \node[direction] at (0,1.45) {
+      \textbf{Scale to larger solver portfolios:}
+      reduce pairwise training cost using dyadic representations or
+      carefully selected training subsets.
+    };
+    \node[direction,draw=vbsorange!65,fill=vbsorange!6] at (0,0.25) {
+      \textbf{Move beyond selecting one solver:}
+      extend the framework to solver scheduling, online adaptation, and
+      parallel portfolio execution.
+    };
+    \node[direction] at (0,-0.95) {
+      \textbf{Broaden the scope:}
+      optimize objectives beyond runtime and explore related domains such as
+      Constraint Answer Set Programming.
     };
   \end{tikzpicture}
 
