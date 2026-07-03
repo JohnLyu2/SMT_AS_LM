@@ -918,38 +918,26 @@ for SMT Algorithm Selection}
 \end{frame}
 
 \begin{frame}{Future Directions}
-  \centering
-  \vspace{0.15em}
-  \begin{tikzpicture}[
-      font=\small,
-      direction/.style={
-        draw=winnerblue!45,fill=winnerblue!4,rounded corners,
-        minimum width=11.2cm,minimum height=0.8cm,
-        text width=10.5cm,align=left,inner xsep=0.45cm
-      }
-    ]
-    \node[direction] at (0,1.45) {
-      \textbf{Scale to larger solver portfolios:}
-      reduce pairwise training cost using dyadic representations or
-      carefully selected training subsets.
-    };
-    \node[direction,draw=vbsorange!65,fill=vbsorange!6] at (0,0.25) {
-      \textbf{Move beyond selecting one solver:}
-      extend the framework to solver scheduling, online adaptation, and
-      parallel portfolio execution.
-    };
-    \node[direction] at (0,-0.95) {
-      \textbf{Broaden the scope:}
-      optimize objectives beyond runtime and explore related domains such as
-      Constraint Answer Set Programming.
-    };
-  \end{tikzpicture}
-
   \vfill
-  \begin{beamercolorbox}[rounded=true,sep=0.55em,center]{block body}
-    \Large\textbf{Questions?}\\[0.25em]
-    \scriptsize\url{https://github.com/JohnLyu2/smt-select}
-  \end{beamercolorbox}
+  \large
+  \begin{itemize}
+    \setlength{\itemsep}{1.2em}
+    \item \textbf{Extension to Algorithm Scheduling and Portfolios}
+    \item \textbf{Applications Beyond SMT}
+    \item \textbf{Domain-Knowledge-Guided Selection with LLM Agents}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}
+  \centering
+  \vfill
+  {\Huge\bfseries Questions?}
+
+  \vspace{1.4em}
+  {\large\bfseries Code, data, and experiments}\\[0.35em]
+  {\small\url{https://github.com/JohnLyu2/smt-select}}
+  \vfill
 \end{frame}
 
 \end{document}
