@@ -811,6 +811,41 @@ for SMT Algorithm Selection}
   \end{beamercolorbox}
 \end{frame}
 
+\begin{frame}{The Granularity of Context Matters}
+  \centering
+  \scriptsize
+  Graph-model test-set PAR-2 SBS--VBS gap closed (\%).
+
+  \vspace{0.55em}
+  \renewcommand{\arraystretch}{1.22}
+  \begin{tabular}{l c c c}
+    \textbf{Logic}
+      & \textbf{Without Description}
+      & \textbf{Family-only Description}
+      & \textbf{Full Description}\\ \hline
+    ABV      & 76.56 & 77.52 & \textbf{\textcolor{winnerblue}{79.44}}\\
+    ALIA     & 55.07 & 62.15 & \textbf{\textcolor{winnerblue}{67.65}}\\
+    BV       & 42.43 & 49.55 & \textbf{\textcolor{winnerblue}{53.82}}\\
+    QF\_BV   & 47.68 & 49.83 & \textbf{\textcolor{winnerblue}{57.52}}\\
+    QF\_IDL  & 69.66 & 80.42 & \textbf{\textcolor{winnerblue}{81.82}}\\
+    QF\_LIA  & \textbf{\textcolor{winnerblue}{92.56}} & 90.79 & 91.65\\
+    QF\_NRA  & 50.61 & 52.81 & \textbf{\textcolor{winnerblue}{55.17}}\\
+    QF\_SLIA & 92.82 & 93.26 & \textbf{\textcolor{winnerblue}{93.50}}\\
+    UFNIA    & 24.48 & 26.60 & \textbf{\textcolor{winnerblue}{31.84}}
+  \end{tabular}
+
+  \vspace{0.35em}
+  \tiny
+  Results are averaged over five train--test splits.
+
+  \vfill
+  \begin{beamercolorbox}[rounded=true,sep=0.5em,center]{block body}
+    \small
+    Full descriptions consistently outperform family-only descriptions.\\[0.15em]
+    They capture useful \textbf{instance-level semantic information}.
+  \end{beamercolorbox}
+\end{frame}
+
 \begin{frame}{Conclusion}
   \centering
   \vspace{0.35em}
