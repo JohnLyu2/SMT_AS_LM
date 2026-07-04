@@ -441,7 +441,7 @@ for SMT Algorithm Selection}
       \textbf{Multimodal Fusion}\\[0.15em]
       concatenation\\
       LayerNorm\\
-      bottleneck MLP\\
+      MLP + ReLU\\
       output dimension 64
     };
     \node[minimum width=2.15cm,minimum height=2.35cm,align=center]
@@ -555,25 +555,35 @@ for SMT Algorithm Selection}
       labelarrow/.style={-{Latex[length=1.8mm]},thin,gray!55}
     ]
     \node[draw=winnerblue!70,fill=winnerblue!7,rounded corners,
-          minimum width=0.5cm,minimum height=0.3cm] (learnkey) at (3.0,2.75) {};
+          minimum width=0.5cm,minimum height=0.3cm] (learnkey) at (0.35,2.75) {};
     \node[right=0.1cm of learnkey,font=\scriptsize,text=winnerblue!80!black]
       {Learnable};
     \node[draw=gray!60,dashed,fill=gray!6,rounded corners,
-          minimum width=0.5cm,minimum height=0.3cm] (frozenkey) at (5.25,2.75) {};
+          minimum width=0.5cm,minimum height=0.3cm] (frozenkey) at (2.6,2.75) {};
     \node[right=0.1cm of frozenkey,font=\scriptsize,text=mutedtext]
       {Frozen};
 
     \node[learnable] (gin) at (0,1.35) {GIN Encoder};
     \node[frozen] (sent) at (0,-1.35) {Pretrained Transformer};
 
-    \node[learnable] (fusion) at (3.6,0) {Fusion Network};
+    \node[learnable] (fusion) at (3.15,0) {Fusion Network};
 
     \draw[arrow] (gin) -- (fusion);
     \draw[arrow] (sent) -- (fusion);
 
-    \node[head] (h12) at (6.9,1.65) {Solver 1 vs.\ 2};
-    \node[head] (h13) at (6.9,0) {Solver 1 vs.\ 3};
-    \node[head] (hkk) at (6.9,-1.85) {Solver $K{-}1$ vs.\ $K$};
+    \node[font=\scriptsize\bfseries] at (5.25,2.12) {\(\mathbf{h}_F\)};
+    \foreach \y/\shade in {
+      1.65/25,1.23/50,0.81/75,0.39/40,
+      -0.03/85,-0.45/55,-0.87/30,-1.29/70,-1.71/45
+    } {
+      \fill[fusiongreen!\shade]
+        (5.05,\y-0.14) rectangle (5.45,\y+0.14);
+    }
+    \draw[arrow] (fusion) -- (5.05,0);
+
+    \node[head] (h12) at (7.25,1.65) {Solver 1 vs.\ 2};
+    \node[head] (h13) at (7.25,0) {Solver 1 vs.\ 3};
+    \node[head] (hkk) at (7.25,-1.85) {Solver $K{-}1$ vs.\ $K$};
     \node[font=\scriptsize,text=winnerblue!80!black] at (10.55,2.75)
       {Training data};
     \node[labels] (l12) at (10.55,1.65) {
@@ -607,13 +617,13 @@ for SMT Algorithm Selection}
       \end{tabular}}
     };
 
-    \draw[arrow] (fusion) -- (h12);
-    \draw[arrow] (fusion) -- (h13);
-    \draw[arrow] (fusion) -- (hkk);
+    \draw[arrow] (5.45,1.65) -- (h12.west);
+    \draw[arrow] (5.45,0) -- (h13.west);
+    \draw[arrow] (5.45,-1.85) -- (hkk.west);
     \draw[labelarrow] (l12) -- (h12);
     \draw[labelarrow] (l13) -- (h13);
     \draw[labelarrow] (lkk) -- (hkk);
-    \node[fill=white,inner sep=1.5pt,font=\normalsize] at (6.9,-0.82)
+    \node[fill=white,inner sep=1.5pt,font=\normalsize] at (7.25,-0.82)
       {\(\vdots\)};
   \end{tikzpicture}
 
@@ -844,21 +854,33 @@ for SMT Algorithm Selection}
   Graph-model test-set PAR-2 SBS--VBS gap closed (\%).
 
   \vspace{0.55em}
-  \renewcommand{\arraystretch}{1.22}
-  \begin{tabular}{l c c c}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{l c c c c c}
     \textbf{Logic}
-      & \textbf{Without Description}
-      & \textbf{Family-only Description}
-      & \textbf{Full Description}\\ \hline
-    ABV      & 76.56 & 77.52 & \textbf{\textcolor{winnerblue}{79.44}}\\
-    ALIA     & 55.07 & 62.15 & \textbf{\textcolor{winnerblue}{67.65}}\\
-    BV       & 42.43 & 49.55 & \textbf{\textcolor{winnerblue}{53.82}}\\
-    QF\_BV   & 47.68 & 49.83 & \textbf{\textcolor{winnerblue}{57.52}}\\
-    QF\_IDL  & 69.66 & 80.42 & \textbf{\textcolor{winnerblue}{81.82}}\\
-    QF\_LIA  & \textbf{\textcolor{winnerblue}{92.56}} & 90.79 & 91.65\\
-    QF\_NRA  & 50.61 & 52.81 & \textbf{\textcolor{winnerblue}{55.17}}\\
-    QF\_SLIA & 92.82 & 93.26 & \textbf{\textcolor{winnerblue}{93.50}}\\
-    UFNIA    & 24.48 & 26.60 & \textbf{\textcolor{winnerblue}{31.84}}
+      & \textbf{Without Desc.}
+      & \multicolumn{2}{c}{\textbf{Family-only Desc.}}
+      & \multicolumn{2}{c}{\textbf{Full Desc.}}\\[-0.15em]
+    & \textbf{Score}
+      & \textbf{Score} & \textbf{\(\Delta\) Fam.--Without}
+      & \textbf{Score} & \textbf{\(\Delta\) Full--Fam.}\\ \hline
+    ABV      & 76.6 & 77.5 & \textcolor{fusiongreen!80!black}{+1.0}
+             & \textbf{\textcolor{winnerblue}{79.4}} & \textcolor{fusiongreen!80!black}{+1.9}\\
+    ALIA     & 55.1 & 62.2 & \textcolor{fusiongreen!80!black}{+7.1}
+             & \textbf{\textcolor{winnerblue}{67.7}} & \textcolor{fusiongreen!80!black}{+5.5}\\
+    BV       & 42.4 & 49.6 & \textcolor{fusiongreen!80!black}{+7.1}
+             & \textbf{\textcolor{winnerblue}{53.8}} & \textcolor{fusiongreen!80!black}{+4.3}\\
+    QF\_BV   & 47.7 & 49.8 & \textcolor{fusiongreen!80!black}{+2.2}
+             & \textbf{\textcolor{winnerblue}{57.5}} & \textcolor{fusiongreen!80!black}{+7.7}\\
+    QF\_IDL  & 69.7 & 80.4 & \textcolor{fusiongreen!80!black}{+10.8}
+             & \textbf{\textcolor{winnerblue}{81.8}} & \textcolor{fusiongreen!80!black}{+1.4}\\
+    QF\_LIA  & \textbf{\textcolor{winnerblue}{92.6}} & 90.8
+             & \textcolor{mutedtext}{-1.8} & 91.7 & \textcolor{fusiongreen!80!black}{+0.9}\\
+    QF\_NRA  & 50.6 & 52.8 & \textcolor{fusiongreen!80!black}{+2.2}
+             & \textbf{\textcolor{winnerblue}{55.2}} & \textcolor{fusiongreen!80!black}{+2.4}\\
+    QF\_SLIA & 92.8 & 93.3 & \textcolor{fusiongreen!80!black}{+0.4}
+             & \textbf{\textcolor{winnerblue}{93.5}} & \textcolor{fusiongreen!80!black}{+0.2}\\
+    UFNIA    & 24.5 & 26.6 & \textcolor{fusiongreen!80!black}{+2.1}
+             & \textbf{\textcolor{winnerblue}{31.8}} & \textcolor{fusiongreen!80!black}{+5.2}
   \end{tabular}
 
   \vspace{0.35em}
@@ -951,6 +973,7 @@ for SMT Algorithm Selection}
     \setlength{\itemsep}{1.2em}
     \item \textbf{Extension to Algorithm Scheduling and Portfolios}
     \item \textbf{Applications Beyond SMT}
+    \item \textbf{Explainability}
     \item \textbf{Domain-Knowledge-Guided Selection with LLM Agents}
   \end{itemize}
   \vfill
