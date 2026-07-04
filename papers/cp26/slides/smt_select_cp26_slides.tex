@@ -44,16 +44,24 @@ for SMT Algorithm Selection}
 \begin{frame}{Solver Complementarity in SMT-COMP 2025}
   \centering
   \scriptsize
-  Winner and virtual-best solver (VBS) solve rates for the six SMT-COMP 2025 Single Query
-  logics with the largest gaps.
+  Winner vs.\ virtual-best solver (VBS) solve rates for the five largest
+  SMT-COMP 2025 Single Query gaps.
 
-  \vspace{0.35em}
-  \begin{tikzpicture}[x=0.75cm,y=0.69cm,font=\scriptsize]
+  \vspace{0.2em}
+  \begin{tikzpicture}[x=0.75cm,y=0.58cm,font=\scriptsize]
+    % Row labels as a compact table.
+    \node[anchor=east,font=\scriptsize\bfseries,text=mutedtext]
+      at (-3.65,5.75) {Logic};
+    \node[anchor=west,font=\scriptsize\bfseries,text=mutedtext]
+      at (-3.25,5.75) {Winner};
+    \node[font=\scriptsize\bfseries,text=mutedtext] at (-0.35,5.75) {Participants};
+    \draw[gray!35] (-5.05,5.38) -- (-0.12,5.38);
+
     % Solve-rate axis and grid.
     \foreach \x in {0,2,4,6,8,10} {
       \pgfmathtruncatemacro{\percent}{\x*10}
-      \draw[gray!18] (\x,-0.55) -- (\x,5.55);
-      \node[below,mutedtext] at (\x,-0.62) {\percent\%};
+      \draw[gray!18] (\x,0.55) -- (\x,5.55);
+      \node[below,mutedtext] at (\x,0.48) {\percent\%};
     }
 
     % Logic, solve rates, gap, winner, and number of participating solvers.
@@ -63,16 +71,16 @@ for SMT Algorithm Selection}
       QF\_DT/47.4/62.2/14.8/cvc5/2,
       ALIA/21.4/35.8/14.4/cvc5/4,
       UFBV/66.7/75.7/9.0/Bitwuzla/4,
-      QF\_UFBV/86.3/93.8/7.6/Bitwuzla/6,
-      QF\_UFNIA/77.9/85.0/7.1/Yices2/3
+      QF\_UFBV/86.3/93.8/7.6/Bitwuzla/6
     } {
       \pgfmathsetmacro{\y}{5-\row}
       \pgfmathsetmacro{\winnerx}{\winnerrate/10}
       \pgfmathsetmacro{\vbsx}{\vbs/10}
-      \node[anchor=east,align=right] at (-0.28,\y)
-         {\logic\\[-0.2em]
-         \tiny\textcolor{winnerblue}{\textbf{\winnername}}
-         \textcolor{mutedtext}{\,\textbullet\,\nsolvers\ solvers}};
+      \node[anchor=east] at (-3.65,\y) {\logic};
+      \node[anchor=west,font=\scriptsize\bfseries,text=winnerblue]
+        at (-3.25,\y) {\winnername};
+      \node[font=\scriptsize,text=mutedtext]
+        at (-0.35,\y) {\nsolvers};
       \draw[line width=2.2pt,gray!40] (\winnerx,\y) -- (\vbsx,\y);
       \fill[winnerblue] (\winnerx,\y) circle (2.2pt);
       \fill[vbsorange] (\vbsx,\y) circle (2.2pt);
@@ -84,17 +92,31 @@ for SMT Algorithm Selection}
     \node[anchor=west] at (1.42,6.05) {Winner solve rate};
     \fill[vbsorange] (6.20,6.05) circle (2.2pt);
     \node[anchor=west] at (6.42,6.05) {VBS solve rate};
+
+    \node[
+      draw=vbsorange!80,
+      fill=white,
+      rounded corners,
+      line width=1pt,
+      text width=9.3cm,
+      align=center,
+      inner sep=5pt,
+      font=\scriptsize
+    ] (qfdtbox) at (2.75,-2.70) {
+      \textbf{\textcolor{winnerblue}{Winner cvc5}}
+      solves \textbf{\textcolor{winnerblue}{167 (47.4\%)}} of 352 benchmarks.\\[0.1em]
+      \textbf{SMTInterpol}, the only other participant, solves
+      \textbf{52 benchmarks that cvc5 misses}.\\[0.15em]
+      \textbf{Perfectly selecting per benchmark}, the
+      \textbf{\textcolor{vbsorange}{VBS}} solves
+      \textbf{\textcolor{vbsorange}{219 (62.2\%)}}.
+    };
+    \draw[-{Latex[length=2mm]},thick,vbsorange!85!black]
+      (qfdtbox.north west) .. controls (-5.15,0.2) and (-5.15,3.5) ..
+      (-4.75,4);
   \end{tikzpicture}
 
-  \vspace{-0.25em}
-  \begin{beamercolorbox}[rounded=true,sep=0.45em,center]{block body}
-    \small
-    \textbf{No single solver captures all solvable instances.}\\
-    Perfect solver selection recovers up to
-    \textbf{\color{vbsorange}17.7\%}.
-  \end{beamercolorbox}
-
-  \vspace{0.25em}
+  \vspace{0.1em}
   \tiny
   Source: \url{https://smt-comp.github.io/2025/results/}
 \end{frame}
